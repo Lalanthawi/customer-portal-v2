@@ -2,7 +2,7 @@
 
 import { useState, useRef, ChangeEvent } from 'react'
 import Image from 'next/image'
-import type { ProfileTab, UserProfileData, PasswordData, Device, NotificationSettings, BillingInfo, PaymentMethod } from './types'
+import type { ProfileTab, UserProfileData, PasswordData, Device, NotificationSettings, PaymentMethod } from './types'
 
 // Tab definitions
 const tabs: ProfileTab[] = [
@@ -128,19 +128,6 @@ export default function ProfileSettingsPage() {
       enabled: false,
       wonAuctions: false,
       paymentReminders: false,
-    },
-  })
-  const [billingInfo, setBillingInfo] = useState<BillingInfo>({
-    cardNumber: '',
-    cardHolder: '',
-    expiryDate: '',
-    cvv: '',
-    billingAddress: {
-      street: '123 Main Street, Suite 400',
-      city: 'San Francisco',
-      state: 'California',
-      zipCode: '94105',
-      country: 'United States',
     },
   })
 

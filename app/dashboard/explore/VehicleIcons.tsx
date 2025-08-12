@@ -1,4 +1,6 @@
-export const vehicleIcons: { [key: string]: JSX.Element } = {
+import React from 'react'
+
+export const vehicleIcons: { [key: string]: React.JSX.Element } = {
   sedan: (
     <svg viewBox="0 0 100 100" className="w-full h-full">
       <path d="M20 50 L25 35 L40 30 L60 30 L75 35 L80 50 L80 60 L75 65 L25 65 L20 60 Z" fill="none" stroke="currentColor" strokeWidth="2"/>

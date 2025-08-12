@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -785,10 +785,10 @@ const demoVehicles: Vehicle[] = [
   }
 ]
 
-export default function SearchResultsPage() {
+function SearchResults() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [vehicles, setVehicles] = useState<Vehicle[]>(demoVehicles)
+  const vehicles = demoVehicles
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>(demoVehicles)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
   const [showFilters, setShowFilters] = useState(true)
@@ -1711,5 +1711,13 @@ export default function SearchResultsPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function SearchResultsPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-96"><div className="text-gray-500">Loading...</div></div>}>
+      <SearchResults />
+    </Suspense>
   )
 }

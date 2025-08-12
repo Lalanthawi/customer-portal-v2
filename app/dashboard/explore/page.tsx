@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { manufacturerLogos } from './ManufacturerLogos'
 import { vehicleIcons } from './VehicleIcons'
@@ -225,7 +224,7 @@ export default function ExplorePage() {
             </h1>
             
             <p className="text-gray-200 text-lg md:text-xl text-center mb-10 max-w-2xl mx-auto">
-              Browse thousands of premium vehicles from Japan's most trusted dealers
+              Browse thousands of premium vehicles from Japan&apos;s most trusted dealers
             </p>
 
             {/* Enhanced Search Bar */}

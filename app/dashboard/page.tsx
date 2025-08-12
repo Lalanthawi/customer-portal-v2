@@ -587,7 +587,7 @@ export default function DashboardPage() {
           Welcome back, {username}!
         </h1>
         <p className="text-gray-600 mt-2">
-          Here's what's happening with your auctions today.
+          Here&apos;s what&apos;s happening with your auctions today.
         </p>
       </div>
 

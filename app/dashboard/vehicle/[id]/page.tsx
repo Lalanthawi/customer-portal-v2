@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
 
 interface VehicleDetails {
   id: string
@@ -164,7 +163,6 @@ const vehicleData: VehicleDetails = {
 }
 
 export default function VehicleDetailsPage() {
-  const params = useParams()
   const [selectedImage, setSelectedImage] = useState(0)
   const [activeTab, setActiveTab] = useState<'overview' | 'specifications' | 'history' | 'documents'>('overview')
   const [bidAmount, setBidAmount] = useState('')

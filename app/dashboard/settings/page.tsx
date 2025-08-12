@@ -503,7 +503,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <p className="text-sm font-medium text-gray-900">Beta Features</p>
-                      <p className="text-xs text-gray-500 mt-0.5">Try out new features before they're released</p>
+                      <p className="text-xs text-gray-500 mt-0.5">Try out new features before they&apos;re released</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" />

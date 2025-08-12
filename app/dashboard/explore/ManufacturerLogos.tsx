@@ -1,4 +1,6 @@
-export const manufacturerLogos: { [key: string]: JSX.Element } = {
+import React from 'react'
+
+export const manufacturerLogos: { [key: string]: React.JSX.Element } = {
   toyota: (
     <svg viewBox="0 0 100 100" className="w-full h-full">
       <ellipse cx="50" cy="35" rx="35" ry="25" fill="none" stroke="currentColor" strokeWidth="2"/>

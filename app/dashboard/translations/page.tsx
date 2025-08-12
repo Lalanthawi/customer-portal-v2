@@ -112,7 +112,6 @@ const languages = [
 export default function TranslationsPage() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'in-progress' | 'pending' | 'rejected'>('all')
   const [showUploadModal, setShowUploadModal] = useState(false)
-  const [selectedDocument, setSelectedDocument] = useState<TranslationDocument | null>(null)
 
   const filteredDocuments = translationDocuments.filter(doc =>
     filterStatus === 'all' || doc.status === filterStatus
