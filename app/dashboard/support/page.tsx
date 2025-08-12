@@ -144,7 +144,7 @@ export default function SupportPage() {
   const [selectedCategory, setSelectedCategory] = useState('All Categories')
   const [searchQuery, setSearchQuery] = useState('')
   const [showNewTicket, setShowNewTicket] = useState(false)
-  const [activeTab, setActiveTab] = useState<'faq' | 'tickets' | 'contact'>('faq')
+  const [activeTab, setActiveTab] = useState<'faq' | 'tickets' | 'contact'>('tickets')
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null)
 
   const filteredFAQ = faqItems.filter(item => {
@@ -251,16 +251,6 @@ export default function SupportPage() {
         <div className="border-b border-gray-200">
           <div className="flex gap-8 px-6">
             <button
-              onClick={() => setActiveTab('faq')}
-              className={`py-4 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === 'faq'
-                  ? 'border-[#FA7921] text-[#FA7921]'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              Frequently Asked Questions
-            </button>
-            <button
               onClick={() => setActiveTab('tickets')}
               className={`py-4 border-b-2 font-medium text-sm transition-colors ${
                 activeTab === 'tickets'
@@ -279,6 +269,16 @@ export default function SupportPage() {
               }`}
             >
               Contact Us
+            </button>
+            <button
+              onClick={() => setActiveTab('faq')}
+              className={`py-4 border-b-2 font-medium text-sm transition-colors ${
+                activeTab === 'faq'
+                  ? 'border-[#FA7921] text-[#FA7921]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              FAQ
             </button>
           </div>
         </div>
