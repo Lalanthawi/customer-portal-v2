@@ -244,7 +244,7 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold animate-pulse">
+        <div className="absolute top-3 right-3 bg-[#FA7921] text-white px-3 py-1 rounded-full text-xs font-semibold animate-pulse shadow-lg">
           Live Auction
         </div>
       </div>
@@ -330,84 +330,83 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
   )
 }
 
-// Activity Item Component - Redesigned with better styling
+// Activity Item Component - Completely Redesigned
 function ActivityItem({ activity }: { activity: ActivityItem }) {
-  const iconConfigs = {
-    bid: {
-      bg: 'bg-blue-50',
-      icon: 'text-blue-600',
-      svg: (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      )
-    },
-    win: {
-      bg: 'bg-green-50',
-      icon: 'text-green-600',
-      svg: (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      )
-    },
-    outbid: {
-      bg: 'bg-amber-50',
-      icon: 'text-amber-600',
-      svg: (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-        </svg>
-      )
-    },
-    listing: {
-      bg: 'bg-[#002233]/5',
-      icon: 'text-[#002233]',
-      svg: (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-        </svg>
-      )
-    },
-    payment: {
-      bg: 'bg-[#FA7921]/10',
-      icon: 'text-[#FA7921]',
-      svg: (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-        </svg>
-      )
-    },
+  const getActivityIcon = () => {
+    switch (activity.type) {
+      case 'bid':
+        return (
+          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        )
+      case 'win':
+        return (
+          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        )
+      case 'outbid':
+        return (
+          <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+        )
+      case 'listing':
+        return (
+          <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </div>
+        )
+      case 'payment':
+        return (
+          <div className="w-8 h-8 bg-[#FA7921]/10 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-[#FA7921]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
+          </div>
+        )
+      default:
+        return null
+    }
   }
 
-  const config = iconConfigs[activity.type]
-
   return (
-    <div className="relative flex items-start gap-3 p-4 hover:bg-gray-50 transition-colors group">
-      <div className={`flex-shrink-0 w-9 h-9 rounded-full ${config.bg} flex items-center justify-center ${config.icon}`}>
-        {config.svg}
-      </div>
+    <div className="flex items-start gap-3 px-4 py-3 hover:bg-gray-50/70 transition-all duration-150 group cursor-pointer">
+      {getActivityIcon()}
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
-            <p className="text-sm font-medium text-gray-900 leading-snug">{activity.title}</p>
+            <p className="text-sm font-medium text-gray-900 leading-tight group-hover:text-[#FA7921] transition-colors">
+              {activity.title}
+            </p>
             {activity.description && (
-              <p className="text-xs text-gray-500 mt-0.5">{activity.description}</p>
+              <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{activity.description}</p>
             )}
-            <p className="text-xs text-gray-400 mt-1.5">{activity.time}</p>
-          </div>
-          {activity.amount && (
-            <div className="flex-shrink-0 text-right">
-              <p className="text-sm font-semibold text-gray-900">¥{activity.amount}</p>
+            <div className="flex items-center gap-2 mt-1.5">
+              <span className="text-xs text-gray-400">{activity.time}</span>
               {activity.status && (
-                <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-medium mt-1 ${
-                  activity.status === 'success' ? 'bg-green-100 text-green-700' :
-                  activity.status === 'pending' ? 'bg-amber-100 text-amber-700' :
-                  'bg-red-100 text-red-700'
+                <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                  activity.status === 'success' ? 'bg-green-100 text-green-600' :
+                  activity.status === 'pending' ? 'bg-amber-100 text-amber-600' :
+                  'bg-red-100 text-red-600'
                 }`}>
-                  {activity.status === 'success' ? '✓' : activity.status === 'pending' ? '○' : '✗'} {activity.status}
+                  {activity.status}
                 </span>
               )}
+            </div>
+          </div>
+          {activity.amount && (
+            <div className="text-right flex-shrink-0">
+              <p className="text-sm font-semibold text-[#FA7921]">¥{activity.amount}</p>
             </div>
           )}
         </div>
@@ -465,12 +464,12 @@ export default function DashboardPage() {
     usdRate: 0.0067,
   }
 
-  // Auction data with real stock images
+  // Auction data with working stock images
   const upcomingAuctions: AuctionItem[] = [
     {
       id: 1,
       title: 'Toyota Camry 2022',
-      image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80',
       specs: { year: 2022, mileage: '15,000 km', transmission: 'Automatic' },
       startingPrice: 2500000,
       currentBid: 2750000,
@@ -481,7 +480,7 @@ export default function DashboardPage() {
     {
       id: 2,
       title: 'Honda Civic 2021',
-      image: 'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800&q=80',
       specs: { year: 2021, mileage: '28,000 km', transmission: 'Manual' },
       startingPrice: 1800000,
       currentBid: 1950000,
@@ -492,7 +491,7 @@ export default function DashboardPage() {
     {
       id: 3,
       title: 'Mazda CX-5 2023',
-      image: 'https://images.unsplash.com/photo-1606611013016-969c19ba1595?w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80',
       specs: { year: 2023, mileage: '8,000 km', transmission: 'Automatic' },
       startingPrice: 3200000,
       currentBid: 3350000,
@@ -514,7 +513,7 @@ export default function DashboardPage() {
     {
       id: 5,
       title: 'Mercedes-Benz C-Class 2023',
-      image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=800&q=80',
       specs: { year: 2023, mileage: '5,000 km', transmission: 'Automatic' },
       startingPrice: 5200000,
       currentBid: 5350000,
@@ -600,74 +599,106 @@ export default function DashboardPage() {
         <BalanceCard data={balanceData} loading={loading} />
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-        {/* Upcoming Auctions - Takes 3 columns */}
-        <div className="xl:col-span-3">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-900">Upcoming Auctions</h2>
-            <button className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium transition-colors">
-              View All →
-            </button>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
-            {upcomingAuctions.slice(0, 2).map((auction) => (
-              <AuctionCard key={auction.id} auction={auction} loading={loading} />
-            ))}
-          </div>
-        </div>
-
-        {/* Activity Timeline - Takes 1 column */}
-        <div className="xl:col-span-1">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
-                <button className="text-[#FA7921] hover:text-[#FA7921]/80 text-xs font-medium transition-colors flex items-center gap-1">
-                  <span>View All</span>
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            {loading ? (
-              <div className="p-5 space-y-4">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <Skeleton className="h-9 w-9 rounded-full" />
-                    <div className="flex-1">
-                      <Skeleton className="h-4 w-3/4 mb-2" />
-                      <Skeleton className="h-3 w-1/2" />
-                    </div>
+      {/* Main Content Section with Consistent Containers */}
+      <div className="space-y-8">
+        {/* Upcoming Auctions and Recent Activity Row */}
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+          {/* Upcoming Auctions Container */}
+          <div className="xl:col-span-3">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900">Upcoming Auctions</h2>
+                    <p className="text-xs text-gray-500 mt-0.5">Live auctions ending soon</p>
                   </div>
-                ))}
+                  <button className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium transition-colors flex items-center gap-1">
+                    View All
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
               </div>
-            ) : (
-              <div className="max-h-[500px] overflow-y-auto">
-                <div className="divide-y divide-gray-100">
-                  {activities.map((activity) => (
-                    <ActivityItem key={activity.id} activity={activity} />
+              <div className="p-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {upcomingAuctions.slice(0, 2).map((auction) => (
+                    <AuctionCard key={auction.id} auction={auction} loading={loading} />
                   ))}
                 </div>
               </div>
-            )}
+            </div>
+          </div>
+
+          {/* Recent Activity Container */}
+          <div className="xl:col-span-1">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-full flex flex-col">
+              <div className="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
+                    <p className="text-xs text-gray-500 mt-0.5">Your latest updates</p>
+                  </div>
+                  <button className="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                  </svg>
+                </button>
+                </div>
+              </div>
+              {loading ? (
+                <div className="p-3 space-y-3 flex-1">
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <Skeleton className="h-9 w-9 rounded-full" />
+                      <div className="flex-1">
+                        <Skeleton className="h-3 w-3/4 mb-2" />
+                        <Skeleton className="h-3 w-1/2" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex-1 overflow-y-auto">
+                  <div className="divide-y divide-gray-50">
+                    {activities.map((activity) => (
+                      <ActivityItem key={activity.id} activity={activity} />
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className="px-4 py-3 border-t border-gray-100 bg-gray-50/50">
+                <button className="w-full text-center text-xs text-[#FA7921] hover:text-[#FA7921]/80 font-medium transition-colors">
+                  View All Activity →
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Featured Auctions Section */}
-      <div className="mt-12 mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">Featured Auctions</h2>
-          <button className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium transition-colors">
-            Browse All →
-          </button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {upcomingAuctions.slice(0, 4).map((auction) => (
-            <AuctionCard key={auction.id} auction={auction} loading={loading} />
-          ))}
+        {/* Featured Auctions Container */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Featured Auctions</h2>
+                <p className="text-xs text-gray-500 mt-0.5">Hand-picked vehicles for you</p>
+              </div>
+              <button className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium transition-colors flex items-center gap-1">
+                Browse All
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div className="p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {upcomingAuctions.slice(0, 4).map((auction) => (
+                <AuctionCard key={auction.id} auction={auction} loading={loading} />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
