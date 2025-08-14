@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { manufacturerLogos } from './ManufacturerLogos'
-import { vehicleIcons } from './VehicleIcons'
+// Removed unused import: vehicleIcons
 
 interface Manufacturer {
   id: string
@@ -58,20 +58,7 @@ const manufacturers: Manufacturer[] = [
   { id: 'ferrari', name: 'Ferrari', vehicleCount: 12 },
 ]
 
-const bodyTypes = [
-  { id: 'sedan', name: 'Sedan', count: 456 },
-  { id: 'suv', name: 'SUV', count: 389 },
-  { id: 'sports', name: 'Sports', count: 123 },
-  { id: 'coupe', name: 'Coupe', count: 234 },
-  { id: 'hatchback', name: 'Hatchback', count: 167 },
-  { id: 'convertible', name: 'Convertible', count: 45 },
-  { id: 'wagon', name: 'Wagon', count: 78 },
-  { id: 'van', name: 'Van', count: 56 },
-  { id: 'truck', name: 'Truck', count: 112 },
-  { id: 'electric', name: 'Electric', count: 89 },
-  { id: 'hybrid', name: 'Hybrid', count: 234 },
-  { id: 'luxury', name: 'Luxury', count: 156 },
-]
+// Removed unused bodyTypes array
 
 const fuelTypes = [
   { id: 'petrol', name: 'Petrol', count: 1234 },
@@ -132,14 +119,7 @@ export default function ExplorePage() {
     }))
   }
 
-  const toggleBodyType = (bodyTypeId: string) => {
-    setFilters(prev => ({
-      ...prev,
-      bodyTypes: prev.bodyTypes.includes(bodyTypeId)
-        ? prev.bodyTypes.filter(id => id !== bodyTypeId)
-        : [...prev.bodyTypes, bodyTypeId]
-    }))
-  }
+  // Removed unused toggleBodyType function
 
   const toggleFuelType = (fuelTypeId: string) => {
     setFilters(prev => ({
@@ -1007,7 +987,8 @@ export default function ExplorePage() {
                 </button>
                 <button
                   onClick={() => {
-                    handleSearch(new Event('submit') as any)
+                    const mockEvent = { preventDefault: () => {} } as React.FormEvent
+                    handleSearch(mockEvent)
                     setShowFilters(false)
                   }}
                   className="px-6 py-2.5 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02] flex items-center gap-2"
