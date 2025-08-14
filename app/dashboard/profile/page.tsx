@@ -793,85 +793,124 @@ export default function ProfileSettingsPage() {
               </div>
             </div>
 
-            {/* Billing Addresses */}
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Billing Addresses</h3>
-                <button className="px-4 py-2 bg-[#FA7921] text-white rounded-lg font-medium hover:bg-[#FA7921]/90 transition-colors text-sm">
-                  Add New Address
-                </button>
+            {/* Billing Addresses - Amazon Style */}
+            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                <h3 className="text-lg font-semibold text-gray-900">Your Addresses</h3>
+                <p className="text-xs text-gray-500 mt-0.5">Manage billing and shipping addresses</p>
               </div>
               
-              {/* Saved Addresses */}
-              <div className="space-y-3 mb-4">
-                {/* Default Address Card */}
-                <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <p className="text-sm font-medium text-gray-900">Home Address</p>
-                        <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                          Default
-                        </span>
+              <div className="p-6">
+                {/* Amazon-style Address Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Default Address Card - Amazon Style */}
+                  <div className="border-2 border-[#FA7921] rounded-lg overflow-hidden bg-orange-50/30">
+                    <div className="bg-[#FA7921] px-4 py-2">
+                      <span className="text-sm font-bold text-white">Default Address</span>
+                    </div>
+                    <div className="p-4 bg-white">
+                      <p className="font-semibold text-gray-900 mb-1">John Doe</p>
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        123 Main Street, Suite 400<br/>
+                        San Francisco, CA 94105<br/>
+                        United States<br/>
+                        Phone: +1 (555) 123-4567
+                      </p>
+                      <div className="mt-4 pt-3 border-t border-gray-100 flex gap-3 text-sm">
+                        <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
+                          Edit
+                        </button>
+                        <span className="text-gray-300">|</span>
+                        <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
+                          Remove
+                        </button>
                       </div>
-                      <p className="text-sm text-gray-600">123 Main Street, Suite 400</p>
-                      <p className="text-sm text-gray-600">San Francisco, California 94105</p>
-                      <p className="text-sm text-gray-600">United States</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <button className="text-gray-400 hover:text-gray-600 transition-colors">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </button>
-                      <button className="text-gray-400 hover:text-red-600 transition-colors">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
+                  </div>
+
+                  {/* Secondary Address Card - Amazon Style */}
+                  <div className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                    <div className="p-4 bg-white">
+                      <p className="font-semibold text-gray-900 mb-1">John Doe</p>
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        456 Business Center, Floor 12<br/>
+                        New York, NY 10001<br/>
+                        United States<br/>
+                        Phone: +1 (555) 987-6543
+                      </p>
+                      <div className="mt-4 pt-3 border-t border-gray-100">
+                        <div className="flex gap-3 text-sm mb-2">
+                          <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
+                            Edit
+                          </button>
+                          <span className="text-gray-300">|</span>
+                          <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
+                            Remove
+                          </button>
+                          <span className="text-gray-300">|</span>
+                          <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
+                            Set as Default
+                          </button>
+                        </div>
+                      </div>
                     </div>
+                  </div>
+
+                  {/* Third Address Card */}
+                  <div className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                    <div className="p-4 bg-white">
+                      <p className="font-semibold text-gray-900 mb-1">John Doe</p>
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        789 Warehouse District<br/>
+                        Los Angeles, CA 90001<br/>
+                        United States<br/>
+                        Phone: +1 (555) 456-7890
+                      </p>
+                      <div className="mt-4 pt-3 border-t border-gray-100">
+                        <div className="flex gap-3 text-sm mb-2">
+                          <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
+                            Edit
+                          </button>
+                          <span className="text-gray-300">|</span>
+                          <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
+                            Remove
+                          </button>
+                          <span className="text-gray-300">|</span>
+                          <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
+                            Set as Default
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Add New Address Card - Amazon Style */}
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg overflow-hidden hover:border-[#FA7921] hover:bg-orange-50/30 transition-all cursor-pointer group">
+                    <button className="w-full h-full min-h-[200px] p-6 flex flex-col items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-gray-100 group-hover:bg-[#FA7921]/10 flex items-center justify-center mb-3 transition-colors">
+                        <svg className="w-6 h-6 text-gray-400 group-hover:text-[#FA7921]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                      </div>
+                      <p className="text-sm font-semibold text-gray-700 group-hover:text-[#FA7921] mb-1">Add address</p>
+                      <p className="text-xs text-gray-500">Save a new address</p>
+                    </button>
                   </div>
                 </div>
 
-                {/* Office Address Card */}
-                <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <p className="text-sm font-medium text-gray-900">Office Address</p>
-                      </div>
-                      <p className="text-sm text-gray-600">456 Business Center, Floor 12</p>
-                      <p className="text-sm text-gray-600">New York, New York 10001</p>
-                      <p className="text-sm text-gray-600">United States</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button className="text-xs text-[#FA7921] hover:text-[#FA7921]/80 font-medium">
-                        Set as Default
-                      </button>
-                      <button className="text-gray-400 hover:text-gray-600 transition-colors">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </button>
-                      <button className="text-gray-400 hover:text-red-600 transition-colors">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
+                {/* Amazon-style notice */}
+                <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex gap-3">
+                    <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div className="text-sm text-blue-800">
+                      <p className="font-medium mb-1">Make sure your address is correct</p>
+                      <p className="text-xs">Auction winnings will be shipped to your default address. Please ensure all details are accurate to avoid delivery issues.</p>
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* Add New Address Button */}
-              <button className="w-full p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#FA7921] hover:bg-orange-50 transition-all group">
-                <div className="flex items-center justify-center gap-2 text-gray-500 group-hover:text-[#FA7921]">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  <span className="text-sm font-medium">Add New Billing Address</span>
-                </div>
-              </button>
             </div>
           </div>
         )

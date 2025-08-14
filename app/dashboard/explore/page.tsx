@@ -96,7 +96,7 @@ export default function ExplorePage() {
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState<FilterState>({
     manufacturers: [],
-    priceRange: [0, 10000000],
+    priceRange: [100000, 10000000],
     yearRange: [2015, 2024],
     bodyTypes: [],
     fuelTypes: [],
@@ -162,7 +162,7 @@ export default function ExplorePage() {
   const clearAllFilters = () => {
     setFilters({
       manufacturers: [],
-      priceRange: [0, 10000000],
+      priceRange: [100000, 10000000],
       yearRange: [2015, 2024],
       bodyTypes: [],
       fuelTypes: [],
@@ -185,7 +185,7 @@ export default function ExplorePage() {
     filters.bodyTypes.length + 
     filters.fuelTypes.length + 
     filters.transmission.length +
-    (filters.priceRange[0] > 0 || filters.priceRange[1] < 10000000 ? 1 : 0) +
+    (filters.priceRange[0] > 100000 || filters.priceRange[1] < 10000000 ? 1 : 0) +
     (filters.yearRange[0] > 2015 || filters.yearRange[1] < 2024 ? 1 : 0) +
     (filters.mileageMax < 200000 ? 1 : 0)
 
@@ -320,7 +320,7 @@ export default function ExplorePage() {
                   </div>
                   <input
                     type="range"
-                    min="0"
+                    min="100000"
                     max="10000000"
                     step="100000"
                     value={filters.priceRange[1]}
@@ -714,61 +714,6 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      {/* Body Types Section - Modern Cards */}
-      <div className="mb-10">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Vehicle Types</h2>
-            <p className="text-sm text-gray-500 mt-1">Filter by body style and category</p>
-          </div>
-          {filters.bodyTypes.length > 0 && (
-            <button
-              onClick={() => setFilters(prev => ({ ...prev, bodyTypes: [] }))}
-              className="text-sm text-[#FA7921] hover:text-[#FA7921]/80 font-medium"
-            >
-              Clear ({filters.bodyTypes.length})
-            </button>
-          )}
-        </div>
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-12 gap-3">
-          {bodyTypes.map((type) => (
-            <button
-              key={type.id}
-              onClick={() => toggleBodyType(type.id)}
-              className={`group relative bg-white rounded-2xl p-3 transition-all duration-200 ${
-                filters.bodyTypes.includes(type.id)
-                  ? 'bg-gradient-to-br from-[#FA7921]/10 to-[#FFB956]/10 border-2 border-[#FA7921] shadow-lg scale-105'
-                  : 'border-2 border-gray-200 hover:border-gray-300 hover:shadow-md hover:scale-105'
-              }`}
-            >
-              <div className={`w-10 h-10 mx-auto mb-2 transition-colors ${
-                filters.bodyTypes.includes(type.id) 
-                  ? 'text-[#FA7921]' 
-                  : 'text-gray-600 group-hover:text-[#FA7921]'
-              }`}>
-                {vehicleIcons[type.id] || (
-                  <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
-                    <span className="text-lg">🚗</span>
-                  </div>
-                )}
-              </div>
-              <h3 className="text-xs font-semibold text-gray-900 text-center">
-                {type.name}
-              </h3>
-              <p className="text-xs text-gray-500 text-center mt-0.5">
-                {type.count}
-              </p>
-              {filters.bodyTypes.includes(type.id) && (
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#FA7921] rounded-full flex items-center justify-center">
-                  <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* Modern Stats Grid - Redesigned */}
       <div className="mb-10">

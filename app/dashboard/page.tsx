@@ -41,7 +41,7 @@ function useCountdown(targetDate: Date) {
   return timeLeft
 }
 
-// Stats Card Component - Redesigned
+// Stats Card Component - Premium Unified Design
 function StatsCard({ data, loading, index }: { data: StatsCardData; loading?: boolean; index?: number }) {
   if (loading) {
     return (
@@ -53,72 +53,130 @@ function StatsCard({ data, loading, index }: { data: StatsCardData; loading?: bo
     )
   }
 
-  // Brand-aligned gradient backgrounds for each card
-  const gradients = [
-    'from-[#002233] to-[#003355]',  // Deep navy gradient
-    'from-[#FA7921] to-[#FF9A56]',  // Orange gradient
-    'from-[#003355] to-[#004466]', // Mid navy gradient
+  // Premium card designs matching the balance card style
+  const cardStyles = [
+    {
+      gradient: 'from-blue-500 via-indigo-500 to-purple-500',
+      iconBg: 'bg-white/25',
+      accentColor: 'from-blue-400 to-indigo-400',
+      pulseColor: 'bg-blue-400',
+      shadowColor: 'shadow-blue-400/50',
+      borderColor: 'border-indigo-400/20'
+    },
+    {
+      gradient: 'from-emerald-500 via-teal-500 to-cyan-500',
+      iconBg: 'bg-white/25',
+      accentColor: 'from-emerald-400 to-teal-400',
+      pulseColor: 'bg-emerald-400',
+      shadowColor: 'shadow-emerald-400/50',
+      borderColor: 'border-teal-400/20'
+    },
+    {
+      gradient: 'from-purple-500 via-pink-500 to-rose-500',
+      iconBg: 'bg-white/25',
+      accentColor: 'from-purple-400 to-pink-400',
+      pulseColor: 'bg-purple-400',
+      shadowColor: 'shadow-purple-400/50',
+      borderColor: 'border-pink-400/20'
+    },
   ]
 
-  const bgGradient = index !== undefined ? gradients[index % gradients.length] : gradients[0]
+  const style = index !== undefined ? cardStyles[index % cardStyles.length] : cardStyles[0]
   
   // Special handling for Account Status card
   const isStatusCard = data.title === 'Account Status'
   
   if (isStatusCard) {
     return (
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#002233] to-[#002233]/80 p-6 h-full text-white shadow-lg hover:shadow-xl transition-all duration-300 group">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-[#FA7921]/20 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform" />
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#FA7921]/10 rounded-full -ml-12 -mb-12 group-hover:scale-110 transition-transform" />
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-500 p-6 h-full text-white shadow-2xl hover:shadow-3xl transition-all duration-500 group border border-purple-400/20 hover:scale-[1.03] hover:-translate-y-1">
+        {/* Premium gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-indigo-400/30 via-transparent to-violet-400/30" />
+        
+        {/* Animated geometric patterns */}
+        <div className="absolute top-0 right-0 w-48 h-48 bg-white/20 rounded-full blur-3xl -mr-24 -mt-24 group-hover:scale-150 group-hover:bg-white/30 transition-all duration-700" />
+        <div className="absolute bottom-0 left-0 w-40 h-40 bg-violet-300/20 rounded-full blur-2xl -ml-20 -mb-20 group-hover:scale-150 transition-all duration-700" />
+        <div className="absolute top-1/2 right-1/3 w-32 h-32 bg-purple-300/15 rounded-full blur-2xl group-hover:translate-x-4 group-hover:scale-125 transition-all duration-700" />
+        
+        {/* Decorative grid pattern */}
+        <div className="absolute inset-0 opacity-30" style={{backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='30' height='30' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='30' height='30' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 30 0 L 0 0 0 30' fill='none' stroke='white' stroke-width='0.5' opacity='0.15'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)'/%3E%3C/svg%3E\")"}} />
         
         <div className="relative z-10">
-          <div className="flex items-start justify-between mb-6">
-            <div className="p-3 bg-[#FA7921]/20 backdrop-blur rounded-xl">
-              {data.icon}
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-white/25 backdrop-blur-xl rounded-2xl border border-white/30 shadow-xl group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <div>
+                <span className="text-xs font-bold text-white/90 uppercase tracking-wider">{data.title}</span>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50" />
+                  <span className="text-[10px] text-white/70 font-medium">ACTIVE</span>
+                </div>
+              </div>
             </div>
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#FA7921]/20 text-[#FFB77F] backdrop-blur">
-              <span className="w-2 h-2 bg-[#FA7921] rounded-full mr-1.5 animate-pulse"></span>
-              Active
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/25 backdrop-blur-xl text-xs font-bold border border-white/30 shadow-lg">
+              <svg className="w-4 h-4 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+              Verified
             </span>
           </div>
           
-          <div>
-            <p className="text-sm font-medium text-white/80 mb-1">{data.title}</p>
-            <p className="text-3xl font-bold flex items-center gap-2">
+          <div className="mb-6">
+            <p className="text-5xl font-black mb-3 tracking-tight bg-gradient-to-r from-white to-violet-100 bg-clip-text text-transparent drop-shadow-lg">
               {data.value}
-              <svg className="w-6 h-6 text-[#FA7921]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-              </svg>
             </p>
-            <p className="text-sm text-white/60 mt-2">Full marketplace access</p>
+            <div className="flex items-center gap-3">
+              <p className="text-sm text-white/80 font-medium">Full marketplace access</p>
+            </div>
+            <div className="mt-3 h-1.5 bg-white/20 rounded-full overflow-hidden">
+              <div className="h-full w-full bg-gradient-to-r from-green-400 to-emerald-400 rounded-full shadow-lg shadow-green-400/50 animate-pulse" />
+            </div>
           </div>
         </div>
       </div>
     )
   }
 
-  // Regular stats cards with gradients
+  // Regular stats cards with premium design matching balance card
   return (
-    <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${bgGradient} p-6 h-full text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group`}>
-      <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform" />
-      <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12 group-hover:scale-110 transition-transform" />
+    <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${style.gradient} p-6 h-full text-white shadow-2xl hover:shadow-3xl transition-all duration-500 group ${style.borderColor} border hover:scale-[1.03] hover:-translate-y-1`}>
+      {/* Premium gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-white/10" />
+      
+      {/* Animated geometric patterns */}
+      <div className="absolute top-0 right-0 w-48 h-48 bg-white/20 rounded-full blur-3xl -mr-24 -mt-24 group-hover:scale-150 group-hover:bg-white/30 transition-all duration-700" />
+      <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/15 rounded-full blur-2xl -ml-20 -mb-20 group-hover:scale-150 transition-all duration-700" />
+      <div className="absolute top-1/2 right-1/3 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:translate-x-4 group-hover:scale-125 transition-all duration-700" />
+      
+      {/* Decorative grid pattern */}
+      <div className="absolute inset-0 opacity-30" style={{backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='30' height='30' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='30' height='30' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 30 0 L 0 0 0 30' fill='none' stroke='white' stroke-width='0.5' opacity='0.15'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)'/%3E%3C/svg%3E\")"}} />
       
       <div className="relative z-10">
-        <div className="flex items-start justify-between mb-6">
-          <div className="p-3 bg-white/20 backdrop-blur rounded-xl">
-            {data.icon}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className={`p-3 ${style.iconBg} backdrop-blur-xl rounded-2xl border border-white/30 shadow-xl group-hover:scale-110 transition-transform duration-300`}>
+              {data.icon}
+            </div>
+            <div>
+              <span className="text-xs font-bold text-white/90 uppercase tracking-wider">{data.title}</span>
+              <div className="flex items-center gap-1 mt-0.5">
+                <div className={`w-2 h-2 ${style.pulseColor} rounded-full animate-pulse shadow-lg ${style.shadowColor}`} />
+                <span className="text-[10px] text-white/70 font-medium">LIVE</span>
+              </div>
+            </div>
           </div>
           {data.change && (
-            <span className={`inline-flex items-center gap-1 text-xs font-semibold ${
-              data.change.startsWith('+') ? 'text-white/90' : 'text-red-200'
-            }`}>
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/25 backdrop-blur-xl text-xs font-bold border border-white/30 shadow-lg`}>
               {data.change.startsWith('+') ? (
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M7 11l5-5m0 0l5 5m-5-5v12" />
                 </svg>
               ) : (
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
                 </svg>
               )}
               {data.change.split(' ')[0]}
@@ -126,21 +184,27 @@ function StatsCard({ data, loading, index }: { data: StatsCardData; loading?: bo
           )}
         </div>
         
-        <div>
-          <p className="text-sm font-medium text-white/80 mb-1">{data.title}</p>
-          <p className="text-3xl font-bold">{data.value.toLocaleString()}</p>
+        <div className="mb-6">
+          <p className="text-5xl font-black mb-3 tracking-tight bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent drop-shadow-lg">
+            {data.value.toLocaleString()}
+          </p>
           {data.change && (
-            <p className="text-xs text-white/60 mt-2">
-              {data.change.split(' ').slice(1).join(' ')}
-            </p>
+            <div className="flex items-center gap-3">
+              <p className="text-sm text-white/80 font-medium">
+                {data.change.split(' ').slice(1).join(' ')}
+              </p>
+            </div>
           )}
+          <div className="mt-3 h-1.5 bg-white/20 rounded-full overflow-hidden">
+            <div className={`h-full ${data.change?.startsWith('+') ? 'w-3/4' : 'w-1/2'} bg-gradient-to-r ${style.accentColor} rounded-full shadow-lg ${style.shadowColor} ${data.change?.startsWith('+') ? 'animate-pulse' : ''}`} />
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
-// Balance Card Component - Redesigned
+// Balance Card Component - Premium Beautiful Design
 function BalanceCard({ data, loading }: { data: BalanceData; loading?: boolean }) {
   const usdBalance = (data.jpyBalance * data.usdRate).toFixed(2)
   const percentChange = 12.5 // Mock percentage change
@@ -160,55 +224,81 @@ function BalanceCard({ data, loading }: { data: BalanceData; loading?: boolean }
   }
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#FA7921] via-[#FF9A56] to-[#FFB77F] p-6 h-full text-white shadow-lg hover:shadow-xl transition-all duration-300 group">
-      {/* Decorative elements */}
-      <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20 group-hover:scale-110 transition-transform" />
-      <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#002233]/10 rounded-full -ml-16 -mb-16 group-hover:scale-110 transition-transform" />
-      <div className="absolute top-1/2 right-1/4 w-20 h-20 bg-white/5 rounded-full group-hover:translate-x-2 transition-transform" />
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500 p-6 h-full text-white shadow-2xl hover:shadow-3xl transition-all duration-500 group border border-amber-400/20 hover:scale-[1.03] hover:-translate-y-1">
+      {/* Premium gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-yellow-400/30 via-transparent to-orange-400/30" />
+      
+      {/* Animated geometric patterns */}
+      <div className="absolute top-0 right-0 w-48 h-48 bg-white/20 rounded-full blur-3xl -mr-24 -mt-24 group-hover:scale-150 group-hover:bg-white/30 transition-all duration-700" />
+      <div className="absolute bottom-0 left-0 w-40 h-40 bg-yellow-300/20 rounded-full blur-2xl -ml-20 -mb-20 group-hover:scale-150 transition-all duration-700" />
+      <div className="absolute top-1/2 right-1/3 w-32 h-32 bg-orange-300/15 rounded-full blur-2xl group-hover:translate-x-4 group-hover:scale-125 transition-all duration-700" />
+      
+      {/* Decorative grid pattern */}
+      <div className="absolute inset-0 opacity-30" style={{backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='30' height='30' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='30' height='30' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 30 0 L 0 0 0 30' fill='none' stroke='white' stroke-width='0.5' opacity='0.15'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)'/%3E%3C/svg%3E\")"}} />
       
       <div className="relative z-10">
         <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-white/20 backdrop-blur rounded-lg">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-white/25 backdrop-blur-xl rounded-2xl border border-white/30 shadow-xl group-hover:scale-110 transition-transform duration-300">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <span className="text-xs font-medium text-white/80">Available Balance</span>
+            <div>
+              <span className="text-xs font-bold text-white/90 uppercase tracking-wider">Available Balance</span>
+              <div className="flex items-center gap-1 mt-0.5">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50" />
+                <span className="text-[10px] text-white/70 font-medium">LIVE</span>
+              </div>
+            </div>
           </div>
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-white/20 backdrop-blur text-xs font-semibold">
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/25 backdrop-blur-xl text-xs font-bold border border-white/30 shadow-lg">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M7 11l5-5m0 0l5 5m-5-5v12" />
             </svg>
             +{percentChange}%
           </span>
         </div>
         
         <div className="mb-6">
-          <p className="text-4xl font-bold mb-2">¥{data.jpyBalance.toLocaleString()}</p>
-          <p className="text-sm text-white/70 flex items-center gap-2">
-            ≈ ${usdBalance} USD
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-[#002233]/20 text-white/90">
+          <p className="text-5xl font-black mb-3 tracking-tight bg-gradient-to-r from-white to-yellow-100 bg-clip-text text-transparent drop-shadow-lg">
+            ¥{data.jpyBalance.toLocaleString()}
+          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-sm text-white/80 font-medium">
+              ≈ ${usdBalance} USD
+            </p>
+            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs bg-white/20 backdrop-blur-xl text-white font-bold border border-white/25">
+              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
               1 USD = ¥{(1/data.usdRate).toFixed(2)}
             </span>
-          </p>
+          </div>
+          <div className="mt-3 h-1.5 bg-white/20 rounded-full overflow-hidden">
+            <div className="h-full w-3/4 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full shadow-lg shadow-green-400/50 animate-pulse" />
+          </div>
         </div>
         
         <div className="grid grid-cols-2 gap-3">
-          <button className="px-4 py-2.5 bg-white text-[#FA7921] rounded-lg font-medium hover:bg-white/90 transition-all transform hover:scale-[1.02] shadow-lg">
+          <button className="group/btn px-4 py-3 bg-white text-orange-600 rounded-xl font-bold hover:bg-white/95 transition-all transform hover:scale-[1.05] shadow-xl hover:shadow-2xl">
             <span className="flex items-center justify-center gap-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Deposit
+              <div className="p-1.5 bg-orange-100 rounded-lg group-hover/btn:bg-orange-200 transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                </svg>
+              </div>
+              <span className="text-sm">Deposit</span>
             </span>
           </button>
-          <button className="px-4 py-2.5 bg-[#002233]/20 backdrop-blur text-white rounded-lg font-medium hover:bg-[#002233]/30 transition-all border border-white/20">
+          <button className="group/btn px-4 py-3 bg-white/20 backdrop-blur-xl text-white rounded-xl font-bold hover:bg-white/30 transition-all border border-white/30 hover:border-white/40 shadow-lg">
             <span className="flex items-center justify-center gap-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              History
+              <div className="p-1.5 bg-white/20 rounded-lg group-hover/btn:bg-white/30 transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <span className="text-sm">History</span>
             </span>
           </button>
         </div>
@@ -621,8 +711,8 @@ export default function DashboardPage() {
                 </div>
               </div>
               <div className="p-4">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {upcomingAuctions.slice(0, 2).map((auction) => (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  {upcomingAuctions.slice(0, 3).map((auction) => (
                     <AuctionCard key={auction.id} auction={auction} loading={loading} />
                   ))}
                 </div>
