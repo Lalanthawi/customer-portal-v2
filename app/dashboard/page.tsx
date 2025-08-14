@@ -41,7 +41,7 @@ function useCountdown(targetDate: Date) {
   return timeLeft
 }
 
-// Stats Card Component - Premium Unified Design
+// Stats Card Component - Brand Aligned Beautiful Design
 function StatsCard({ data, loading, index }: { data: StatsCardData; loading?: boolean; index?: number }) {
   if (loading) {
     return (
@@ -53,31 +53,37 @@ function StatsCard({ data, loading, index }: { data: StatsCardData; loading?: bo
     )
   }
 
-  // Premium card designs matching the balance card style
+  // Brand-aligned card designs with #002233 and #FA7921
   const cardStyles = [
     {
-      gradient: 'from-blue-500 via-indigo-500 to-purple-500',
-      iconBg: 'bg-white/25',
-      accentColor: 'from-blue-400 to-indigo-400',
-      pulseColor: 'bg-blue-400',
-      shadowColor: 'shadow-blue-400/50',
-      borderColor: 'border-indigo-400/20'
+      gradient: 'from-[#002233] via-[#003344] to-[#004455]',
+      iconBg: 'bg-[#FA7921]/20',
+      iconColor: 'text-[#FA7921]',
+      accentColor: 'from-[#FA7921] to-[#FF9A56]',
+      pulseColor: 'bg-[#FA7921]',
+      shadowColor: 'shadow-[#FA7921]/50',
+      borderColor: 'border-[#FA7921]/20',
+      statColor: 'text-[#FA7921]'
     },
     {
-      gradient: 'from-emerald-500 via-teal-500 to-cyan-500',
-      iconBg: 'bg-white/25',
-      accentColor: 'from-emerald-400 to-teal-400',
-      pulseColor: 'bg-emerald-400',
-      shadowColor: 'shadow-emerald-400/50',
-      borderColor: 'border-teal-400/20'
+      gradient: 'from-[#FA7921] via-[#FF8C39] to-[#FF9A56]',
+      iconBg: 'bg-white/20',
+      iconColor: 'text-white',
+      accentColor: 'from-white to-orange-100',
+      pulseColor: 'bg-white',
+      shadowColor: 'shadow-white/50',
+      borderColor: 'border-white/20',
+      statColor: 'text-white'
     },
     {
-      gradient: 'from-purple-500 via-pink-500 to-rose-500',
-      iconBg: 'bg-white/25',
-      accentColor: 'from-purple-400 to-pink-400',
-      pulseColor: 'bg-purple-400',
-      shadowColor: 'shadow-purple-400/50',
-      borderColor: 'border-pink-400/20'
+      gradient: 'from-[#002233] via-[#003344] to-[#002233]',
+      iconBg: 'bg-green-400/20',
+      iconColor: 'text-green-400',
+      accentColor: 'from-green-400 to-emerald-400',
+      pulseColor: 'bg-green-400',
+      shadowColor: 'shadow-green-400/50',
+      borderColor: 'border-green-400/20',
+      statColor: 'text-green-400'
     },
   ]
 
@@ -88,51 +94,76 @@ function StatsCard({ data, loading, index }: { data: StatsCardData; loading?: bo
   
   if (isStatusCard) {
     return (
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-500 p-6 h-full text-white shadow-2xl hover:shadow-3xl transition-all duration-500 group border border-purple-400/20 hover:scale-[1.03] hover:-translate-y-1">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#002233] via-[#003344] to-[#002233] p-6 h-full text-white shadow-2xl hover:shadow-3xl transition-all duration-500 group border border-green-400/20 hover:scale-[1.03] hover:-translate-y-1">
         {/* Premium gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-indigo-400/30 via-transparent to-violet-400/30" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-green-400/10 via-transparent to-emerald-400/10" />
         
         {/* Animated geometric patterns */}
-        <div className="absolute top-0 right-0 w-48 h-48 bg-white/20 rounded-full blur-3xl -mr-24 -mt-24 group-hover:scale-150 group-hover:bg-white/30 transition-all duration-700" />
-        <div className="absolute bottom-0 left-0 w-40 h-40 bg-violet-300/20 rounded-full blur-2xl -ml-20 -mb-20 group-hover:scale-150 transition-all duration-700" />
-        <div className="absolute top-1/2 right-1/3 w-32 h-32 bg-purple-300/15 rounded-full blur-2xl group-hover:translate-x-4 group-hover:scale-125 transition-all duration-700" />
+        <div className="absolute top-0 right-0 w-48 h-48 bg-green-400/10 rounded-full blur-3xl -mr-24 -mt-24 group-hover:scale-150 group-hover:bg-green-400/20 transition-all duration-700" />
+        <div className="absolute bottom-0 left-0 w-40 h-40 bg-emerald-400/10 rounded-full blur-2xl -ml-20 -mb-20 group-hover:scale-150 transition-all duration-700" />
         
-        {/* Decorative grid pattern */}
-        <div className="absolute inset-0 opacity-30" style={{backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='30' height='30' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='30' height='30' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 30 0 L 0 0 0 30' fill='none' stroke='white' stroke-width='0.5' opacity='0.15'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)'/%3E%3C/svg%3E\")"}} />
+        {/* Grid pattern */}
+        <div className="absolute inset-0 opacity-20" style={{backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='40' height='40' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 40 0 L 0 0 0 40' fill='none' stroke='white' stroke-width='0.5' opacity='0.1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)'/%3E%3C/svg%3E\")"}} />
         
         <div className="relative z-10">
+          {/* Header Section */}
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-white/25 backdrop-blur-xl rounded-2xl border border-white/30 shadow-xl group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-3 bg-green-400/20 backdrop-blur-xl rounded-2xl border border-green-400/30 shadow-xl group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
               <div>
-                <span className="text-xs font-bold text-white/90 uppercase tracking-wider">{data.title}</span>
-                <div className="flex items-center gap-1 mt-0.5">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50" />
-                  <span className="text-[10px] text-white/70 font-medium">ACTIVE</span>
-                </div>
+                <span className="text-xs font-bold text-white/60 uppercase tracking-wider">{data.title}</span>
+                <p className="text-[10px] text-green-400 font-medium mt-0.5">{data.subtitle}</p>
               </div>
             </div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/25 backdrop-blur-xl text-xs font-bold border border-white/30 shadow-lg">
-              <svg className="w-4 h-4 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-              </svg>
-              Verified
-            </span>
+            <div className="flex flex-col items-end gap-1">
+              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-400/20 backdrop-blur-xl text-[10px] font-bold border border-green-400/30 text-green-300">
+                <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                VERIFIED
+              </span>
+            </div>
           </div>
           
-          <div className="mb-6">
-            <p className="text-5xl font-black mb-3 tracking-tight bg-gradient-to-r from-white to-violet-100 bg-clip-text text-transparent drop-shadow-lg">
+          {/* Value Section */}
+          <div className="mb-4">
+            <p className="text-4xl font-black tracking-tight text-white mb-1">
               {data.value}
             </p>
-            <div className="flex items-center gap-3">
-              <p className="text-sm text-white/80 font-medium">Full marketplace access</p>
+            <p className="text-xs text-white/60">{data.details}</p>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-white/60">Access Level</span>
+              <span className="text-green-400 font-bold">{data.percentage}%</span>
             </div>
-            <div className="mt-3 h-1.5 bg-white/20 rounded-full overflow-hidden">
-              <div className="h-full w-full bg-gradient-to-r from-green-400 to-emerald-400 rounded-full shadow-lg shadow-green-400/50 animate-pulse" />
+            <div className="h-2 bg-white/10 rounded-full overflow-hidden backdrop-blur">
+              <div 
+                className="h-full bg-gradient-to-r from-green-400 to-emerald-400 rounded-full shadow-lg shadow-green-400/50 transition-all duration-1000"
+                style={{ width: `${data.percentage}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Benefits List */}
+          <div className="mt-4 pt-4 border-t border-white/10">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center gap-1">
+                <svg className="w-3 h-3 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span className="text-[10px] text-white/70">Unlimited Bids</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <svg className="w-3 h-3 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span className="text-[10px] text-white/70">Priority Support</span>
+              </div>
             </div>
           </div>
         </div>
@@ -140,68 +171,157 @@ function StatsCard({ data, loading, index }: { data: StatsCardData; loading?: bo
     )
   }
 
-  // Regular stats cards with premium design matching balance card
-  return (
-    <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${style.gradient} p-6 h-full text-white shadow-2xl hover:shadow-3xl transition-all duration-500 group ${style.borderColor} border hover:scale-[1.03] hover:-translate-y-1`}>
-      {/* Premium gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-white/10" />
-      
-      {/* Animated geometric patterns */}
-      <div className="absolute top-0 right-0 w-48 h-48 bg-white/20 rounded-full blur-3xl -mr-24 -mt-24 group-hover:scale-150 group-hover:bg-white/30 transition-all duration-700" />
-      <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/15 rounded-full blur-2xl -ml-20 -mb-20 group-hover:scale-150 transition-all duration-700" />
-      <div className="absolute top-1/2 right-1/3 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:translate-x-4 group-hover:scale-125 transition-all duration-700" />
-      
-      {/* Decorative grid pattern */}
-      <div className="absolute inset-0 opacity-30" style={{backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='30' height='30' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='30' height='30' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 30 0 L 0 0 0 30' fill='none' stroke='white' stroke-width='0.5' opacity='0.15'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)'/%3E%3C/svg%3E\")"}} />
-      
-      <div className="relative z-10">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className={`p-3 ${style.iconBg} backdrop-blur-xl rounded-2xl border border-white/30 shadow-xl group-hover:scale-110 transition-transform duration-300`}>
-              {data.icon}
+  // Active Auctions Card
+  if (data.title === 'Active Auctions') {
+    return (
+      <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${style.gradient} p-6 h-full text-white shadow-2xl hover:shadow-3xl transition-all duration-500 group ${style.borderColor} border hover:scale-[1.03] hover:-translate-y-1`}>
+        {/* Premium gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-[#FA7921]/10 via-transparent to-[#FF9A56]/10" />
+        
+        {/* Animated patterns */}
+        <div className="absolute top-0 right-0 w-48 h-48 bg-[#FA7921]/10 rounded-full blur-3xl -mr-24 -mt-24 group-hover:scale-150 transition-all duration-700" />
+        <div className="absolute bottom-0 left-0 w-40 h-40 bg-[#FF9A56]/10 rounded-full blur-2xl -ml-20 -mb-20 group-hover:scale-150 transition-all duration-700" />
+        
+        <div className="relative z-10">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className={`p-3 ${style.iconBg} backdrop-blur-xl rounded-2xl border border-[#FA7921]/30 shadow-xl group-hover:scale-110 transition-transform duration-300`}>
+                <svg className="w-6 h-6 text-[#FA7921]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <span className="text-xs font-bold text-white/60 uppercase tracking-wider">{data.title}</span>
+                <p className="text-[10px] text-[#FA7921] font-medium mt-0.5">{data.subtitle}</p>
+              </div>
             </div>
-            <div>
-              <span className="text-xs font-bold text-white/90 uppercase tracking-wider">{data.title}</span>
-              <div className="flex items-center gap-1 mt-0.5">
-                <div className={`w-2 h-2 ${style.pulseColor} rounded-full animate-pulse shadow-lg ${style.shadowColor}`} />
-                <span className="text-[10px] text-white/70 font-medium">LIVE</span>
+            <div className="text-right">
+              <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#FA7921]/20 backdrop-blur text-[10px] font-bold text-[#FA7921]">
+                <div className="w-1.5 h-1.5 bg-[#FA7921] rounded-full animate-pulse" />
+                LIVE
               </div>
             </div>
           </div>
-          {data.change && (
-            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/25 backdrop-blur-xl text-xs font-bold border border-white/30 shadow-lg`}>
-              {data.change.startsWith('+') ? (
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M7 11l5-5m0 0l5 5m-5-5v12" />
-                </svg>
-              ) : (
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
-                </svg>
-              )}
-              {data.change.split(' ')[0]}
-            </span>
-          )}
-        </div>
-        
-        <div className="mb-6">
-          <p className="text-5xl font-black mb-3 tracking-tight bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent drop-shadow-lg">
-            {data.value.toLocaleString()}
-          </p>
-          {data.change && (
-            <div className="flex items-center gap-3">
-              <p className="text-sm text-white/80 font-medium">
-                {data.change.split(' ').slice(1).join(' ')}
-              </p>
+          
+          {/* Main Value */}
+          <div className="mb-4">
+            <p className="text-4xl font-black tracking-tight text-white mb-1">
+              {data.value.toLocaleString()}
+            </p>
+            <p className="text-xs text-[#FA7921]">{data.details}</p>
+          </div>
+
+          {/* Activity Meter */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-white/60">Activity Level</span>
+              <span className="text-[#FA7921] font-bold">{data.percentage}%</span>
             </div>
-          )}
-          <div className="mt-3 h-1.5 bg-white/20 rounded-full overflow-hidden">
-            <div className={`h-full ${data.change?.startsWith('+') ? 'w-3/4' : 'w-1/2'} bg-gradient-to-r ${style.accentColor} rounded-full shadow-lg ${style.shadowColor} ${data.change?.startsWith('+') ? 'animate-pulse' : ''}`} />
+            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-[#FA7921] to-[#FF9A56] rounded-full shadow-lg shadow-[#FA7921]/50 transition-all duration-1000 animate-pulse"
+                style={{ width: `${data.percentage}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="mt-4 pt-4 border-t border-white/10 grid grid-cols-3 gap-2">
+            <div>
+              <p className="text-[10px] text-white/50 uppercase">High Value</p>
+              <p className="text-sm font-bold text-[#FA7921]">45</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-white/50 uppercase">Ending Soon</p>
+              <p className="text-sm font-bold text-[#FA7921]">234</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-white/50 uppercase">New Today</p>
+              <p className="text-sm font-bold text-[#FA7921]">89</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  )
+    )
+  }
+
+  // New Listings Card
+  if (data.title === 'New Listings') {
+    return (
+      <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${style.gradient} p-6 h-full text-white shadow-2xl hover:shadow-3xl transition-all duration-500 group ${style.borderColor} border hover:scale-[1.03] hover:-translate-y-1`}>
+        {/* Premium gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-orange-100/10" />
+        
+        {/* Animated patterns */}
+        <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mr-24 -mt-24 group-hover:scale-150 transition-all duration-700" />
+        <div className="absolute bottom-0 left-0 w-40 h-40 bg-orange-100/10 rounded-full blur-2xl -ml-20 -mb-20 group-hover:scale-150 transition-all duration-700" />
+        
+        <div className="relative z-10">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className={`p-3 ${style.iconBg} backdrop-blur-xl rounded-2xl border border-white/30 shadow-xl group-hover:scale-110 transition-transform duration-300`}>
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <div>
+                <span className="text-xs font-bold text-white/80 uppercase tracking-wider">{data.title}</span>
+                <p className="text-[10px] text-white/70 font-medium mt-0.5">{data.subtitle}</p>
+              </div>
+            </div>
+            {data.change && (
+              <div className="text-right">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-white/20 backdrop-blur text-[10px] font-bold text-white">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                  </svg>
+                  {data.change.split(' ')[0]}
+                </span>
+              </div>
+            )}
+          </div>
+          
+          {/* Main Value */}
+          <div className="mb-4">
+            <p className="text-4xl font-black tracking-tight text-white mb-1">
+              {data.value.toLocaleString()}
+            </p>
+            <p className="text-xs text-white/80">{data.details}</p>
+          </div>
+
+          {/* Growth Indicator */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-white/70">Growth Rate</span>
+              <span className="text-white font-bold">{data.percentage}%</span>
+            </div>
+            <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-white/80 to-white rounded-full shadow-lg shadow-white/30 transition-all duration-1000"
+                style={{ width: `${data.percentage}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Categories */}
+          <div className="mt-4 pt-4 border-t border-white/20">
+            <div className="flex flex-wrap gap-1">
+              {['Luxury', 'Sports', 'Electric', 'SUV'].map((cat) => (
+                <span key={cat} className="px-2 py-0.5 bg-white/15 backdrop-blur rounded-full text-[10px] text-white/90">
+                  {cat}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Default card style (shouldn't reach here but just in case)
+  return null
 }
 
 // Balance Card Component - Premium Beautiful Design
@@ -374,24 +494,24 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
           </div>
         </div>
 
-        <div className="bg-gray-50 rounded-lg p-3 mb-4">
-          <p className="text-xs text-gray-600 mb-2 font-medium">Auction Ends In</p>
+        <div className="bg-red-50 border border-red-100 rounded-lg p-3 mb-4">
+          <p className="text-xs text-red-700 mb-2 font-medium">Auction Ends In</p>
           <div className="grid grid-cols-4 gap-2 text-center">
             <div>
-              <p className="text-lg font-bold text-gray-900">{String(timeLeft.days).padStart(2, '0')}</p>
-              <p className="text-xs text-gray-500">Days</p>
+              <p className="text-lg font-bold text-red-600">{String(timeLeft.days).padStart(2, '0')}</p>
+              <p className="text-xs text-red-500">Days</p>
             </div>
             <div>
-              <p className="text-lg font-bold text-gray-900">{String(timeLeft.hours).padStart(2, '0')}</p>
-              <p className="text-xs text-gray-500">Hours</p>
+              <p className="text-lg font-bold text-red-600">{String(timeLeft.hours).padStart(2, '0')}</p>
+              <p className="text-xs text-red-500">Hours</p>
             </div>
             <div>
-              <p className="text-lg font-bold text-gray-900">{String(timeLeft.minutes).padStart(2, '0')}</p>
-              <p className="text-xs text-gray-500">Min</p>
+              <p className="text-lg font-bold text-red-600">{String(timeLeft.minutes).padStart(2, '0')}</p>
+              <p className="text-xs text-red-500">Min</p>
             </div>
             <div>
-              <p className="text-lg font-bold text-gray-900">{String(timeLeft.seconds).padStart(2, '0')}</p>
-              <p className="text-xs text-gray-500">Sec</p>
+              <p className="text-lg font-bold text-red-600">{String(timeLeft.seconds).padStart(2, '0')}</p>
+              <p className="text-xs text-red-500">Sec</p>
             </div>
           </div>
         </div>
@@ -514,7 +634,7 @@ export default function DashboardPage() {
     return () => clearTimeout(timer)
   }, [])
 
-  // Stats data with better icons and values
+  // Stats data with better icons and values - Enhanced with more info
   const statsData: StatsCardData[] = [
     {
       title: 'Active Auctions',
@@ -525,6 +645,9 @@ export default function DashboardPage() {
         </svg>
       ),
       trend: 'neutral',
+      subtitle: 'Live Bidding',
+      details: '234 ending today',
+      percentage: 78,
     },
     {
       title: 'New Listings',
@@ -536,16 +659,22 @@ export default function DashboardPage() {
         </svg>
       ),
       trend: 'up',
+      subtitle: 'This Week',
+      details: '89 premium vehicles',
+      percentage: 92,
     },
     {
       title: 'Account Status',
-      value: 'Verified',
+      value: 'Premium',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
         </svg>
       ),
       trend: 'neutral',
+      subtitle: 'Tier Status',
+      details: 'All features unlocked',
+      percentage: 100,
     },
   ]
 

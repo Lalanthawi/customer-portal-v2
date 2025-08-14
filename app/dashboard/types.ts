@@ -10,6 +10,9 @@ export interface StatsCardData {
   change?: string
   icon: React.ReactNode
   trend?: 'up' | 'down' | 'neutral'
+  subtitle?: string
+  details?: string
+  percentage?: number
 }
 
 export interface AuctionItem {

@@ -294,353 +294,730 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      {/* Advanced Filters Panel - Expanded */}
+      {/* Advanced Filters Panel - Redesigned */}
       {showFilters && (
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 mb-8 animate-in slide-in-from-top duration-300">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Advanced Filters</h3>
-            <button
-              onClick={clearAllFilters}
-              className="text-sm text-[#FA7921] hover:text-[#FA7921]/80 font-medium"
-            >
-              Clear All
-            </button>
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 mb-8 animate-in slide-in-from-top duration-300 overflow-hidden">
+          {/* Header */}
+          <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#FA7921] to-[#FF9A56] rounded-xl flex items-center justify-center shadow-md">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">Advanced Filters</h3>
+                  <p className="text-xs text-gray-500">Refine your search results</p>
+                </div>
+              </div>
+              <button
+                onClick={clearAllFilters}
+                className="px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg font-medium transition-colors flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Clear All
+              </button>
+            </div>
           </div>
 
-          {/* Main Filter Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Price Range */}
+          <div className="p-6 space-y-8">
+            {/* Primary Filters Section */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Price Range</label>
-              <div className="space-y-3">
-                <div>
-                  <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-                    <span>¥{(filters.priceRange[0] / 1000000).toFixed(1)}M</span>
-                    <span>¥{(filters.priceRange[1] / 1000000).toFixed(1)}M</span>
+              <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="w-1.5 h-4 bg-[#FA7921] rounded-full"></div>
+                Primary Filters
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {/* Price Range - Enhanced */}
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Price Range</label>
+                  <div className="space-y-4">
+                    <div className="flex gap-2">
+                      <div className="flex-1">
+                        <label className="text-xs text-gray-500 mb-1 block">Min</label>
+                        <input
+                          type="text"
+                          value={`¥${(filters.priceRange[0] / 1000000).toFixed(1)}M`}
+                          readOnly
+                          className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium"
+                        />
+                      </div>
+                      <div className="flex items-end pb-2">
+                        <span className="text-gray-400">—</span>
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-xs text-gray-500 mb-1 block">Max</label>
+                        <input
+                          type="text"
+                          value={`¥${(filters.priceRange[1] / 1000000).toFixed(1)}M`}
+                          readOnly
+                          className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium"
+                        />
+                      </div>
+                    </div>
+                    <input
+                      type="range"
+                      min="100000"
+                      max="10000000"
+                      step="100000"
+                      value={filters.priceRange[1]}
+                      onChange={(e) => setFilters(prev => ({ 
+                        ...prev, 
+                        priceRange: [prev.priceRange[0], parseInt(e.target.value)] 
+                      }))}
+                      className="w-full accent-[#FA7921]"
+                    />
+                    <div className="flex gap-2">
+                      {[1000000, 3000000, 5000000, 10000000].map(price => (
+                        <button
+                          key={price}
+                          onClick={() => setFilters(prev => ({ ...prev, priceRange: [100000, price] }))}
+                          className="flex-1 px-2 py-1 text-xs bg-white hover:bg-[#FA7921] hover:text-white border border-gray-200 rounded transition-colors"
+                        >
+                          ¥{(price / 1000000)}M
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <input
-                    type="range"
-                    min="100000"
-                    max="10000000"
-                    step="100000"
-                    value={filters.priceRange[1]}
-                    onChange={(e) => setFilters(prev => ({ 
-                      ...prev, 
-                      priceRange: [prev.priceRange[0], parseInt(e.target.value)] 
-                    }))}
-                    className="w-full accent-[#FA7921]"
-                  />
+                </div>
+
+                {/* Year Range - Enhanced */}
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Model Year</label>
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-xs text-gray-500 mb-1 block">From</label>
+                        <select
+                          value={filters.yearRange[0]}
+                          onChange={(e) => setFilters(prev => ({ 
+                            ...prev, 
+                            yearRange: [parseInt(e.target.value), prev.yearRange[1]] 
+                          }))}
+                          className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                        >
+                          {Array.from({ length: 10 }, (_, i) => 2015 + i).map(year => (
+                            <option key={year} value={year}>{year}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-500 mb-1 block">To</label>
+                        <select
+                          value={filters.yearRange[1]}
+                          onChange={(e) => setFilters(prev => ({ 
+                            ...prev, 
+                            yearRange: [prev.yearRange[0], parseInt(e.target.value)] 
+                          }))}
+                          className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                        >
+                          {Array.from({ length: 10 }, (_, i) => 2015 + i).map(year => (
+                            <option key={year} value={year}>{year}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setFilters(prev => ({ ...prev, yearRange: [2023, 2024] }))}
+                        className="flex-1 px-2 py-1 text-xs bg-white hover:bg-[#FA7921] hover:text-white border border-gray-200 rounded transition-colors"
+                      >
+                        Latest
+                      </button>
+                      <button
+                        onClick={() => setFilters(prev => ({ ...prev, yearRange: [2020, 2024] }))}
+                        className="flex-1 px-2 py-1 text-xs bg-white hover:bg-[#FA7921] hover:text-white border border-gray-200 rounded transition-colors"
+                      >
+                        Recent
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mileage - Enhanced */}
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    Maximum Mileage
+                  </label>
+                  <div className="space-y-3">
+                    <div className="bg-white px-3 py-2 rounded-lg border border-gray-200">
+                      <span className="text-lg font-bold text-[#FA7921]">{filters.mileageMax.toLocaleString()}</span>
+                      <span className="text-sm text-gray-500 ml-1">km</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="200000"
+                      step="10000"
+                      value={filters.mileageMax}
+                      onChange={(e) => setFilters(prev => ({ 
+                        ...prev, 
+                        mileageMax: parseInt(e.target.value) 
+                      }))}
+                      className="w-full accent-[#FA7921]"
+                    />
+                    <div className="grid grid-cols-3 gap-2">
+                      {[50000, 100000, 200000].map(km => (
+                        <button
+                          key={km}
+                          onClick={() => setFilters(prev => ({ ...prev, mileageMax: km }))}
+                          className="px-2 py-1 text-xs bg-white hover:bg-[#FA7921] hover:text-white border border-gray-200 rounded transition-colors"
+                        >
+                          {km/1000}k km
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Location - Enhanced */}
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Location</label>
+                  <div className="space-y-3">
+                    <select
+                      value={filters.location}
+                      onChange={(e) => setFilters(prev => ({ ...prev, location: e.target.value }))}
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                    >
+                      <option value="">All Japan</option>
+                      <option value="tokyo">Tokyo</option>
+                      <option value="osaka">Osaka</option>
+                      <option value="nagoya">Nagoya</option>
+                      <option value="yokohama">Yokohama</option>
+                      <option value="kobe">Kobe</option>
+                      <option value="kyoto">Kyoto</option>
+                      <option value="fukuoka">Fukuoka</option>
+                      <option value="sapporo">Sapporo</option>
+                    </select>
+                    <div className="flex items-center gap-2 p-2 bg-blue-50 rounded-lg">
+                      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span className="text-xs text-blue-700">Nationwide shipping available</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Year Range */}
+            {/* Vehicle Specifications */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Year</label>
-              <div className="flex gap-2">
-                <select
-                  value={filters.yearRange[0]}
-                  onChange={(e) => setFilters(prev => ({ 
-                    ...prev, 
-                    yearRange: [parseInt(e.target.value), prev.yearRange[1]] 
-                  }))}
-                  className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
-                >
-                  {Array.from({ length: 10 }, (_, i) => 2015 + i).map(year => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-                <span className="text-gray-400">to</span>
-                <select
-                  value={filters.yearRange[1]}
-                  onChange={(e) => setFilters(prev => ({ 
-                    ...prev, 
-                    yearRange: [prev.yearRange[0], parseInt(e.target.value)] 
-                  }))}
-                  className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
-                >
-                  {Array.from({ length: 10 }, (_, i) => 2015 + i).map(year => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
+              <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="w-1.5 h-4 bg-blue-500 rounded-full"></div>
+                Vehicle Specifications
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                {/* Transmission */}
+                <div className="bg-white border border-gray-200 rounded-xl p-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">Transmission</label>
+                  <div className="space-y-2">
+                    {['Automatic', 'Manual', 'CVT'].map(type => (
+                      <label key={type} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                        <input
+                          type="checkbox"
+                          checked={filters.transmission.includes(type)}
+                          onChange={() => toggleTransmission(type)}
+                          className="w-4 h-4 text-[#FA7921] border-gray-300 rounded focus:ring-[#FA7921]"
+                        />
+                        <span className="text-sm text-gray-700">{type}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
 
-            {/* Transmission */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Transmission</label>
-              <div className="space-y-2">
-                {['Automatic', 'Manual', 'CVT', 'Semi-Auto'].map(type => (
-                  <label key={type} className="flex items-center gap-2 cursor-pointer">
+                {/* Fuel Type */}
+                <div className="bg-white border border-gray-200 rounded-xl p-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">Fuel Type</label>
+                  <div className="space-y-2">
+                    {fuelTypes.slice(0, 3).map(fuel => (
+                      <label key={fuel.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                        <input
+                          type="checkbox"
+                          checked={filters.fuelTypes.includes(fuel.id)}
+                          onChange={() => toggleFuelType(fuel.id)}
+                          className="w-4 h-4 text-[#FA7921] border-gray-300 rounded focus:ring-[#FA7921]"
+                        />
+                        <span className="text-sm text-gray-700">{fuel.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Drive Type */}
+                <div className="bg-white border border-gray-200 rounded-xl p-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">Drive Type</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {['FWD', 'RWD', 'AWD', '4WD'].map(type => (
+                      <button
+                        key={type}
+                        onClick={() => setFilters(prev => ({
+                          ...prev,
+                          driveType: prev.driveType.includes(type)
+                            ? prev.driveType.filter(t => t !== type)
+                            : [...prev.driveType, type]
+                        }))}
+                        className={`px-2 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          filters.driveType.includes(type)
+                            ? 'bg-[#FA7921] text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Seats */}
+                <div className="bg-white border border-gray-200 rounded-xl p-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">Seats</label>
+                  <div className="flex flex-wrap gap-2">
+                    {['2', '5', '7', '8+'].map(seats => (
+                      <button
+                        key={seats}
+                        onClick={() => setFilters(prev => ({
+                          ...prev,
+                          seats: prev.seats.includes(seats)
+                            ? prev.seats.filter(s => s !== seats)
+                            : [...prev.seats, seats]
+                        }))}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          filters.seats.includes(seats)
+                            ? 'bg-[#FA7921] text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {seats}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Engine Size */}
+                <div className="bg-white border border-gray-200 rounded-xl p-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">Engine Size</label>
+                  <div className="space-y-2">
+                    <div className="bg-gray-50 px-3 py-2 rounded-lg">
+                      <span className="text-sm font-medium">{filters.engineSize[0]} - {filters.engineSize[1]}cc</span>
+                    </div>
                     <input
-                      type="checkbox"
-                      checked={filters.transmission.includes(type)}
-                      onChange={() => toggleTransmission(type)}
-                      className="w-4 h-4 text-[#FA7921] border-gray-300 rounded focus:ring-[#FA7921]"
-                    />
-                    <span className="text-sm text-gray-700">{type}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* Mileage */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Max Mileage: {filters.mileageMax.toLocaleString()} km
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="200000"
-                step="10000"
-                value={filters.mileageMax}
-                onChange={(e) => setFilters(prev => ({ 
-                  ...prev, 
-                  mileageMax: parseInt(e.target.value) 
-                }))}
-                className="w-full accent-[#FA7921]"
-              />
-              <div className="flex items-center justify-between text-xs text-gray-500 mt-1">
-                <span>0 km</span>
-                <span>200,000 km</span>
-              </div>
-            </div>
-
-            {/* Drive Type */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Drive Type</label>
-              <div className="space-y-2">
-                {['FWD', 'RWD', 'AWD', '4WD'].map(type => (
-                  <label key={type} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={filters.driveType.includes(type)}
-                      onChange={() => setFilters(prev => ({
-                        ...prev,
-                        driveType: prev.driveType.includes(type)
-                          ? prev.driveType.filter(t => t !== type)
-                          : [...prev.driveType, type]
+                      type="range"
+                      min="0"
+                      max="5000"
+                      step="500"
+                      value={filters.engineSize[1]}
+                      onChange={(e) => setFilters(prev => ({ 
+                        ...prev, 
+                        engineSize: [prev.engineSize[0], parseInt(e.target.value)] 
                       }))}
-                      className="w-4 h-4 text-[#FA7921] border-gray-300 rounded focus:ring-[#FA7921]"
+                      className="w-full accent-[#FA7921] h-1"
                     />
-                    <span className="text-sm text-gray-700">{type}</span>
-                  </label>
-                ))}
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Number of Seats */}
+            {/* Additional Options - Redesigned */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Number of Seats</label>
-              <div className="grid grid-cols-2 gap-2">
-                {['2', '4', '5', '7', '8+'].map(seats => (
-                  <button
-                    key={seats}
-                    onClick={() => setFilters(prev => ({
-                      ...prev,
-                      seats: prev.seats.includes(seats)
-                        ? prev.seats.filter(s => s !== seats)
-                        : [...prev.seats, seats]
-                    }))}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                      filters.seats.includes(seats)
-                        ? 'bg-[#FA7921] text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {seats}
-                  </button>
-                ))}
+              <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="w-1.5 h-4 bg-green-500 rounded-full"></div>
+                Additional Options
+              </h4>
+              
+              {/* Tabbed Interface for Additional Options */}
+              <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-200 overflow-hidden">
+                {/* Color Selection - Visual Palette */}
+                <div className="p-5 border-b border-gray-100">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-gradient-to-br from-[#FA7921] to-[#FF9A56] rounded-lg flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a6 6 0 00-2-4l-3-3m-5 14v-3m0-4V5m0 7l-3-3m3 3l3-3" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h5 className="text-sm font-semibold text-gray-900">Exterior Color</h5>
+                        <p className="text-xs text-gray-500">Select preferred colors</p>
+                      </div>
+                    </div>
+                    {filters.colors.length > 0 && (
+                      <span className="text-xs bg-[#FA7921]/10 text-[#FA7921] px-2 py-1 rounded-full font-medium">
+                        {filters.colors.length} selected
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="grid grid-cols-5 sm:grid-cols-10 gap-3">
+                    {[
+                      { name: 'Black', hex: '#000000', gradient: false },
+                      { name: 'White', hex: '#FFFFFF', gradient: false },
+                      { name: 'Silver', hex: '#C0C0C0', gradient: false },
+                      { name: 'Gray', hex: '#808080', gradient: false },
+                      { name: 'Red', hex: '#DC2626', gradient: false },
+                      { name: 'Blue', hex: '#2563EB', gradient: false },
+                      { name: 'Navy', hex: '#1E3A8A', gradient: false },
+                      { name: 'Green', hex: '#16A34A', gradient: false },
+                      { name: 'Yellow', hex: '#FCD34D', gradient: false },
+                      { name: 'Orange', hex: '#FB923C', gradient: false },
+                      { name: 'Brown', hex: '#92400E', gradient: false },
+                      { name: 'Beige', hex: '#D4A574', gradient: false },
+                      { name: 'Gold', hex: '#F59E0B', gradient: false },
+                      { name: 'Pearl', hex: '#FAF6F0', gradient: true },
+                      { name: 'Custom', hex: 'rainbow', gradient: true }
+                    ].map(colorOption => (
+                      <div key={colorOption.name} className="relative">
+                        <button
+                          onClick={() => setFilters(prev => ({
+                            ...prev,
+                            colors: prev.colors.includes(colorOption.name)
+                              ? prev.colors.filter(c => c !== colorOption.name)
+                              : [...prev.colors, colorOption.name]
+                          }))}
+                          className={`relative w-full aspect-square rounded-xl overflow-hidden border-2 transition-all hover:scale-110 ${
+                            filters.colors.includes(colorOption.name) 
+                              ? 'border-[#FA7921] shadow-lg shadow-[#FA7921]/30' 
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                          title={colorOption.name}
+                        >
+                          {colorOption.hex === 'rainbow' ? (
+                            <div className="w-full h-full bg-gradient-to-br from-red-400 via-yellow-400 to-blue-400" />
+                          ) : colorOption.gradient ? (
+                            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-white relative">
+                              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent" />
+                            </div>
+                          ) : (
+                            <div 
+                              className="w-full h-full" 
+                              style={{ backgroundColor: colorOption.hex }}
+                            />
+                          )}
+                          {filters.colors.includes(colorOption.name) && (
+                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                              <svg className="w-5 h-5 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                          )}
+                        </button>
+                        <span className="text-[10px] text-gray-600 text-center block mt-1 truncate">{colorOption.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Condition Selection - Card Style */}
+                <div className="p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h5 className="text-sm font-semibold text-gray-900">Vehicle Condition</h5>
+                        <p className="text-xs text-gray-500">Filter by quality rating</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                    {[
+                      { name: 'New', icon: '✨', color: 'from-emerald-500 to-green-600', description: 'Brand new' },
+                      { name: 'Like New', icon: '🌟', color: 'from-blue-500 to-indigo-600', description: 'Pristine' },
+                      { name: 'Excellent', icon: '⭐', color: 'from-purple-500 to-pink-600', description: 'Very good' },
+                      { name: 'Good', icon: '👍', color: 'from-orange-500 to-amber-600', description: 'Reliable' },
+                      { name: 'Fair', icon: '✓', color: 'from-gray-500 to-gray-600', description: 'Average' },
+                      { name: 'For Parts', icon: '🔧', color: 'from-red-500 to-red-600', description: 'Salvage' }
+                    ].map(condition => (
+                      <button
+                        key={condition.name}
+                        onClick={() => setFilters(prev => ({
+                          ...prev,
+                          condition: prev.condition.includes(condition.name)
+                            ? prev.condition.filter(c => c !== condition.name)
+                            : [...prev.condition, condition.name]
+                        }))}
+                        className={`relative p-3 rounded-xl border-2 transition-all hover:scale-105 ${
+                          filters.condition.includes(condition.name)
+                            ? 'border-[#FA7921] bg-orange-50 shadow-md'
+                            : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
+                        }`}
+                      >
+                        <div className="text-center">
+                          <div className={`w-10 h-10 mx-auto mb-2 rounded-lg bg-gradient-to-br ${condition.color} flex items-center justify-center text-white text-lg`}>
+                            {condition.icon}
+                          </div>
+                          <p className={`text-xs font-semibold ${filters.condition.includes(condition.name) ? 'text-[#FA7921]' : 'text-gray-700'}`}>
+                            {condition.name}
+                          </p>
+                          <p className="text-[10px] text-gray-500 mt-0.5">{condition.description}</p>
+                        </div>
+                        {filters.condition.includes(condition.name) && (
+                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#FA7921] rounded-full flex items-center justify-center">
+                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Number of Doors */}
+            {/* Premium Features - Completely Redesigned */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Number of Doors</label>
-              <div className="grid grid-cols-2 gap-2">
-                {['2', '3', '4', '5'].map(doors => (
-                  <button
-                    key={doors}
-                    onClick={() => setFilters(prev => ({
-                      ...prev,
-                      doors: prev.doors.includes(doors)
-                        ? prev.doors.filter(d => d !== doors)
-                        : [...prev.doors, doors]
-                    }))}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                      filters.doors.includes(doors)
-                        ? 'bg-[#FA7921] text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {doors}
-                  </button>
-                ))}
+              <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="w-1.5 h-4 bg-purple-500 rounded-full"></div>
+                Premium Features
+              </h4>
+              
+              {/* Feature Categories with Icons */}
+              <div className="space-y-4">
+                {/* Safety Features */}
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </div>
+                    <h5 className="text-sm font-semibold text-gray-900">Safety & Security</h5>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                    {[
+                      { name: 'Backup Camera', icon: '📸' },
+                      { name: 'Blind Spot', icon: '👁️' },
+                      { name: 'Lane Departure', icon: '🛣️' },
+                      { name: 'Parking Sensors', icon: '🚨' },
+                      { name: 'Adaptive Cruise', icon: '🚙' },
+                      { name: '360 Camera', icon: '🎥' },
+                      { name: 'Collision Alert', icon: '⚠️' },
+                      { name: 'ABS', icon: '🛑' }
+                    ].map(feature => (
+                      <button
+                        key={feature.name}
+                        onClick={() => setFilters(prev => ({
+                          ...prev,
+                          features: prev.features.includes(feature.name)
+                            ? prev.features.filter(f => f !== feature.name)
+                            : [...prev.features, feature.name]
+                        }))}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                          filters.features.includes(feature.name)
+                            ? 'bg-blue-600 text-white shadow-md'
+                            : 'bg-white hover:bg-blue-100 text-gray-700 border border-blue-200'
+                        }`}
+                      >
+                        <span className="text-sm">{feature.icon}</span>
+                        <span className="truncate">{feature.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Comfort Features */}
+                <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200 p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-[#FA7921] to-[#FF9A56] rounded-lg flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                    </div>
+                    <h5 className="text-sm font-semibold text-gray-900">Comfort & Luxury</h5>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                    {[
+                      { name: 'Leather Seats', icon: '🪑' },
+                      { name: 'Heated Seats', icon: '🔥' },
+                      { name: 'Cooled Seats', icon: '❄️' },
+                      { name: 'Sunroof', icon: '☀️' },
+                      { name: 'Power Seats', icon: '⚡' },
+                      { name: 'Memory Seats', icon: '💾' },
+                      { name: 'Massage Seats', icon: '💆' },
+                      { name: 'Ambient Light', icon: '💡' }
+                    ].map(feature => (
+                      <button
+                        key={feature.name}
+                        onClick={() => setFilters(prev => ({
+                          ...prev,
+                          features: prev.features.includes(feature.name)
+                            ? prev.features.filter(f => f !== feature.name)
+                            : [...prev.features, feature.name]
+                        }))}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                          filters.features.includes(feature.name)
+                            ? 'bg-[#FA7921] text-white shadow-md'
+                            : 'bg-white hover:bg-orange-100 text-gray-700 border border-orange-200'
+                        }`}
+                      >
+                        <span className="text-sm">{feature.icon}</span>
+                        <span className="truncate">{feature.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Technology Features */}
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200 p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <h5 className="text-sm font-semibold text-gray-900">Technology & Entertainment</h5>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                    {[
+                      { name: 'Navigation', icon: '🗺️' },
+                      { name: 'Apple CarPlay', icon: '🍎' },
+                      { name: 'Android Auto', icon: '🤖' },
+                      { name: 'Bluetooth', icon: '📱' },
+                      { name: 'Premium Audio', icon: '🎵' },
+                      { name: 'Wireless Charge', icon: '🔋' },
+                      { name: 'HUD Display', icon: '📊' },
+                      { name: 'WiFi Hotspot', icon: '📶' }
+                    ].map(feature => (
+                      <button
+                        key={feature.name}
+                        onClick={() => setFilters(prev => ({
+                          ...prev,
+                          features: prev.features.includes(feature.name)
+                            ? prev.features.filter(f => f !== feature.name)
+                            : [...prev.features, feature.name]
+                        }))}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                          filters.features.includes(feature.name)
+                            ? 'bg-purple-600 text-white shadow-md'
+                            : 'bg-white hover:bg-purple-100 text-gray-700 border border-purple-200'
+                        }`}
+                      >
+                        <span className="text-sm">{feature.icon}</span>
+                        <span className="truncate">{feature.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Performance Features */}
+                <div className="bg-gradient-to-r from-red-50 to-rose-50 rounded-xl border border-red-200 p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-rose-600 rounded-lg flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <h5 className="text-sm font-semibold text-gray-900">Performance & Handling</h5>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                    {[
+                      { name: 'Sport Mode', icon: '🏁' },
+                      { name: 'Turbo', icon: '💨' },
+                      { name: 'Air Suspension', icon: '🛞' },
+                      { name: 'Launch Control', icon: '🚀' },
+                      { name: 'Paddle Shifters', icon: '🎮' },
+                      { name: 'Limited Slip', icon: '⚙️' },
+                      { name: 'Sport Exhaust', icon: '🔊' },
+                      { name: 'Track Mode', icon: '🏎️' }
+                    ].map(feature => (
+                      <button
+                        key={feature.name}
+                        onClick={() => setFilters(prev => ({
+                          ...prev,
+                          features: prev.features.includes(feature.name)
+                            ? prev.features.filter(f => f !== feature.name)
+                            : [...prev.features, feature.name]
+                        }))}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                          filters.features.includes(feature.name)
+                            ? 'bg-red-600 text-white shadow-md'
+                            : 'bg-white hover:bg-red-100 text-gray-700 border border-red-200'
+                        }`}
+                      >
+                        <span className="text-sm">{feature.icon}</span>
+                        <span className="truncate">{feature.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Convenience Features */}
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <h5 className="text-sm font-semibold text-gray-900">Convenience</h5>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                    {[
+                      { name: 'Keyless Entry', icon: '🔑' },
+                      { name: 'Push Start', icon: '🔘' },
+                      { name: 'Auto Park', icon: '🅿️' },
+                      { name: 'Remote Start', icon: '📡' },
+                      { name: 'Power Tailgate', icon: '🚪' },
+                      { name: 'Auto Hold', icon: '✋' },
+                      { name: 'Rain Sensor', icon: '🌧️' },
+                      { name: 'Auto Lights', icon: '💡' }
+                    ].map(feature => (
+                      <button
+                        key={feature.name}
+                        onClick={() => setFilters(prev => ({
+                          ...prev,
+                          features: prev.features.includes(feature.name)
+                            ? prev.features.filter(f => f !== feature.name)
+                            : [...prev.features, feature.name]
+                        }))}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                          filters.features.includes(feature.name)
+                            ? 'bg-green-600 text-white shadow-md'
+                            : 'bg-white hover:bg-green-100 text-gray-700 border border-green-200'
+                        }`}
+                      >
+                        <span className="text-sm">{feature.icon}</span>
+                        <span className="truncate">{feature.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Engine Size */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Engine Size: {filters.engineSize[0]}cc - {filters.engineSize[1]}cc
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="5000"
-                step="100"
-                value={filters.engineSize[1]}
-                onChange={(e) => setFilters(prev => ({ 
-                  ...prev, 
-                  engineSize: [prev.engineSize[0], parseInt(e.target.value)] 
-                }))}
-                className="w-full accent-[#FA7921]"
-              />
-              <div className="flex items-center justify-between text-xs text-gray-500 mt-1">
-                <span>0cc</span>
-                <span>5000cc</span>
+            {/* Apply Filters Button */}
+            <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+              <div className="text-sm text-gray-600">
+                <span className="font-medium">{activeFiltersCount}</span> filters applied
               </div>
-            </div>
-          </div>
-
-          {/* Additional Filter Sections */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-            {/* Fuel Types */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Fuel Type</label>
-              <div className="flex flex-wrap gap-2">
-                {fuelTypes.map(fuel => (
-                  <button
-                    key={fuel.id}
-                    onClick={() => toggleFuelType(fuel.id)}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                      filters.fuelTypes.includes(fuel.id)
-                        ? 'bg-[#FA7921] text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {fuel.name}
-                  </button>
-                ))}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    handleSearch(new Event('submit') as any)
+                    setShowFilters(false)
+                  }}
+                  className="px-6 py-2.5 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02] flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  Apply Filters
+                </button>
               </div>
-            </div>
-
-            {/* Colors */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Color</label>
-              <div className="flex flex-wrap gap-2">
-                {['Black', 'White', 'Silver', 'Gray', 'Red', 'Blue', 'Green', 'Brown', 'Gold'].map(color => (
-                  <button
-                    key={color}
-                    onClick={() => setFilters(prev => ({
-                      ...prev,
-                      colors: prev.colors.includes(color)
-                        ? prev.colors.filter(c => c !== color)
-                        : [...prev.colors, color]
-                    }))}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                      filters.colors.includes(color)
-                        ? 'bg-[#FA7921] text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {color}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Condition */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Condition</label>
-              <div className="flex flex-wrap gap-2">
-                {['New', 'Like New', 'Excellent', 'Good', 'Fair'].map(condition => (
-                  <button
-                    key={condition}
-                    onClick={() => setFilters(prev => ({
-                      ...prev,
-                      condition: prev.condition.includes(condition)
-                        ? prev.condition.filter(c => c !== condition)
-                        : [...prev.condition, condition]
-                    }))}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                      filters.condition.includes(condition)
-                        ? 'bg-[#FA7921] text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {condition}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Features */}
-          <div className="mt-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">Features</label>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-              {[
-                'Navigation System', 'Leather Seats', 'Sunroof', 'Backup Camera', 
-                'Bluetooth', 'Heated Seats', 'Keyless Entry', 'Cruise Control',
-                'Apple CarPlay', 'Android Auto', 'Parking Sensors', 'Blind Spot Monitor',
-                'Lane Departure', 'Adaptive Cruise', '360 Camera', 'Premium Audio'
-              ].map(feature => (
-                <label key={feature} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={filters.features.includes(feature)}
-                    onChange={() => setFilters(prev => ({
-                      ...prev,
-                      features: prev.features.includes(feature)
-                        ? prev.features.filter(f => f !== feature)
-                        : [...prev.features, feature]
-                    }))}
-                    className="w-4 h-4 text-[#FA7921] border-gray-300 rounded focus:ring-[#FA7921]"
-                  />
-                  <span className="text-xs text-gray-700">{feature}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Location and Sort */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Location</label>
-              <select
-                value={filters.location}
-                onChange={(e) => setFilters(prev => ({ ...prev, location: e.target.value }))}
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
-              >
-                <option value="">All Locations</option>
-                <option value="tokyo">Tokyo</option>
-                <option value="osaka">Osaka</option>
-                <option value="nagoya">Nagoya</option>
-                <option value="yokohama">Yokohama</option>
-                <option value="kobe">Kobe</option>
-                <option value="kyoto">Kyoto</option>
-                <option value="fukuoka">Fukuoka</option>
-                <option value="sapporo">Sapporo</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Sort By</label>
-              <select
-                value={filters.sortBy}
-                onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
-              >
-                <option value="relevance">Relevance</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="year-new">Year: Newest First</option>
-                <option value="year-old">Year: Oldest First</option>
-                <option value="mileage-low">Mileage: Low to High</option>
-                <option value="ending-soon">Auction Ending Soon</option>
-              </select>
             </div>
           </div>
         </div>
