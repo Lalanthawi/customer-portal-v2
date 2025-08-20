@@ -221,7 +221,7 @@ export default function ExplorePage() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search make, model, or keyword..."
-                      className="flex-1 py-3 text-gray-900 placeholder-gray-400 focus:outline-none bg-transparent"
+                      className="flex-1 py-3 text-gray-900 placeholder:text-gray-500 focus:outline-none bg-transparent"
                     />
                   </div>
                   

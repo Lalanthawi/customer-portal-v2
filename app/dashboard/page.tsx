@@ -244,7 +244,7 @@ function ActivityItem({ activity }: { activity: ActivityItem }) {
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
-  const username = "John"
+  const username = "Avishka"
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1500)

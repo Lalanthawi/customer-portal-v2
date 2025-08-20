@@ -44,7 +44,7 @@ const demoVehicles: Vehicle[] = [
     fuelType: 'Hybrid',
     color: 'Pearl White',
     location: 'Tokyo',
-    imageUrl: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800&h=600&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800&h=600&fit=crop',
     condition: 'Excellent',
     seats: 5,
     doors: 4,
@@ -269,7 +269,7 @@ const demoVehicles: Vehicle[] = [
     fuelType: 'Electric',
     color: 'Midnight Silver',
     location: 'Osaka',
-    imageUrl: 'https://images.unsplash.com/photo-1560707303-4e980ce876ad?w=800&h=600&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800&h=600&fit=crop',
     condition: 'New',
     seats: 5,
     doors: 4,
@@ -975,7 +975,7 @@ function SearchResults() {
             type="text"
             defaultValue={searchQuery}
             placeholder="Refine your search..."
-            className="w-full px-4 py-3 pl-12 bg-white/10 backdrop-blur-md rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FA7921]"
+            className="w-full px-4 py-3 pl-12 bg-white/10 backdrop-blur-md rounded-xl text-white placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FA7921]"
           />
           <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
