@@ -2,31 +2,33 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { AuctionBid, BidStatus, BidStatistics } from './types'
 
 // Mock data for demonstration
 const mockBids: AuctionBid[] = [
   {
     id: '1',
-    auctionId: 'AUC001',
-    vehicleTitle: 'Toyota Camry 2022',
-    vehicleImage: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80',
+    auctionId: 'AUC-2024-0892',
+    vehicleTitle: '2018 Toyota Corolla Axio',
+    vehicleImage: 'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800',
     vehicleSpecs: {
-      year: 2022,
-      mileage: '15,000 km',
+      year: 2018,
+      mileage: '42,360 km',
       transmission: 'Automatic',
-      engine: '2.5L V4'
+      engine: '1.5L'
     },
-    startingPrice: 2500000,
-    yourBid: 2850000,
-    currentHighestBid: 2850000,
+    startingPrice: 5200000,
+    yourBid: 7350000,
+    currentHighestBid: 7350000,
     numberOfBids: 23,
     status: 'won',
     bidDate: new Date('2024-01-10'),
-    auctionEndDate: new Date('2024-01-15'),
-    winningBid: 2850000,
+    auctionEndDate: new Date('2024-01-10'),
+    winningBid: 7350000,
     paymentStatus: 'completed',
-    shippingStatus: 'delivered',
+    shippingStatus: 'preparing',
     location: 'Tokyo, Japan',
     seller: {
       name: 'Tokyo Motors',
@@ -334,7 +336,11 @@ export default function MyBidsPage() {
       {/* Bids List */}
       <div className="space-y-4">
         {filteredBids.map((bid) => (
-          <div key={bid.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+          <Link 
+            key={bid.id} 
+            href={`/dashboard/bids/${bid.id}`}
+            className="block bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+          >
             <div className="p-6">
               <div className="flex flex-col lg:flex-row gap-6">
                 {/* Vehicle Image */}
@@ -429,8 +435,9 @@ export default function MyBidsPage() {
                   </div>
 
                   {/* Action Buttons and Status */}
-                  <div className="flex flex-wrap items-center gap-3 mt-4 pt-4 border-t border-gray-100">
-                    {bid.status === 'won' && (
+                  <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t border-gray-100">
+                    <div className="flex flex-wrap items-center gap-3">
+                      {bid.status === 'won' && (
                       <>
                         {bid.paymentStatus === 'completed' ? (
                           <span className="inline-flex items-center px-3 py-1 rounded-lg bg-green-50 text-green-700 text-xs font-medium">
@@ -450,12 +457,13 @@ export default function MyBidsPage() {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                             </svg>
                             {bid.shippingStatus === 'delivered' ? 'Delivered' : 
-                             bid.shippingStatus === 'in_transit' ? 'In Transit' : 'Pending Shipment'}
+                             bid.shippingStatus === 'in-transit' ? 'In Transit' : 
+                             bid.shippingStatus === 'preparing' ? 'Preparing Shipment' : 'Pending Shipment'}
                           </span>
                         )}
                       </>
                     )}
-                    {(bid.status === 'active' || bid.status === 'outbid') && (
+                      {(bid.status === 'active' || bid.status === 'outbid') && (
                       <>
                         <button className="px-4 py-2 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all">
                           {bid.status === 'outbid' ? 'Increase Bid' : 'View Auction'}
@@ -465,16 +473,48 @@ export default function MyBidsPage() {
                         </button>
                       </>
                     )}
-                    {bid.status === 'lost' && (
+                      {bid.status === 'lost' && (
                       <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
                         View Similar Vehicles
                       </button>
                     )}
+                    </div>
+                    
+                    {/* Quick Actions */}
+                    <div className="flex items-center gap-2">
+                      {bid.status === 'won' && bid.paymentStatus === 'completed' && (
+                        <button 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.location.href = `/dashboard/bids/${bid.id}`;
+                          }}
+                          className="px-3 py-2 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium flex items-center gap-2" 
+                          title="Track Shipment"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                          </svg>
+                          Track Shipment
+                        </button>
+                      )}
+                      <button 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          window.location.href = `/dashboard/bids/${bid.id}`;
+                        }}
+                        className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" 
+                        title="View Details"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 

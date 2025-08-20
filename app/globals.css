@@ -63,29 +63,29 @@ body {
   background: #d1d5db;
 }
 
-/* Placeholder text styles */
+/* Placeholder text styles - BLACK for maximum visibility */
 ::placeholder {
-  color: #9ca3af;
+  color: #000000;
   opacity: 1;
 }
 
 ::-webkit-input-placeholder {
-  color: #9ca3af;
+  color: #000000;
   opacity: 1;
 }
 
 ::-moz-placeholder {
-  color: #9ca3af;
+  color: #000000;
   opacity: 1;
 }
 
 :-ms-input-placeholder {
-  color: #9ca3af;
+  color: #000000;
   opacity: 1;
 }
 
 ::-ms-input-placeholder {
-  color: #9ca3af;
+  color: #000000;
   opacity: 1;
 }
 
