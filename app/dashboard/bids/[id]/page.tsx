@@ -48,7 +48,7 @@ interface BidDetail {
 export default function BidDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const bidId = params.id as string
+  const bidId = params['id'] as string
   
   const [activeTab, setActiveTab] = useState<'overview' | 'bidding' | 'shipment'>('overview')
   const [showPaymentModal, setShowPaymentModal] = useState(false)

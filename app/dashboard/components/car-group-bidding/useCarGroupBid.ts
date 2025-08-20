@@ -71,14 +71,15 @@ export function useCarGroupBid(carId: string, groupId: string): UseCarGroupBidRe
       }
       
       // Simulate user having an existing bid 30% of the time
-      if (Math.random() > 0.7) {
+      if (Math.random() > 0.7 && mockGroupInfo.currentWinningBid !== undefined) {
+        const bidAmount = mockGroupInfo.currentWinningBid - 100000
         const userBid: GroupBid = {
           id: `bid-${Date.now()}`,
           groupId,
-          bidAmount: mockGroupInfo.currentWinningBid - 100000,
+          bidAmount: bidAmount,
           quantity: 1,
-          totalAmount: mockGroupInfo.currentWinningBid - 100000,
-          status: mockGroupInfo.currentWinningBid > (mockGroupInfo.currentWinningBid - 100000) ? 'outbid' : 'winning',
+          totalAmount: bidAmount,
+          status: mockGroupInfo.currentWinningBid > bidAmount ? 'outbid' : 'winning',
           timestamp: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000)
         }
         mockGroupInfo.userBid = userBid
@@ -120,10 +121,11 @@ export function useCarGroupBid(carId: string, groupId: string): UseCarGroupBidRe
         newBid.status = isWinning ? 'winning' : 'outbid'
         setBidStatus(isWinning ? 'winning' : 'outbid')
         
+        const updatedBid = isWinning ? data.amount : prev.currentWinningBid
         return {
           ...prev,
           userBid: newBid,
-          currentWinningBid: isWinning ? data.amount : prev.currentWinningBid,
+          ...(updatedBid !== undefined && { currentWinningBid: updatedBid }),
           totalBidders: prev.totalBidders + (prev.userBid ? 0 : 1)
         }
       })

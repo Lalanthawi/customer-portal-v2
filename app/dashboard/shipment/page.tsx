@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import ShipmentTimeline from '../components/ShipmentTimeline'
 import { TimelineStage } from '../components/types'
 
-export default function ShipmentPage() {
+function ShipmentContent() {
   const searchParams = useSearchParams()
   const orderId = searchParams.get('orderId') || 'AUC-2024-0892'
   
@@ -305,5 +305,20 @@ export default function ShipmentPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ShipmentPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FA7921] mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading shipment details...</p>
+        </div>
+      </div>
+    }>
+      <ShipmentContent />
+    </Suspense>
   )
 }

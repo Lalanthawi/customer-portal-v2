@@ -19,7 +19,7 @@ interface SidebarFiltersProps {
 interface FilterCategory {
   id: string
   title: string
-  icon: JSX.Element
+  icon: React.ReactElement
   count?: number
 }
 
@@ -122,14 +122,14 @@ export default function SidebarFilters({ onSearch, onReset, className = '' }: Si
     if (onReset) onReset()
   }
 
-  const updateBasicFilter = (key: keyof typeof filters.basic, value: any) => {
+  const updateBasicFilter = (key: keyof typeof filters.basic, value: string | number | { min?: number; max?: number } | string[]) => {
     setFilters(prev => ({
       ...prev,
       basic: { ...prev.basic, [key]: value }
     }))
   }
 
-  const updateSpecificFilter = (key: keyof typeof filters.specific, value: any) => {
+  const updateSpecificFilter = (key: keyof typeof filters.specific, value: string) => {
     setFilters(prev => ({
       ...prev,
       specific: { ...prev.specific, [key]: value }
@@ -205,8 +205,8 @@ export default function SidebarFilters({ onSearch, onReset, className = '' }: Si
             className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
           >
             <div className="flex items-center gap-3">
-              {filterCategories[0].icon}
-              <span className="font-semibold text-gray-900">{filterCategories[0].title}</span>
+              {filterCategories[0]?.icon}
+              <span className="font-semibold text-gray-900">{filterCategories[0]?.title}</span>
               {getSectionActiveCount('basic') > 0 && (
                 <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
                   {getSectionActiveCount('basic')}
@@ -304,8 +304,8 @@ export default function SidebarFilters({ onSearch, onReset, className = '' }: Si
             className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
           >
             <div className="flex items-center gap-3">
-              {filterCategories[1].icon}
-              <span className="font-semibold text-gray-900">{filterCategories[1].title}</span>
+              {filterCategories[1]?.icon}
+              <span className="font-semibold text-gray-900">{filterCategories[1]?.title}</span>
               {getSectionActiveCount('specific') > 0 && (
                 <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
                   {getSectionActiveCount('specific')}
@@ -425,8 +425,8 @@ export default function SidebarFilters({ onSearch, onReset, className = '' }: Si
             className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
           >
             <div className="flex items-center gap-3">
-              {filterCategories[2].icon}
-              <span className="font-semibold text-gray-900">{filterCategories[2].title}</span>
+              {filterCategories[2]?.icon}
+              <span className="font-semibold text-gray-900">{filterCategories[2]?.title}</span>
               {getSectionActiveCount('appearance') > 0 && (
                 <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
                   {getSectionActiveCount('appearance')}
@@ -469,8 +469,8 @@ export default function SidebarFilters({ onSearch, onReset, className = '' }: Si
             className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
           >
             <div className="flex items-center gap-3">
-              {filterCategories[3].icon}
-              <span className="font-semibold text-gray-900">{filterCategories[3].title}</span>
+              {filterCategories[3]?.icon}
+              <span className="font-semibold text-gray-900">{filterCategories[3]?.title}</span>
               {getSectionActiveCount('auction') > 0 && (
                 <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
                   {getSectionActiveCount('auction')}
@@ -516,8 +516,8 @@ export default function SidebarFilters({ onSearch, onReset, className = '' }: Si
             className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
           >
             <div className="flex items-center gap-3">
-              {filterCategories[4].icon}
-              <span className="font-semibold text-gray-900">{filterCategories[4].title}</span>
+              {filterCategories[4]?.icon}
+              <span className="font-semibold text-gray-900">{filterCategories[4]?.title}</span>
               {getSectionActiveCount('equipment') > 0 && (
                 <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
                   {getSectionActiveCount('equipment')}

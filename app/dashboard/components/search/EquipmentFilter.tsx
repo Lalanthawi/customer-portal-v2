@@ -42,9 +42,7 @@ export default function EquipmentFilter({ selectedEquipment, onChange }: Equipme
 
       {selectedEquipment.length > 0 && (
         <div className="flex flex-wrap gap-2 pt-2 border-t border-gray-200">
-          {selectedEquipment.map((code) => {
-            const item = EQUIPMENT.find(e => e.code === code)
-            return (
+          {selectedEquipment.map((code) => (
               <span
                 key={code}
                 className="inline-flex items-center gap-1 px-2 py-1 bg-[#FA7921]/10 text-[#FA7921] rounded-md text-xs font-medium"
@@ -58,8 +56,7 @@ export default function EquipmentFilter({ selectedEquipment, onChange }: Equipme
                   ×
                 </button>
               </span>
-            )
-          })}
+          ))}
         </div>
       )}
     </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
@@ -77,7 +77,7 @@ export default function VehiclePage() {
   
   // Mock data - In production, this would come from an API
   const vehicleData: AuctionCar = {
-    id: params.id as string,
+    id: params['id'] as string,
     chassisNumber: 'NZE161-3153697',
     make: 'Toyota',
     model: 'Corolla Axio',
@@ -284,7 +284,7 @@ export default function VehiclePage() {
                 {/* Main Image Container */}
                 <div className="relative h-[500px] flex items-center justify-center">
                   <Image
-                    src={vehicleData.images[selectedImage]}
+                    src={vehicleData.images[selectedImage] || '/images/car-placeholder.jpg'}
                     alt={`${vehicleData.make} ${vehicleData.model}`}
                     width={900}
                     height={500}
@@ -697,7 +697,7 @@ export default function VehiclePage() {
                       <p className="font-semibold text-gray-900">{formatJPY(bid.amount)}</p>
                       <p className="text-sm text-gray-500">{bid.userName}</p>
                       {bid.message && (
-                        <p className="text-sm text-gray-600 mt-1">"{bid.message}"</p>
+                        <p className="text-sm text-gray-600 mt-1">&ldquo;{bid.message}&rdquo;</p>
                       )}
                     </div>
                     <span className="text-xs text-gray-500">
@@ -716,7 +716,7 @@ export default function VehiclePage() {
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={() => setShowImageModal(false)}>
           <div className="relative max-w-6xl w-full">
             <Image
-              src={vehicleData.images[selectedImage]}
+              src={vehicleData.images[selectedImage] || '/images/car-placeholder.jpg'}
               alt={`${vehicleData.make} ${vehicleData.model}`}
               width={1200}
               height={800}

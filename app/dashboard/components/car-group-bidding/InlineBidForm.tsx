@@ -13,7 +13,7 @@ interface InlineBidFormProps {
 }
 
 const InlineBidForm = memo(function InlineBidForm({
-  groupId,
+  groupId: _groupId,
   currentHighestBid = 0,
   minBidIncrement = 10000,
   onSubmit,
@@ -59,7 +59,7 @@ const InlineBidForm = memo(function InlineBidForm({
 
     try {
       await onSubmit(bidData)
-    } catch (err) {
+    } catch {
       setError('Failed to place bid. Please try again.')
     }
   }

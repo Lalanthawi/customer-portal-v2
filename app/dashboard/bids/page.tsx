@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import type { AuctionBid, BidStatus, BidStatistics } from './types'
 
 // Mock data for demonstration
@@ -28,7 +27,7 @@ const mockBids: AuctionBid[] = [
     auctionEndDate: new Date('2024-01-10'),
     winningBid: 7350000,
     paymentStatus: 'completed',
-    shippingStatus: 'preparing',
+    shippingStatus: 'pending',
     location: 'Tokyo, Japan',
     seller: {
       name: 'Tokyo Motors',
@@ -457,8 +456,8 @@ export default function MyBidsPage() {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                             </svg>
                             {bid.shippingStatus === 'delivered' ? 'Delivered' : 
-                             bid.shippingStatus === 'in-transit' ? 'In Transit' : 
-                             bid.shippingStatus === 'preparing' ? 'Preparing Shipment' : 'Pending Shipment'}
+                             bid.shippingStatus === 'in_transit' ? 'In Transit' : 
+                             'Pending Shipment'}
                           </span>
                         )}
                       </>

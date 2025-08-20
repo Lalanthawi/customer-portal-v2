@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -34,7 +34,7 @@ interface MarketData {
   soldRate: number
 }
 
-export default function StatisticsPage() {
+function StatisticsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   
@@ -153,7 +153,7 @@ export default function StatisticsPage() {
   const soldResults = auctionResults.filter(r => r.status === 'SOLD')
   const priceStats: PriceStatistics = {
     average: soldResults.reduce((sum, r) => sum + r.finalPrice, 0) / soldResults.length || 0,
-    median: soldResults.length > 0 ? soldResults[Math.floor(soldResults.length / 2)].finalPrice : 0,
+    median: soldResults.length > 0 ? soldResults[Math.floor(soldResults.length / 2)]?.finalPrice || 0 : 0,
     min: Math.min(...soldResults.map(r => r.finalPrice)),
     max: Math.max(...soldResults.map(r => r.finalPrice)),
     count: soldResults.length,
@@ -277,7 +277,7 @@ export default function StatisticsPage() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-gray-700">Total Volume</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{marketData[marketData.length - 1].volume}</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{marketData[marketData.length - 1]?.volume || 0}</p>
                 <p className="text-sm text-gray-600 mt-2">Last 30 days</p>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
@@ -292,7 +292,7 @@ export default function StatisticsPage() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-gray-700">Success Rate</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{marketData[marketData.length - 1].soldRate}%</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{marketData[marketData.length - 1]?.soldRate || 0}%</p>
                 <p className="text-sm text-gray-600 mt-2">Vehicles sold</p>
               </div>
               <div className="p-3 bg-orange-100 rounded-lg">
@@ -617,5 +617,20 @@ export default function StatisticsPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function StatisticsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FA7921] mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading statistics...</p>
+        </div>
+      </div>
+    }>
+      <StatisticsContent />
+    </Suspense>
   )
 }

@@ -65,11 +65,32 @@ export const initialFilters: SearchFilters = {
 };
 
 export const MAKERS = [
+  // Japanese
   'Toyota', 'Honda', 'Nissan', 'Mazda', 'Subaru', 'Mitsubishi',
   'Suzuki', 'Lexus', 'Infiniti', 'Acura', 'Daihatsu', 'Isuzu',
+  'Hino', 'UD Trucks', 'Yamaha',
+  // German
   'BMW', 'Mercedes-Benz', 'Audi', 'Volkswagen', 'Porsche',
-  'Ferrari', 'Lamborghini', 'Maserati', 'Bentley', 'Rolls-Royce',
-  'Ford', 'Chevrolet', 'Dodge', 'Jeep', 'Tesla'
+  'Opel', 'Smart', 'Mini',
+  // Italian
+  'Ferrari', 'Lamborghini', 'Maserati', 'Alfa Romeo', 'Fiat',
+  'Lancia', 'Abarth', 'Pagani',
+  // British
+  'Bentley', 'Rolls-Royce', 'Aston Martin', 'Jaguar', 'Land Rover',
+  'McLaren', 'Lotus', 'MG',
+  // American
+  'Ford', 'Chevrolet', 'Dodge', 'Jeep', 'Tesla', 'Cadillac',
+  'GMC', 'Chrysler', 'Lincoln', 'Buick', 'RAM', 'Hummer',
+  // Korean
+  'Hyundai', 'Kia', 'Genesis', 'SsangYong',
+  // French
+  'Peugeot', 'Renault', 'Citroen', 'Bugatti', 'DS',
+  // Swedish
+  'Volvo', 'Saab', 'Polestar', 'Koenigsegg',
+  // Chinese
+  'BYD', 'Geely', 'Great Wall', 'Chery', 'NIO', 'Xpeng', 'Li Auto',
+  // Others
+  'Seat', 'Skoda', 'Cupra', 'Rivian', 'Lucid', 'Fisker'
 ];
 
 export const TRANSMISSIONS = [

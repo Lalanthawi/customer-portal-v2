@@ -38,10 +38,10 @@ const CarGroupBidding = memo(function CarGroupBidding({
             Manage your Group {groupId} bids
           </p>
         </div>
-        {bidStatus !== 'none' && (
+        {bidStatus !== 'none' && groupInfo?.userBid?.bidAmount && (
           <BidStatusBadge 
             status={bidStatus} 
-            amount={groupInfo?.userBid?.bidAmount}
+            amount={groupInfo.userBid.bidAmount}
             compact 
           />
         )}
@@ -64,7 +64,7 @@ const CarGroupBidding = memo(function CarGroupBidding({
       )}
 
       {/* Bid Form */}
-      {groupInfo && (
+      {groupInfo && groupInfo.currentWinningBid !== undefined && (
         <InlineBidForm
           groupId={groupId}
           currentHighestBid={groupInfo.currentWinningBid}

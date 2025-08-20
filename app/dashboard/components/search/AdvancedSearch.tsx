@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import FilterSection from './FilterSection'
 import RangeFilter from './RangeFilter'
 import ColorPicker from './ColorPicker'
@@ -60,14 +60,14 @@ export default function AdvancedSearch({ onSearch, onReset, className = '' }: Ad
     if (onReset) onReset()
   }
 
-  const updateBasicFilter = (key: keyof typeof filters.basic, value: any) => {
+  const updateBasicFilter = (key: keyof typeof filters.basic, value: string | number | { min?: number; max?: number } | string[]) => {
     setFilters(prev => ({
       ...prev,
       basic: { ...prev.basic, [key]: value }
     }))
   }
 
-  const updateSpecificFilter = (key: keyof typeof filters.specific, value: any) => {
+  const updateSpecificFilter = (key: keyof typeof filters.specific, value: string) => {
     setFilters(prev => ({
       ...prev,
       specific: { ...prev.specific, [key]: value }
