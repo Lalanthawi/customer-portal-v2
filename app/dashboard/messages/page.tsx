@@ -171,7 +171,7 @@ const conversations: Conversation[] = [
 ]
 
 export default function MessagesPage() {
-  const [selectedConversation, setSelectedConversation] = useState<Conversation>(conversations[0])
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | undefined>(conversations[0])
   const [messageInput, setMessageInput] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -185,7 +185,7 @@ export default function MessagesPage() {
   }, [selectedConversation])
 
   const sendMessage = () => {
-    if (!messageInput.trim()) return
+    if (!messageInput.trim() || !selectedConversation) return
 
     const newMessage: Message = {
       id: selectedConversation.messages.length + 1,
@@ -251,7 +251,7 @@ export default function MessagesPage() {
                 key={conversation.id}
                 onClick={() => setSelectedConversation(conversation)}
                 className={`w-full p-4 hover:bg-gray-50 transition-colors text-left border-b border-gray-100 ${
-                  selectedConversation.id === conversation.id ? 'bg-[#FA7921]/5 border-l-4 border-l-[#FA7921]' : ''
+                  selectedConversation?.id === conversation.id ? 'bg-[#FA7921]/5 border-l-4 border-l-[#FA7921]' : ''
                 }`}
               >
                 <div className="flex items-start gap-3">
@@ -297,17 +297,17 @@ export default function MessagesPage() {
                 <div className="relative">
                   <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
                     <span className="text-sm font-semibold text-gray-600">
-                      {selectedConversation.participantName.charAt(0)}
+                      {selectedConversation?.participantName.charAt(0)}
                     </span>
                   </div>
-                  {selectedConversation.isOnline && (
+                  {selectedConversation?.isOnline && (
                     <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                   )}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">{selectedConversation.participantName}</h3>
+                  <h3 className="font-semibold text-gray-900">{selectedConversation?.participantName}</h3>
                   <p className="text-xs text-gray-500">
-                    {selectedConversation.isOnline ? 'Online' : 'Offline'} • {selectedConversation.participantRole}
+                    {selectedConversation?.isOnline ? 'Online' : 'Offline'} • {selectedConversation?.participantRole}
                   </p>
                 </div>
               </div>
@@ -333,7 +333,7 @@ export default function MessagesPage() {
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {selectedConversation.messages.map(message => (
+            {selectedConversation?.messages.map(message => (
               <div
                 key={message.id}
                 className={`flex ${message.senderId === 'user' ? 'justify-end' : 'justify-start'}`}

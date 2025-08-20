@@ -708,12 +708,12 @@ export default function ExplorePage() {
                   
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                     {[
-                      { name: 'New', icon: '✨', color: 'from-emerald-500 to-green-600', description: 'Brand new' },
-                      { name: 'Like New', icon: '🌟', color: 'from-blue-500 to-indigo-600', description: 'Pristine' },
-                      { name: 'Excellent', icon: '⭐', color: 'from-purple-500 to-pink-600', description: 'Very good' },
-                      { name: 'Good', icon: '👍', color: 'from-orange-500 to-amber-600', description: 'Reliable' },
-                      { name: 'Fair', icon: '✓', color: 'from-gray-500 to-gray-600', description: 'Average' },
-                      { name: 'For Parts', icon: '🔧', color: 'from-red-500 to-red-600', description: 'Salvage' }
+                      { name: 'New', icon: 'sparkle', color: 'from-emerald-500 to-green-600', description: 'Brand new' },
+                      { name: 'Like New', icon: 'star', color: 'from-blue-500 to-indigo-600', description: 'Pristine' },
+                      { name: 'Excellent', icon: 'badge', color: 'from-purple-500 to-pink-600', description: 'Very good' },
+                      { name: 'Good', icon: 'thumb', color: 'from-orange-500 to-amber-600', description: 'Reliable' },
+                      { name: 'Fair', icon: 'check', color: 'from-gray-500 to-gray-600', description: 'Average' },
+                      { name: 'For Parts', icon: 'wrench', color: 'from-red-500 to-red-600', description: 'Salvage' }
                     ].map(condition => (
                       <button
                         key={condition.name}
@@ -730,8 +730,33 @@ export default function ExplorePage() {
                         }`}
                       >
                         <div className="text-center">
-                          <div className={`w-10 h-10 mx-auto mb-2 rounded-lg bg-gradient-to-br ${condition.color} flex items-center justify-center text-white text-lg`}>
-                            {condition.icon}
+                          <div className={`w-10 h-10 mx-auto mb-2 rounded-lg bg-gradient-to-br ${condition.color} flex items-center justify-center text-white`}>
+                            {condition.icon === 'sparkle' ? (
+                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            ) : condition.icon === 'star' ? (
+                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            ) : condition.icon === 'badge' ? (
+                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                              </svg>
+                            ) : condition.icon === 'thumb' ? (
+                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                              </svg>
+                            ) : condition.icon === 'check' ? (
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                              </svg>
+                            ) : (
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              </svg>
+                            )}
                           </div>
                           <p className={`text-xs font-semibold ${filters.condition.includes(condition.name) ? 'text-[#FA7921]' : 'text-gray-700'}`}>
                             {condition.name}

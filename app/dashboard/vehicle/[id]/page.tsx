@@ -195,7 +195,7 @@ export default function VehicleDetailsPage() {
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="relative h-[500px]">
               <Image
-                src={vehicleData.images[selectedImage]}
+                src={vehicleData.images[selectedImage] || '/placeholder.svg'}
                 alt={vehicleData.name}
                 fill
                 className="object-cover"

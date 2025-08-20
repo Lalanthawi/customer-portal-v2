@@ -66,7 +66,7 @@ export interface BillingInfo {
 
 export interface PaymentMethod {
   id: string
-  type: 'card' | 'bank' | 'paypal'
+  type: 'card' | 'bank' | 'paypal' | 'stripe'
   last4?: string
   brand?: string
   bankName?: string

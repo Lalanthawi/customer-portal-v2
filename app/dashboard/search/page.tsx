@@ -1483,7 +1483,7 @@ function SearchResults() {
                         Verified
                       </div>
                     )}
-                    <div className="absolute top-3 right-3 px-3 py-1 bg-black/50 backdrop-blur-md text-white text-sm rounded-full">
+                    <div className="absolute top-3 right-3 px-3 py-1 bg-black/50 backdrop-blur-md text-red-500 text-sm rounded-full font-semibold">
                       {getTimeRemaining(vehicle.auctionEndTime)} left
                     </div>
                   </div>
@@ -1603,7 +1603,7 @@ function SearchResults() {
                         </div>
                         <div className="text-right">
                           <p className="text-2xl font-bold text-[#FA7921]">{formatPrice(vehicle.price)}</p>
-                          <p className="text-sm text-gray-500">{vehicle.bids} bids • {getTimeRemaining(vehicle.auctionEndTime)} left</p>
+                          <p className="text-sm text-gray-500">{vehicle.bids} bids • <span className="text-red-600 font-semibold">{getTimeRemaining(vehicle.auctionEndTime)} left</span></p>
                         </div>
                       </div>
 

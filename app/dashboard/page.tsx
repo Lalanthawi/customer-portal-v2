@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import type { StatsCardData, AuctionItem, ActivityItem, BalanceData } from './types'
 
 // Skeleton component for loading states
@@ -53,41 +54,48 @@ function StatsCard({ data, loading, index }: { data: StatsCardData; loading?: bo
     )
   }
 
-  // Brand-aligned card designs with #002233 and #FA7921
+  // Premium brand-aligned card designs
   const cardStyles = [
     {
-      gradient: 'from-[#002233] via-[#003344] to-[#004455]',
-      iconBg: 'bg-[#FA7921]/20',
-      iconColor: 'text-[#FA7921]',
-      accentColor: 'from-[#FA7921] to-[#FF9A56]',
-      pulseColor: 'bg-[#FA7921]',
-      shadowColor: 'shadow-[#FA7921]/50',
-      borderColor: 'border-[#FA7921]/20',
-      statColor: 'text-[#FA7921]'
-    },
-    {
-      gradient: 'from-[#FA7921] via-[#FF8C39] to-[#FF9A56]',
-      iconBg: 'bg-white/20',
+      // Primary Orange Card
+      gradient: 'from-[#FA7921] via-[#FF8842] to-[#FFB380]',
+      iconBg: 'bg-white/25',
       iconColor: 'text-white',
-      accentColor: 'from-white to-orange-100',
+      accentColor: 'from-white/40 to-white/20',
       pulseColor: 'bg-white',
-      shadowColor: 'shadow-white/50',
-      borderColor: 'border-white/20',
-      statColor: 'text-white'
+      shadowColor: 'shadow-orange-500/30',
+      borderColor: 'border-white/30',
+      statColor: 'text-white',
+      glowColor: 'shadow-[#FA7921]/40'
     },
     {
-      gradient: 'from-[#002233] via-[#003344] to-[#002233]',
-      iconBg: 'bg-green-400/20',
-      iconColor: 'text-green-400',
-      accentColor: 'from-green-400 to-emerald-400',
-      pulseColor: 'bg-green-400',
-      shadowColor: 'shadow-green-400/50',
-      borderColor: 'border-green-400/20',
-      statColor: 'text-green-400'
+      // Dark Navy Card
+      gradient: 'from-[#001828] via-[#002233] to-[#003344]',
+      iconBg: 'bg-[#FA7921]/25',
+      iconColor: 'text-[#FA7921]',
+      accentColor: 'from-[#FA7921]/30 to-[#FF9A56]/20',
+      pulseColor: 'bg-[#FA7921]',
+      shadowColor: 'shadow-[#002233]/50',
+      borderColor: 'border-[#FA7921]/30',
+      statColor: 'text-[#FA7921]',
+      glowColor: 'shadow-[#002233]/60'
+    },
+    {
+      // Success Green Card
+      gradient: 'from-emerald-500 via-green-500 to-teal-500',
+      iconBg: 'bg-white/25',
+      iconColor: 'text-white',
+      accentColor: 'from-white/30 to-green-200/20',
+      pulseColor: 'bg-white',
+      shadowColor: 'shadow-green-500/30',
+      borderColor: 'border-white/30',
+      statColor: 'text-white',
+      glowColor: 'shadow-green-500/40'
     },
   ]
 
   const style = index !== undefined ? cardStyles[index % cardStyles.length] : cardStyles[0]
+  if (!style) return null
   
   // Special handling for Account Status card
   const isStatusCard = data.title === 'Account Status'
@@ -171,16 +179,16 @@ function StatsCard({ data, loading, index }: { data: StatsCardData; loading?: bo
     )
   }
 
-  // Active Auctions Card
+  // Active Auctions Card - Premium Design
   if (data.title === 'Active Auctions') {
     return (
-      <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${style.gradient} p-6 h-full text-white shadow-2xl hover:shadow-3xl transition-all duration-500 group ${style.borderColor} border hover:scale-[1.03] hover:-translate-y-1`}>
+      <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${style.gradient} p-6 h-full text-white shadow-2xl hover:shadow-3xl transition-all duration-500 group ${style.borderColor} border hover:scale-[1.02] hover:-translate-y-1 ${style.glowColor}`}>
         {/* Premium gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-[#FA7921]/10 via-transparent to-[#FF9A56]/10" />
+        <div className={`absolute inset-0 bg-gradient-to-tr ${style.accentColor} opacity-20`} />
         
-        {/* Animated patterns */}
-        <div className="absolute top-0 right-0 w-48 h-48 bg-[#FA7921]/10 rounded-full blur-3xl -mr-24 -mt-24 group-hover:scale-150 transition-all duration-700" />
-        <div className="absolute bottom-0 left-0 w-40 h-40 bg-[#FF9A56]/10 rounded-full blur-2xl -ml-20 -mb-20 group-hover:scale-150 transition-all duration-700" />
+        {/* Animated glow effects */}
+        <div className={`absolute top-0 right-0 w-48 h-48 bg-gradient-to-br ${style.accentColor} rounded-full blur-3xl opacity-30 -mr-24 -mt-24 group-hover:scale-150 transition-all duration-700`} />
+        <div className={`absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr ${style.accentColor} rounded-full blur-2xl opacity-30 -ml-20 -mb-20 group-hover:scale-150 transition-all duration-700`} />
         
         <div className="relative z-10">
           {/* Header */}
@@ -246,16 +254,16 @@ function StatsCard({ data, loading, index }: { data: StatsCardData; loading?: bo
     )
   }
 
-  // New Listings Card
+  // New Listings Card - Dynamic Modern Design
   if (data.title === 'New Listings') {
     return (
-      <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${style.gradient} p-6 h-full text-white shadow-2xl hover:shadow-3xl transition-all duration-500 group ${style.borderColor} border hover:scale-[1.03] hover:-translate-y-1`}>
+      <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${style.gradient} p-6 h-full text-white shadow-2xl hover:shadow-3xl transition-all duration-500 group ${style.borderColor} border hover:scale-[1.02] hover:-translate-y-1 ${style.glowColor}`}>
         {/* Premium gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-orange-100/10" />
+        <div className={`absolute inset-0 bg-gradient-to-tr ${style.accentColor} opacity-20`} />
         
-        {/* Animated patterns */}
-        <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mr-24 -mt-24 group-hover:scale-150 transition-all duration-700" />
-        <div className="absolute bottom-0 left-0 w-40 h-40 bg-orange-100/10 rounded-full blur-2xl -ml-20 -mb-20 group-hover:scale-150 transition-all duration-700" />
+        {/* Animated patterns with brand colors */}
+        <div className={`absolute top-0 right-0 w-48 h-48 bg-gradient-to-br ${style.accentColor} rounded-full blur-3xl opacity-30 -mr-24 -mt-24 group-hover:scale-150 transition-all duration-700`} />
+        <div className={`absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr ${style.accentColor} rounded-full blur-2xl opacity-30 -ml-20 -mb-20 group-hover:scale-150 transition-all duration-700`} />
         
         <div className="relative z-10">
           {/* Header */}
@@ -401,7 +409,7 @@ function BalanceCard({ data, loading }: { data: BalanceData; loading?: boolean }
         </div>
         
         <div className="grid grid-cols-2 gap-3">
-          <button className="group/btn px-4 py-3 bg-white text-orange-600 rounded-xl font-bold hover:bg-white/95 transition-all transform hover:scale-[1.05] shadow-xl hover:shadow-2xl">
+          <Link href="/dashboard/deposit" className="group/btn px-4 py-3 bg-white text-orange-600 rounded-xl font-bold hover:bg-white/95 transition-all transform hover:scale-[1.05] shadow-xl hover:shadow-2xl block">
             <span className="flex items-center justify-center gap-2">
               <div className="p-1.5 bg-orange-100 rounded-lg group-hover/btn:bg-orange-200 transition-colors">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -410,8 +418,8 @@ function BalanceCard({ data, loading }: { data: BalanceData; loading?: boolean }
               </div>
               <span className="text-sm">Deposit</span>
             </span>
-          </button>
-          <button className="group/btn px-4 py-3 bg-white/20 backdrop-blur-xl text-white rounded-xl font-bold hover:bg-white/30 transition-all border border-white/30 hover:border-white/40 shadow-lg">
+          </Link>
+          <Link href="/dashboard/history" className="group/btn px-4 py-3 bg-white/20 backdrop-blur-xl text-white rounded-xl font-bold hover:bg-white/30 transition-all border border-white/30 hover:border-white/40 shadow-lg block">
             <span className="flex items-center justify-center gap-2">
               <div className="p-1.5 bg-white/20 rounded-lg group-hover/btn:bg-white/30 transition-colors">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -420,7 +428,7 @@ function BalanceCard({ data, loading }: { data: BalanceData; loading?: boolean }
               </div>
               <span className="text-sm">History</span>
             </span>
-          </button>
+          </Link>
         </div>
       </div>
     </div>
@@ -494,24 +502,24 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
           </div>
         </div>
 
-        <div className="bg-red-50 border border-red-100 rounded-lg p-3 mb-4">
-          <p className="text-xs text-red-700 mb-2 font-medium">Auction Ends In</p>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
+          <p className="text-xs text-gray-700 mb-2 font-medium">Auction Ends In</p>
           <div className="grid grid-cols-4 gap-2 text-center">
             <div>
               <p className="text-lg font-bold text-red-600">{String(timeLeft.days).padStart(2, '0')}</p>
-              <p className="text-xs text-red-500">Days</p>
+              <p className="text-xs text-gray-500">Days</p>
             </div>
             <div>
               <p className="text-lg font-bold text-red-600">{String(timeLeft.hours).padStart(2, '0')}</p>
-              <p className="text-xs text-red-500">Hours</p>
+              <p className="text-xs text-gray-500">Hours</p>
             </div>
             <div>
               <p className="text-lg font-bold text-red-600">{String(timeLeft.minutes).padStart(2, '0')}</p>
-              <p className="text-xs text-red-500">Min</p>
+              <p className="text-xs text-gray-500">Min</p>
             </div>
             <div>
               <p className="text-lg font-bold text-red-600">{String(timeLeft.seconds).padStart(2, '0')}</p>
-              <p className="text-xs text-red-500">Sec</p>
+              <p className="text-xs text-gray-500">Sec</p>
             </div>
           </div>
         </div>
@@ -810,12 +818,275 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* Stats Grid - Responsive 4 columns with better spacing */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
-        {statsData.map((stat, index) => (
-          <StatsCard key={index} data={stat} loading={loading} index={index} />
-        ))}
-        <BalanceCard data={balanceData} loading={loading} />
+      {/* Stats Cards and Balance Row - Minimal Glass Morphism */}
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mb-8">
+        {/* Stats Cards Container - Same width as Upcoming Auctions */}
+        <div className="xl:col-span-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
+            {/* Active Bids Card */}
+            <Link href="/dashboard/bids" className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
+              {/* Glassmorphism background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#FA7921]/5 via-transparent to-[#FF9A56]/5"></div>
+              
+              {/* Border gradient */}
+              <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-[#FA7921]/20 via-gray-200/30 to-[#FF9A56]/20">
+                <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
+              </div>
+              
+              {/* Animated glow effect */}
+              <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#FA7921]/20 rounded-full blur-3xl group-hover:bg-[#FA7921]/30 transition-all duration-700"></div>
+              
+              <div className="relative z-10 flex flex-col h-full p-5">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-2.5 bg-gradient-to-br from-[#FA7921]/20 to-[#FF9A56]/10 rounded-xl backdrop-blur-sm border border-[#FA7921]/10">
+                    <svg className="w-4 h-4 text-[#FA7921]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <span className="px-2 py-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-full text-xs font-semibold text-green-700 flex items-center gap-1 border border-green-500/20">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    +3
+                  </span>
+                </div>
+                
+                {/* Content */}
+                <div className="flex-1">
+                  <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Active Bids</p>
+                  <p className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">12</p>
+                  <p className="text-xs text-gray-600 mt-1.5 font-medium">From yesterday</p>
+                </div>
+                
+                {/* Footer */}
+                <div className="mt-auto pt-3 border-t border-gray-200/30">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-600 flex items-center gap-1.5 font-medium">
+                      <span className="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></span>
+                      Active Now
+                    </span>
+                    <svg className="w-4 h-4 text-gray-400 group-hover:text-[#FA7921] group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </Link>
+
+            {/* Watchlist Card */}
+            <Link href="/dashboard/watchlist" className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
+              {/* Glassmorphism background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#002233]/5 via-transparent to-[#003344]/5"></div>
+              
+              {/* Border gradient */}
+              <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-[#002233]/20 via-gray-200/30 to-blue-500/20">
+                <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
+              </div>
+              
+              {/* Animated glow effect */}
+              <div className="absolute -top-20 -left-20 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl group-hover:bg-blue-500/30 transition-all duration-700"></div>
+              
+              <div className="relative z-10 flex flex-col h-full p-5">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-2.5 bg-gradient-to-br from-[#002233]/20 to-blue-500/10 rounded-xl backdrop-blur-sm border border-[#002233]/10">
+                    <svg className="w-4 h-4 text-[#002233]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </div>
+                  <span className="px-2 py-1 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-full text-xs font-semibold text-blue-700 flex items-center gap-1 border border-blue-500/20">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    +5
+                  </span>
+                </div>
+                
+                {/* Content */}
+                <div className="flex-1">
+                  <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Watchlist</p>
+                  <p className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">24</p>
+                  <p className="text-xs text-gray-600 mt-1.5 font-medium">This week</p>
+                </div>
+                
+                {/* Footer */}
+                <div className="mt-auto pt-3 border-t border-gray-200/30">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-600 flex items-center gap-1.5 font-medium">
+                      <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full animate-pulse shadow-lg shadow-blue-500/50"></span>
+                      Monitoring
+                    </span>
+                    <svg className="w-4 h-4 text-gray-400 group-hover:text-[#002233] group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </Link>
+
+            {/* Won Auctions Card */}
+            <Link href="/dashboard/wins" className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
+              {/* Glassmorphism background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/5 via-transparent to-green-500/5"></div>
+              
+              {/* Border gradient */}
+              <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-emerald-500/20 via-gray-200/30 to-green-500/20">
+                <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
+              </div>
+              
+              {/* Animated glow effect */}
+              <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl group-hover:bg-emerald-500/30 transition-all duration-700"></div>
+              
+              <div className="relative z-10 flex flex-col h-full p-5">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-2.5 bg-gradient-to-br from-emerald-500/20 to-green-500/10 rounded-xl backdrop-blur-sm border border-emerald-500/10">
+                    <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <span className="px-2 py-1 bg-gradient-to-r from-amber-500/20 to-orange-500/20 backdrop-blur-sm rounded-full text-xs font-semibold text-amber-700 border border-amber-500/20">
+                    2 pending
+                  </span>
+                </div>
+                
+                {/* Content */}
+                <div className="flex-1">
+                  <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Won Auctions</p>
+                  <p className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">8</p>
+                  <p className="text-xs text-gray-600 mt-1.5 font-medium">Payment required</p>
+                </div>
+                
+                {/* Footer */}
+                <div className="mt-auto pt-3 border-t border-gray-200/30">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-600 flex items-center gap-1.5 font-medium">
+                      <span className="w-2 h-2 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full animate-pulse shadow-lg shadow-amber-500/50"></span>
+                      Action needed
+                    </span>
+                    <svg className="w-4 h-4 text-gray-400 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </Link>
+
+            {/* Account Status Card */}
+            <Link href="/dashboard/profile?tab=verification" className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
+              {/* Glassmorphism background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/5 via-transparent to-indigo-500/5"></div>
+              
+              {/* Border gradient */}
+              <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-purple-500/20 via-gray-200/30 to-indigo-500/20">
+                <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
+              </div>
+              
+              {/* Animated glow effect */}
+              <div className="absolute -top-20 -left-20 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl group-hover:bg-purple-500/30 transition-all duration-700"></div>
+              
+              <div className="relative z-10 flex flex-col h-full p-5">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-2.5 bg-gradient-to-br from-purple-500/20 to-indigo-500/10 rounded-xl backdrop-blur-sm border border-purple-500/10">
+                    <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </div>
+                  <span className="px-2 py-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-full text-xs font-semibold text-green-700 border border-green-500/20">
+                    Verified
+                  </span>
+                </div>
+                
+                {/* Content */}
+                <div className="flex-1">
+                  <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Account Status</p>
+                  <p className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Premium</p>
+                  <p className="text-xs text-gray-600 mt-1.5 font-medium">Level 3 access</p>
+                </div>
+                
+                {/* Footer */}
+                <div className="mt-auto pt-3 border-t border-gray-200/30">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-600 flex items-center gap-1.5 font-medium">
+                      <span className="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full shadow-lg shadow-green-500/50"></span>
+                      Full access
+                    </span>
+                    <svg className="w-4 h-4 text-gray-400 group-hover:text-purple-600 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </div>
+
+        {/* Balance Card - Same width as Recent Activity */}
+        <div className="xl:col-span-1">
+          <div className="relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
+            {/* Glassmorphism background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#FA7921]/5 via-transparent to-amber-500/5"></div>
+            
+            {/* Border gradient */}
+            <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-[#FA7921]/30 via-amber-200/30 to-orange-500/30">
+              <div className="h-full w-full rounded-2xl bg-white/60 backdrop-blur-xl"></div>
+            </div>
+            
+            {/* Animated glow effects */}
+            <div className="absolute -top-20 -right-20 w-48 h-48 bg-[#FA7921]/15 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-amber-500/15 rounded-full blur-3xl"></div>
+            
+            <div className="relative z-10 flex flex-col h-full p-6">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-gradient-to-br from-[#FA7921]/25 to-[#FF9A56]/15 rounded-xl backdrop-blur-sm border border-[#FA7921]/20">
+                  <svg className="w-5 h-5 text-[#FA7921]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
+                </div>
+                <span className="px-2.5 py-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-full text-xs font-bold text-green-700 border border-green-500/20">
+                  Available
+                </span>
+              </div>
+              
+              {/* Content */}
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Total Balance</p>
+                <p className="text-3xl font-black bg-gradient-to-r from-[#FA7921] to-[#FF9A56] bg-clip-text text-transparent mb-1">¥1,250,000</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <p className="text-sm text-gray-700 font-medium">≈ $8,333 USD</p>
+                  <span className="text-xs text-gray-500 font-medium">• 1 USD = ¥150</span>
+                </div>
+                
+                {/* Mini progress bar */}
+                <div className="mt-3 h-1.5 bg-gray-200/50 rounded-full overflow-hidden backdrop-blur-sm">
+                  <div className="h-full w-3/4 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] rounded-full shadow-lg shadow-[#FA7921]/30"></div>
+                </div>
+              </div>
+              
+              {/* Action Buttons */}
+              <div className="mt-auto pt-4 border-t border-gray-200/30">
+                <div className="grid grid-cols-2 gap-2">
+                  <Link href="/dashboard/deposit" className="group/btn relative overflow-hidden px-3 py-2.5 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white text-sm font-semibold rounded-xl transition-all text-center shadow-lg shadow-[#FA7921]/20 hover:shadow-xl hover:shadow-[#FA7921]/30">
+                    <span className="relative z-10">Deposit</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#FF9A56] to-[#FA7921] opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
+                  </Link>
+                  <Link href="/dashboard/history" className="px-3 py-2.5 bg-white/50 backdrop-blur-sm text-gray-700 text-sm font-semibold rounded-xl hover:bg-white/70 transition-all text-center border border-gray-200/50">
+                    History
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Main Content Section with Consistent Containers */}
@@ -831,12 +1102,12 @@ export default function DashboardPage() {
                     <h2 className="text-lg font-semibold text-gray-900">Upcoming Auctions</h2>
                     <p className="text-xs text-gray-500 mt-0.5">Live auctions ending soon</p>
                   </div>
-                  <button className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium transition-colors flex items-center gap-1">
+                  <Link href="/dashboard/auctions/upcoming" className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium transition-colors flex items-center gap-1">
                     View All
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
-                  </button>
+                  </Link>
                 </div>
               </div>
               <div className="p-4">
@@ -887,9 +1158,9 @@ export default function DashboardPage() {
                 </div>
               )}
               <div className="px-4 py-3 border-t border-gray-100 bg-gray-50/50">
-                <button className="w-full text-center text-xs text-[#FA7921] hover:text-[#FA7921]/80 font-medium transition-colors">
+                <Link href="/dashboard/activity" className="block w-full text-center text-xs text-[#FA7921] hover:text-[#FA7921]/80 font-medium transition-colors">
                   View All Activity →
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -903,12 +1174,12 @@ export default function DashboardPage() {
                 <h2 className="text-lg font-semibold text-gray-900">Featured Auctions</h2>
                 <p className="text-xs text-gray-500 mt-0.5">Hand-picked vehicles for you</p>
               </div>
-              <button className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium transition-colors flex items-center gap-1">
+              <Link href="/dashboard/auctions/featured" className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium transition-colors flex items-center gap-1">
                 Browse All
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </button>
+              </Link>
             </div>
           </div>
           <div className="p-4">

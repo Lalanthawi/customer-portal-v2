@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useRef, ChangeEvent } from 'react'
+import { useState, useRef, ChangeEvent, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import type { ProfileTab, UserProfileData, PasswordData, Device, NotificationSettings, PaymentMethod } from './types'
 
@@ -67,29 +68,22 @@ const devices: Device[] = [
 const paymentMethods: PaymentMethod[] = [
   {
     id: '1',
-    type: 'card',
+    type: 'stripe',
     last4: '4242',
-    brand: 'Visa',
+    brand: 'Stripe',
     isDefault: true,
     expiryDate: '12/25',
   },
   {
     id: '2',
-    type: 'card',
-    last4: '5555',
-    brand: 'Mastercard',
-    isDefault: false,
-    expiryDate: '08/24',
-  },
-  {
-    id: '3',
     type: 'paypal',
     email: 'john.doe@example.com',
     isDefault: false,
   },
 ]
 
-export default function ProfileSettingsPage() {
+function ProfileSettingsContent() {
+  const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState('account')
   const [profileData, setProfileData] = useState<UserProfileData>({
     firstName: 'John',
@@ -132,6 +126,13 @@ export default function ProfileSettingsPage() {
   })
 
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const tab = searchParams.get('tab')
+    if (tab && tabs.some(t => t.id === tab)) {
+      setActiveTab(tab)
+    }
+  }, [searchParams])
 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -753,12 +754,14 @@ export default function ProfileSettingsPage() {
                   <div key={method.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                        {method.type === 'card' ? (
-                          <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        {method.type === 'stripe' ? (
+                          <svg className="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/>
                           </svg>
                         ) : method.type === 'paypal' ? (
-                          <span className="text-xl font-bold text-blue-600">P</span>
+                          <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.074.437-.01.057-.024.117-.035.176l-.035.132c-.03.111-.06.22-.09.33-.077.289-.158.583-.248.882-.087.291-.181.587-.285.885-.105.302-.218.607-.34.914a8.618 8.618 0 0 1-.44.916c-.166.318-.344.637-.533.953-.194.322-.402.644-.62.961-.223.322-.46.64-.71.952-.255.317-.525.628-.808.93a12.44 12.44 0 0 1-.904.9c-.32.282-.654.552-1.004.806a10.67 10.67 0 0 1-1.085.722 9.827 9.827 0 0 1-1.168.598c-.407.177-.83.333-1.267.465-.44.134-.897.242-1.367.323a13.266 13.266 0 0 1-1.437.171c-.495.036-1.003.049-1.52.035-.517-.015-1.043-.056-1.574-.125l-.027 5.358c-.005.37-.323.657-.69.657zm7.49-17.685c-3.102 0-3.874 1.894-4.31 3.854-.436 1.958-.795 5.038 1.471 5.038 3.027 0 4.61-1.548 5.047-3.507.437-1.96-.034-5.386-2.207-5.386z"/>
+                          </svg>
                         ) : (
                           <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -767,7 +770,7 @@ export default function ProfileSettingsPage() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-900">
-                          {method.type === 'card' ? `${method.brand} ending in ${method.last4}` : 
+                          {method.type === 'stripe' ? `Stripe •••• ${method.last4}` : 
                            method.type === 'paypal' ? `PayPal (${method.email})` :
                            method.bankName}
                         </p>
@@ -980,5 +983,13 @@ export default function ProfileSettingsPage() {
       {/* Tab Content */}
       <div className="space-y-6">{renderTabContent()}</div>
     </div>
+  )
+}
+
+export default function ProfileSettingsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProfileSettingsContent />
+    </Suspense>
   )
 }
