@@ -13,7 +13,7 @@ function Skeleton({ className }: { className?: string }) {
   return <div className={`animate-pulse bg-gray-200 rounded ${className}`} />
 }
 
-// Countdown Timer Hook
+// Countdown Timer Hook - Shows bidding deadline (1 hour before auction)
 function useCountdown(targetDate: Date) {
   const [timeLeft, setTimeLeft] = useState<{
     days: number
@@ -25,7 +25,9 @@ function useCountdown(targetDate: Date) {
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date().getTime()
-      const distance = targetDate.getTime() - now
+      // Bidding closes 1 hour before the actual auction time
+      const biddingDeadline = targetDate.getTime() - (60 * 60 * 1000)
+      const distance = biddingDeadline - now
 
       if (distance > 0) {
         setTimeLeft({
@@ -74,13 +76,16 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <Badge className="absolute top-3 right-3 bg-[#FA7921] text-white px-3 py-1 rounded-full text-xs font-semibold animate-pulse shadow-lg">
-          Live Auction
+        <Badge className="absolute top-3 right-3 bg-gray-900 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
+          {auction.auctionHouse}
         </Badge>
       </div>
       
       <CardContent className="p-5 flex-1 flex flex-col">
-        <CardTitle className="font-semibold text-lg text-gray-900 mb-3">{auction.title}</CardTitle>
+        <div className="flex items-start justify-between gap-2 mb-3">
+          <CardTitle className="font-semibold text-lg text-gray-900">{auction.title}</CardTitle>
+          <span className="text-xs text-gray-500 font-medium flex-shrink-0">Lot #{auction.lotNumber}</span>
+        </div>
         
         <div className="flex flex-wrap gap-3 text-sm text-gray-600 mb-4">
           <span className="flex items-center gap-1.5">
@@ -109,13 +114,15 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
             <p className="text-sm font-semibold text-gray-900">¥{auction.startingPrice.toLocaleString()}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500 mb-1">Current Bid</p>
-            <p className="text-sm font-semibold text-green-600">¥{auction.currentBid.toLocaleString()}</p>
+            <p className="text-xs text-gray-500 mb-1">Your Bid</p>
+            <p className="text-sm font-semibold text-green-600">
+              {auction.yourBid ? `¥${auction.yourBid.toLocaleString()}` : 'No bid yet'}
+            </p>
           </div>
         </div>
 
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
-          <p className="text-xs text-gray-700 mb-2 font-medium">Auction Ends In</p>
+          <p className="text-xs text-gray-700 mb-2 font-medium">Bidding Closes In</p>
           <div className="grid grid-cols-4 gap-2 text-center">
             <div>
               <p className="text-lg font-bold text-red-600">{String(timeLeft.days).padStart(2, '0')}</p>
@@ -136,23 +143,7 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
           </div>
         </div>
 
-        <div className="flex gap-2 mt-auto">
-          <span className="text-xs text-gray-500 flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            {auction.bidsCount || 12} bids
-          </span>
-          <span className="text-xs text-gray-500 flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-            {auction.watching || 45} watching
-          </span>
-        </div>
-
-        <Button className="w-full bg-[#FA7921] text-white py-2.5 rounded-lg font-medium hover:bg-[#FA7921]/90 transition-colors mt-4">
+        <Button className="w-full bg-[#FA7921] text-white py-2.5 rounded-lg font-medium hover:bg-[#FA7921]/90 transition-colors mt-auto">
           Place Bid
         </Button>
       </CardContent>
@@ -264,7 +255,10 @@ export default function DashboardPage() {
       specs: { year: 2022, mileage: '15,000 km', transmission: 'Automatic' },
       startingPrice: 2500000,
       currentBid: 2750000,
+      yourBid: 2750000,
       endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+      auctionHouse: 'USS Tokyo',
+      lotNumber: '42315',
       bidsCount: 23,
       watching: 67,
     },
@@ -276,6 +270,8 @@ export default function DashboardPage() {
       startingPrice: 1800000,
       currentBid: 1950000,
       endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+      auctionHouse: 'HAA Kobe',
+      lotNumber: '78921',
       bidsCount: 15,
       watching: 42,
     },
@@ -286,7 +282,10 @@ export default function DashboardPage() {
       specs: { year: 2023, mileage: '8,000 km', transmission: 'Automatic' },
       startingPrice: 3200000,
       currentBid: 3350000,
+      yourBid: 3350000,
       endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+      auctionHouse: 'TAA Yokohama',
+      lotNumber: '15643',
       bidsCount: 31,
       watching: 89,
     },
@@ -298,6 +297,8 @@ export default function DashboardPage() {
       startingPrice: 4500000,
       currentBid: 4650000,
       endDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000),
+      auctionHouse: 'JU Nagoya',
+      lotNumber: '89234',
       bidsCount: 18,
       watching: 54,
     },
@@ -308,7 +309,10 @@ export default function DashboardPage() {
       specs: { year: 2023, mileage: '5,000 km', transmission: 'Automatic' },
       startingPrice: 5200000,
       currentBid: 5350000,
+      yourBid: 5350000,
       endDate: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
+      auctionHouse: 'CAA Tokyo',
+      lotNumber: '34521',
       bidsCount: 27,
       watching: 93,
     },
@@ -320,6 +324,8 @@ export default function DashboardPage() {
       startingPrice: 3800000,
       currentBid: 3950000,
       endDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+      auctionHouse: 'AUCNET',
+      lotNumber: '67892',
       bidsCount: 34,
       watching: 78,
     },
@@ -671,8 +677,8 @@ export default function DashboardPage() {
               <CardHeader className="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-lg font-semibold text-gray-900">Upcoming Auctions</CardTitle>
-                    <CardDescription className="text-xs text-gray-500 mt-0.5">Live auctions ending soon</CardDescription>
+                    <CardTitle className="text-lg font-semibold text-gray-900">Recommended for You</CardTitle>
+                    <CardDescription className="text-xs text-gray-500 mt-0.5">Based on your recent searches • Bidding deadlines approaching</CardDescription>
                   </div>
                   <Link href="/dashboard/auctions/upcoming" className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium transition-colors flex items-center gap-1">
                     View All
@@ -744,7 +750,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-lg font-semibold text-gray-900">Featured Auctions</CardTitle>
-                <CardDescription className="text-xs text-gray-500 mt-0.5">Hand-picked vehicles for you</CardDescription>
+                <CardDescription className="text-xs text-gray-500 mt-0.5">Similar to your interests • Submit bids before deadline</CardDescription>
               </div>
               <Link href="/dashboard/auctions/featured" className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium transition-colors flex items-center gap-1">
                 Browse All

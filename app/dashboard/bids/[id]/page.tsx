@@ -52,6 +52,17 @@ export default function BidDetailPage() {
   
   const [activeTab, setActiveTab] = useState<'overview' | 'shipment'>('overview')
   const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [showAddressModal, setShowAddressModal] = useState(false)
+  const [selectedAddress, setSelectedAddress] = useState<'default' | 'new'>('default')
+  const [defaultAddress] = useState({
+    name: 'John Doe',
+    street: '1-2-3 Shibuya',
+    city: 'Tokyo',
+    state: 'Tokyo',
+    postalCode: '150-0002',
+    country: 'Japan',
+    phone: '+81-3-1234-5678'
+  })
   
   // Mock data - In production, fetch from API based on bidId
   const [bidDetail] = useState<BidDetail>({
@@ -122,31 +133,39 @@ export default function BidDetailPage() {
       details: [
         {
           id: 'payment-1',
-          title: 'Submit payment (¥7,350,000)',
+          title: 'Invoice & Payment',
           status: 'completed',
-          description: 'Bank transfer or credit card',
-          completedDate: new Date('2024-01-11T10:15:00')
+          description: 'View invoice and make payment',
+          completedDate: new Date('2024-01-11T10:15:00'),
+          actions: [
+            { label: 'View Invoice', icon: 'document', onClick: () => console.log('View invoice') },
+            { label: 'Make Payment', icon: 'credit-card', onClick: () => setShowPaymentModal(true) }
+          ]
         },
         {
           id: 'payment-2',
-          title: 'Sign purchase agreement',
+          title: 'Confirm Shipping Address',
           status: 'pending',
-          description: 'Digital signature required',
-          dueDate: new Date('2024-01-13T17:00:00')
+          description: 'Confirm or update delivery address',
+          dueDate: new Date('2024-01-13T17:00:00'),
+          actions: [
+            { label: 'Manage Address', icon: 'location', onClick: () => setShowAddressModal(true) }
+          ]
         },
         {
           id: 'payment-3',
-          title: 'Provide shipping information',
+          title: 'Shipping Information',
           status: 'pending',
-          description: 'Destination port and address',
+          description: 'Port selection and customs details',
           dueDate: new Date('2024-01-14T17:00:00')
         },
         {
           id: 'payment-4',
-          title: 'Purchase shipping insurance',
-          status: 'pending',
-          description: 'Optional but recommended',
-          dueDate: new Date('2024-01-15T17:00:00')
+          title: 'Shipping Insurance',
+          status: 'completed',
+          description: 'Included in shipping fee',
+          completedDate: new Date('2024-01-11T10:15:00'),
+          note: 'Comprehensive coverage included'
         }
       ]
     },
@@ -589,6 +608,200 @@ export default function BidDetailPage() {
               </button>
               <button className="flex-1 py-3 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium">
                 Continue to Payment
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Address Management Modal */}
+      {showAddressModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Shipping Address</h3>
+              <button
+                onClick={() => setShowAddressModal(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Address Selection */}
+            <div className="space-y-4">
+              {/* Default Address */}
+              {defaultAddress ? (
+                <div 
+                  className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${
+                    selectedAddress === 'default' 
+                      ? 'border-[#FA7921] bg-[#FA7921]/5' 
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                  onClick={() => setSelectedAddress('default')}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="radio"
+                        checked={selectedAddress === 'default'}
+                        onChange={() => setSelectedAddress('default')}
+                        className="mt-1 text-[#FA7921] focus:ring-[#FA7921]"
+                      />
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <p className="font-semibold text-gray-900">Default Address</p>
+                          <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">Primary</span>
+                        </div>
+                        <p className="text-sm text-gray-700">{defaultAddress.name}</p>
+                        <p className="text-sm text-gray-600">{defaultAddress.street}</p>
+                        <p className="text-sm text-gray-600">{defaultAddress.city}, {defaultAddress.state} {defaultAddress.postalCode}</p>
+                        <p className="text-sm text-gray-600">{defaultAddress.country}</p>
+                        <p className="text-sm text-gray-600 mt-1">Phone: {defaultAddress.phone}</p>
+                      </div>
+                    </div>
+                    <button className="text-sm text-[#FA7921] hover:text-[#FA7921]/80 font-medium">
+                      Edit
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
+                  <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <p className="text-gray-600 mb-2">No default address found</p>
+                  <p className="text-sm text-gray-500 mb-4">Please add an address to continue</p>
+                </div>
+              )}
+
+              {/* Add New Address Option */}
+              <div 
+                className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${
+                  selectedAddress === 'new' 
+                    ? 'border-[#FA7921] bg-[#FA7921]/5' 
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+                onClick={() => setSelectedAddress('new')}
+              >
+                <div className="flex items-center gap-3">
+                  <input
+                    type="radio"
+                    checked={selectedAddress === 'new'}
+                    onChange={() => setSelectedAddress('new')}
+                    className="text-[#FA7921] focus:ring-[#FA7921]"
+                  />
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span className="font-medium text-gray-900">Ship to a different address</span>
+                  </div>
+                </div>
+
+                {/* New Address Form (shown when selected) */}
+                {selectedAddress === 'new' && (
+                  <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input
+                          type="text"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                          placeholder="John Doe"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <input
+                          type="tel"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                          placeholder="+81-3-1234-5678"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
+                      <input
+                        type="text"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                        placeholder="1-2-3 Shibuya"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                        <input
+                          type="text"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                          placeholder="Tokyo"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">State/Prefecture</label>
+                        <input
+                          type="text"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                          placeholder="Tokyo"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
+                        <input
+                          type="text"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                          placeholder="150-0002"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                        <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent">
+                          <option>Japan</option>
+                          <option>United States</option>
+                          <option>United Kingdom</option>
+                          <option>Australia</option>
+                          <option>Other</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Shipping Insurance Notice */}
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <div>
+                  <p className="text-sm font-medium text-blue-900">Shipping Insurance Included</p>
+                  <p className="text-xs text-blue-700 mt-1">
+                    Comprehensive shipping insurance is automatically included with your shipment at no additional cost.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setShowAddressModal(false)}
+                className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button 
+                className="flex-1 py-3 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
+                disabled={!defaultAddress && selectedAddress !== 'new'}
+              >
+                Confirm Address
               </button>
             </div>
           </div>

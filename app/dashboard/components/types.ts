@@ -22,6 +22,15 @@ export interface StageDetail {
   completedDate?: Date
   assignee?: string
   documents?: Document[]
+  actions?: ActionButton[]
+  note?: string
+}
+
+export interface ActionButton {
+  label: string
+  icon: 'document' | 'credit-card' | 'location' | 'download'
+  onClick: () => void
+  variant?: 'primary' | 'secondary'
 }
 
 export interface Document {

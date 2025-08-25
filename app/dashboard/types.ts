@@ -26,7 +26,10 @@ export interface AuctionItem {
   }
   startingPrice: number
   currentBid: number
+  yourBid?: number
   endDate: Date
+  auctionHouse: string
+  lotNumber: string
   bidsCount?: number
   watching?: number
 }
