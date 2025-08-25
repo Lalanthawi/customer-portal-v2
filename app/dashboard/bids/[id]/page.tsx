@@ -50,7 +50,7 @@ export default function BidDetailPage() {
   const router = useRouter()
   const bidId = params['id'] as string
   
-  const [activeTab, setActiveTab] = useState<'overview' | 'bidding' | 'shipment'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'shipment'>('overview')
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   
   // Mock data - In production, fetch from API based on bidId
@@ -221,9 +221,7 @@ export default function BidDetailPage() {
   useEffect(() => {
     if (bidDetail.status === 'won' && bidDetail.paymentStatus === 'completed') {
       setActiveTab('shipment')
-    } else if (bidDetail.status === 'active' || bidDetail.status === 'outbid') {
-      setActiveTab('bidding')
-    } else if (bidDetail.status === 'won') {
+    } else {
       setActiveTab('overview')
     }
   }, [bidDetail.status, bidDetail.paymentStatus])
@@ -290,16 +288,6 @@ export default function BidDetailPage() {
               }`}
             >
               Overview
-            </button>
-            <button
-              onClick={() => setActiveTab('bidding')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === 'bidding'
-                  ? 'border-[#FA7921] text-[#FA7921]'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Bidding History
             </button>
             {bidDetail.status === 'won' && bidDetail.paymentStatus === 'completed' && (
               <button
@@ -436,52 +424,6 @@ export default function BidDetailPage() {
           </div>
         )}
 
-        {/* Bidding History Tab */}
-        {activeTab === 'bidding' && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Bidding History</h2>
-            
-            <div className="space-y-3">
-              {bidDetail.bidHistory?.map((bid, index) => (
-                <div 
-                  key={index}
-                  className={`flex items-center justify-between p-4 rounded-lg ${
-                    bid.isYou ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50'
-                  }`}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      index === bidDetail.bidHistory!.length - 1 ? 'bg-green-100' : 'bg-gray-200'
-                    }`}>
-                      {index === bidDetail.bidHistory!.length - 1 ? (
-                        <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                      ) : (
-                        <span className="text-sm font-medium text-gray-600">#{index + 1}</span>
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">
-                        {bid.bidder}
-                        {bid.isYou && <span className="ml-2 text-sm text-blue-600">(You)</span>}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {new Date(bid.timestamp).toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-gray-900">{formatJPY(bid.amount)}</p>
-                    {index === bidDetail.bidHistory!.length - 1 && (
-                      <p className="text-sm text-green-600">Winning Bid</p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Shipment Tracking Tab */}
         {activeTab === 'shipment' && bidDetail.status === 'won' && bidDetail.paymentStatus === 'completed' && (
