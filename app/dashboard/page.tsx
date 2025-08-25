@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { AuctionItem, ActivityItem } from './types'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 // Skeleton component for loading states
 function Skeleton({ className }: { className?: string }) {
@@ -50,7 +53,7 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 h-full flex flex-col">
+      <Card className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 h-full flex flex-col">
         <Skeleton className="h-48 w-full" />
         <div className="p-5 flex-1 flex flex-col">
           <Skeleton className="h-6 w-3/4 mb-3" />
@@ -58,12 +61,12 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
           <Skeleton className="h-4 w-2/3 mb-4" />
           <Skeleton className="h-10 w-full mt-auto" />
         </div>
-      </div>
+      </Card>
     )
   }
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-200 group h-full flex flex-col">
+    <Card className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-200 group h-full flex flex-col">
       <div className="relative h-48 bg-gray-100">
         <Image
           src={auction.image}
@@ -71,13 +74,13 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className="absolute top-3 right-3 bg-[#FA7921] text-white px-3 py-1 rounded-full text-xs font-semibold animate-pulse shadow-lg">
+        <Badge className="absolute top-3 right-3 bg-[#FA7921] text-white px-3 py-1 rounded-full text-xs font-semibold animate-pulse shadow-lg">
           Live Auction
-        </div>
+        </Badge>
       </div>
       
-      <div className="p-5 flex-1 flex flex-col">
-        <h3 className="font-semibold text-lg text-gray-900 mb-3">{auction.title}</h3>
+      <CardContent className="p-5 flex-1 flex flex-col">
+        <CardTitle className="font-semibold text-lg text-gray-900 mb-3">{auction.title}</CardTitle>
         
         <div className="flex flex-wrap gap-3 text-sm text-gray-600 mb-4">
           <span className="flex items-center gap-1.5">
@@ -149,11 +152,11 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
           </span>
         </div>
 
-        <button className="w-full bg-[#FA7921] text-white py-2.5 rounded-lg font-medium hover:bg-[#FA7921]/90 transition-colors mt-4">
+        <Button className="w-full bg-[#FA7921] text-white py-2.5 rounded-lg font-medium hover:bg-[#FA7921]/90 transition-colors mt-4">
           Place Bid
-        </button>
-      </div>
-    </div>
+        </Button>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -385,7 +388,8 @@ export default function DashboardPage() {
         <div className="xl:col-span-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
             {/* Active Bids Card */}
-            <Link href="/dashboard/bids" className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
+            <Link href="/dashboard/bids">
+              <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
               {/* Glassmorphism background */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
               <div className="absolute inset-0 bg-gradient-to-tr from-[#FA7921]/5 via-transparent to-[#FF9A56]/5"></div>
@@ -398,7 +402,7 @@ export default function DashboardPage() {
               {/* Animated glow effect */}
               <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#FA7921]/20 rounded-full blur-3xl group-hover:bg-[#FA7921]/30 transition-all duration-700"></div>
               
-              <div className="relative z-10 flex flex-col h-full p-5">
+              <CardContent className="relative z-10 flex flex-col h-full p-5">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-2.5 bg-gradient-to-br from-[#FA7921]/20 to-[#FF9A56]/10 rounded-xl backdrop-blur-sm border border-[#FA7921]/10">
@@ -433,11 +437,13 @@ export default function DashboardPage() {
                     </svg>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+              </Card>
             </Link>
 
             {/* Watchlist Card */}
-            <Link href="/dashboard/watchlist" className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
+            <Link href="/dashboard/watchlist">
+              <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
               {/* Glassmorphism background */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
               <div className="absolute inset-0 bg-gradient-to-tr from-[#002233]/5 via-transparent to-[#003344]/5"></div>
@@ -450,7 +456,7 @@ export default function DashboardPage() {
               {/* Animated glow effect */}
               <div className="absolute -top-20 -left-20 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl group-hover:bg-blue-500/30 transition-all duration-700"></div>
               
-              <div className="relative z-10 flex flex-col h-full p-5">
+              <CardContent className="relative z-10 flex flex-col h-full p-5">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-2.5 bg-gradient-to-br from-[#002233]/20 to-blue-500/10 rounded-xl backdrop-blur-sm border border-[#002233]/10">
@@ -486,11 +492,13 @@ export default function DashboardPage() {
                     </svg>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+              </Card>
             </Link>
 
             {/* Won Auctions Card */}
-            <Link href="/dashboard/wins" className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
+            <Link href="/dashboard/wins">
+              <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
               {/* Glassmorphism background */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
               <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/5 via-transparent to-green-500/5"></div>
@@ -503,7 +511,7 @@ export default function DashboardPage() {
               {/* Animated glow effect */}
               <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl group-hover:bg-emerald-500/30 transition-all duration-700"></div>
               
-              <div className="relative z-10 flex flex-col h-full p-5">
+              <CardContent className="relative z-10 flex flex-col h-full p-5">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-2.5 bg-gradient-to-br from-emerald-500/20 to-green-500/10 rounded-xl backdrop-blur-sm border border-emerald-500/10">
@@ -535,11 +543,13 @@ export default function DashboardPage() {
                     </svg>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+              </Card>
             </Link>
 
             {/* Account Status Card */}
-            <Link href="/dashboard/profile?tab=verification" className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
+            <Link href="/dashboard/profile?tab=verification">
+              <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
               {/* Glassmorphism background */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
               <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/5 via-transparent to-indigo-500/5"></div>
@@ -552,7 +562,7 @@ export default function DashboardPage() {
               {/* Animated glow effect */}
               <div className="absolute -top-20 -left-20 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl group-hover:bg-purple-500/30 transition-all duration-700"></div>
               
-              <div className="relative z-10 flex flex-col h-full p-5">
+              <CardContent className="relative z-10 flex flex-col h-full p-5">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-2.5 bg-gradient-to-br from-purple-500/20 to-indigo-500/10 rounded-xl backdrop-blur-sm border border-purple-500/10">
@@ -584,14 +594,15 @@ export default function DashboardPage() {
                     </svg>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+              </Card>
             </Link>
           </div>
         </div>
 
         {/* Balance Card - Same width as Recent Activity */}
         <div className="xl:col-span-1">
-          <div className="relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
+          <Card className="relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
             {/* Glassmorphism background */}
             <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
             <div className="absolute inset-0 bg-gradient-to-tr from-[#FA7921]/5 via-transparent to-amber-500/5"></div>
@@ -605,7 +616,7 @@ export default function DashboardPage() {
             <div className="absolute -top-20 -right-20 w-48 h-48 bg-[#FA7921]/15 rounded-full blur-3xl"></div>
             <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-amber-500/15 rounded-full blur-3xl"></div>
             
-            <div className="relative z-10 flex flex-col h-full p-6">
+            <CardContent className="relative z-10 flex flex-col h-full p-6">
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
                 <div className="p-3 bg-gradient-to-br from-[#FA7921]/25 to-[#FF9A56]/15 rounded-xl backdrop-blur-sm border border-[#FA7921]/20">
@@ -645,8 +656,8 @@ export default function DashboardPage() {
                   </Link>
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
@@ -656,12 +667,12 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
           {/* Upcoming Auctions Container */}
           <div className="xl:col-span-3">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+            <Card className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <CardHeader className="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Upcoming Auctions</h2>
-                    <p className="text-xs text-gray-500 mt-0.5">Live auctions ending soon</p>
+                    <CardTitle className="text-lg font-semibold text-gray-900">Upcoming Auctions</CardTitle>
+                    <CardDescription className="text-xs text-gray-500 mt-0.5">Live auctions ending soon</CardDescription>
                   </div>
                   <Link href="/dashboard/auctions/upcoming" className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium transition-colors flex items-center gap-1">
                     View All
@@ -670,25 +681,25 @@ export default function DashboardPage() {
                     </svg>
                   </Link>
                 </div>
-              </div>
-              <div className="p-4">
+              </CardHeader>
+              <CardContent className="p-4">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                   {upcomingAuctions.slice(0, 3).map((auction) => (
                     <AuctionCard key={auction.id} auction={auction} loading={loading} />
                   ))}
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Recent Activity Container */}
           <div className="xl:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-full flex flex-col">
-              <div className="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+            <Card className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-full flex flex-col">
+              <CardHeader className="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
-                    <p className="text-xs text-gray-500 mt-0.5">Your latest updates</p>
+                    <CardTitle className="text-lg font-semibold text-gray-900">Recent Activity</CardTitle>
+                    <CardDescription className="text-xs text-gray-500 mt-0.5">Your latest updates</CardDescription>
                   </div>
                   <button className="text-gray-400 hover:text-gray-600 transition-colors">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -696,7 +707,7 @@ export default function DashboardPage() {
                   </svg>
                 </button>
                 </div>
-              </div>
+              </CardHeader>
               {loading ? (
                 <div className="p-3 space-y-3 flex-1">
                   {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -723,17 +734,17 @@ export default function DashboardPage() {
                   View All Activity →
                 </Link>
               </div>
-            </div>
+            </Card>
           </div>
         </div>
 
         {/* Featured Auctions Container */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+        <Card className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <CardHeader className="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Featured Auctions</h2>
-                <p className="text-xs text-gray-500 mt-0.5">Hand-picked vehicles for you</p>
+                <CardTitle className="text-lg font-semibold text-gray-900">Featured Auctions</CardTitle>
+                <CardDescription className="text-xs text-gray-500 mt-0.5">Hand-picked vehicles for you</CardDescription>
               </div>
               <Link href="/dashboard/auctions/featured" className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium transition-colors flex items-center gap-1">
                 Browse All
@@ -742,15 +753,15 @@ export default function DashboardPage() {
                 </svg>
               </Link>
             </div>
-          </div>
-          <div className="p-4">
+          </CardHeader>
+          <CardContent className="p-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {upcomingAuctions.slice(0, 4).map((auction) => (
                 <AuctionCard key={auction.id} auction={auction} loading={loading} />
               ))}
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

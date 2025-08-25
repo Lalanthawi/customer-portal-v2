@@ -19,17 +19,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "@/components/*": ["./src/components/*"],
-      "@/lib/*": ["./src/lib/*"],
-      "@/hooks/*": ["./src/hooks/*"],
-      "@/utils/*": ["./src/utils/*"],
-      "@/types/*": ["./src/types/*"],
-      "@/constants/*": ["./src/constants/*"],
-      "@/services/*": ["./src/services/*"],
-      "@/stores/*": ["./src/stores/*"],
-      "@/config/*": ["./src/config/*"],
-      "@/styles/*": ["./src/styles/*"]
+      "@/*": ["./*"]
     },
     "strictNullChecks": true,
     "strictFunctionTypes": true,
