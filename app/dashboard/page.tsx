@@ -7,6 +7,7 @@ import type { AuctionItem, ActivityItem } from './types'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { ClaimRequiredModal, useClaimStatus } from './components/ClaimRequired'
 
 // Skeleton component for loading states
 function Skeleton({ className }: { className?: string }) {
@@ -52,6 +53,8 @@ function useCountdown(targetDate: Date) {
 // Auction Card Component  
 function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boolean }) {
   const timeLeft = useCountdown(auction.endDate)
+  const { isClaimedBySales } = useClaimStatus()
+  const [showClaimModal, setShowClaimModal] = useState(false)
 
   if (loading) {
     return (
@@ -143,9 +146,24 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
           </div>
         </div>
 
-        <Button className="w-full bg-[#FA7921] text-white py-2.5 rounded-lg font-medium hover:bg-[#FA7921]/90 transition-colors mt-auto">
+        <Button 
+          onClick={() => {
+            if (!isClaimedBySales) {
+              setShowClaimModal(true)
+            } else {
+              // Proceed with normal bid placement
+              console.log('Placing bid on', auction.title)
+            }
+          }}
+          className="w-full bg-[#FA7921] text-white py-2.5 rounded-lg font-medium hover:bg-[#FA7921]/90 transition-colors mt-auto"
+        >
           Place Bid
         </Button>
+        <ClaimRequiredModal 
+          isOpen={showClaimModal} 
+          onClose={() => setShowClaimModal(false)}
+          vehicleTitle={auction.title}
+        />
       </CardContent>
     </Card>
   )

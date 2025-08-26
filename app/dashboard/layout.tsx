@@ -5,6 +5,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import type { NavigationItem, UserProfile } from './types'
+import JapanTime from './components/JapanTime'
+import AccountStatusBanner from './components/AccountStatusBanner'
 
 const navigation: NavigationItem[] = [
   {
@@ -561,6 +563,8 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="min-h-screen bg-[#FAFAFA] flex flex-col">
+      <JapanTime />
+      <AccountStatusBanner />
       <NavigationBar />
       <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         <div className="max-w-[1400px] mx-auto">

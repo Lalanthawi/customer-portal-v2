@@ -125,7 +125,7 @@ export default function BidDetailPage() {
   ]
 
   // Shipment timeline stages (only for won auctions)
-  const [shipmentStages, setShipmentStages] = useState<TimelineStage[]>([
+  const [shipmentStages] = useState<TimelineStage[]>([
     {
       id: 'auction-won',
       title: 'Auction Won',
@@ -179,7 +179,7 @@ export default function BidDetailPage() {
           actions: [
             { 
               label: 'Select Port', 
-              icon: 'anchor',
+              icon: 'location' as const,
               onClick: () => {
                 const port = prompt(`Select departure port:\n${availablePorts.join('\n')}`, selectedPort || availablePorts[0])
                 if (port && availablePorts.includes(port)) {
@@ -215,22 +215,21 @@ export default function BidDetailPage() {
           title: 'Vehicle Pickup',
           status: 'completed',
           description: 'Vehicle collected from USS Tokyo',
-          completedDate: new Date('2024-01-15T09:00:00'),
-          completedBy: 'Transport Team'
+          completedDate: new Date('2024-01-15T09:00:00')
         },
         {
           id: 'transport-2',
           title: vehicleStatus === 'repair' ? 'Vehicle Under Repair' : 'In Transit to Port',
-          status: vehicleStatus === 'repair' ? 'pending' : 'in-progress',
+          status: 'pending',
           description: vehicleStatus === 'repair' 
             ? `Repair required: ${repairRemarks || 'Awaiting inspection'}` 
             : selectedPort ? `En route to ${selectedPort}` : 'Transporting to port',
-          estimatedDate: new Date('2024-01-18T17:00:00'),
+          dueDate: new Date('2024-01-18T17:00:00'),
           note: vehicleStatus === 'repair' ? repairRemarks : undefined,
           actions: vehicleStatus === 'repair' ? [
             {
               label: 'Update Repair Status',
-              icon: 'wrench',
+              icon: 'document' as const,
               onClick: () => {
                 const remarks = prompt('Update repair remarks:', repairRemarks)
                 if (remarks !== null) {
@@ -261,21 +260,21 @@ export default function BidDetailPage() {
           title: 'Arrival at Port',
           status: 'pending',
           description: selectedPort ? `Vehicle arrived at ${selectedPort}` : 'Waiting for port arrival',
-          estimatedDate: new Date('2024-01-19T10:00:00')
+          dueDate: new Date('2024-01-19T10:00:00')
         },
         {
           id: 'prep-2',
           title: 'Export Inspection',
           status: 'pending',
           description: 'JEVIC export inspection',
-          estimatedDate: new Date('2024-01-20T14:00:00')
+          dueDate: new Date('2024-01-20T14:00:00')
         },
         {
           id: 'prep-3',
           title: 'Container Loading',
           status: 'pending',
           description: 'Vehicle loaded into shipping container',
-          estimatedDate: new Date('2024-01-22T16:00:00')
+          dueDate: new Date('2024-01-22T16:00:00')
         }
       ]
     },
@@ -879,7 +878,7 @@ export default function BidDetailPage() {
                   <div>
                     <p className="text-sm font-semibold text-yellow-900">Auction Starting Soon</p>
                     <p className="text-sm text-yellow-800 mt-1">
-                      This auction is starting in less than 3 hours. There's a chance our bidding staff may not see your change in time.
+                      This auction is starting in less than 3 hours. There&apos;s a chance our bidding staff may not see your change in time.
                     </p>
                     <p className="text-sm text-yellow-800 mt-2 font-medium">
                       Please contact your sales person immediately after submitting this change.
@@ -982,7 +981,7 @@ export default function BidDetailPage() {
                   <div>
                     <p className="text-sm font-semibold text-yellow-900">Auction Starting Soon</p>
                     <p className="text-sm text-yellow-800 mt-1">
-                      This auction is starting in less than 3 hours. There's a chance our bidding staff may not see your cancellation in time.
+                      This auction is starting in less than 3 hours. There&apos;s a chance our bidding staff may not see your cancellation in time.
                     </p>
                     <p className="text-sm text-yellow-800 mt-2 font-medium">
                       Please contact your sales person immediately after submitting this cancellation.

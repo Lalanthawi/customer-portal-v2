@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { manufacturerLogos } from './ManufacturerLogos'
 import AdvancedSearchStatic from '../components/search/AdvancedSearchStatic'
+import { TermsOfServiceModal, useTOSAcceptance } from '../components/TermsOfService'
 // Removed unused import: vehicleIcons
 
 interface Manufacturer {
@@ -218,7 +219,7 @@ const getUserCountry = (): string => {
   // For now, we'll check browser language or return default
   if (typeof window !== 'undefined') {
     const lang = navigator.language || navigator.languages[0]
-    const countryCode = lang.split('-')[1] || 'default'
+    const countryCode = lang?.split('-')[1] || 'default'
     return countryCode.toUpperCase()
   }
   return 'default'
@@ -226,6 +227,8 @@ const getUserCountry = (): string => {
 
 export default function ExplorePage() {
   const router = useRouter()
+  const { hasAcceptedTOS, acceptTOS } = useTOSAcceptance()
+  const [showTOS, setShowTOS] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [trendingSearches, setTrendingSearches] = useState<string[]>([])
@@ -249,6 +252,13 @@ export default function ExplorePage() {
     sortBy: 'relevance',
   })
 
+  // Check TOS acceptance on mount
+  useEffect(() => {
+    if (hasAcceptedTOS === false) {
+      setShowTOS(true)
+    }
+  }, [hasAcceptedTOS])
+
   // Load country-specific trending searches on component mount
   useEffect(() => {
     const country = getUserCountry()
@@ -261,9 +271,9 @@ export default function ExplorePage() {
     if (country === 'default' || !trendingSearchesByCountry[country]) {
       const regions = ['LK', 'US', 'GB', 'AU', 'CA', 'NZ', 'KE']
       const randomRegion = regions[Math.floor(Math.random() * regions.length)]
-      setTrendingSearches(trendingSearchesByCountry[randomRegion])
+      setTrendingSearches(trendingSearchesByCountry[randomRegion || 'default'] || [])
     } else {
-      setTrendingSearches(searches)
+      setTrendingSearches(searches || [])
     }
   }, [])
 
@@ -300,8 +310,24 @@ export default function ExplorePage() {
     (filters.yearRange[0] > 2015 || filters.yearRange[1] < 2024 ? 1 : 0) +
     (filters.mileageMax < 200000 ? 1 : 0)
 
+  const handleTOSAccept = () => {
+    acceptTOS()
+    setShowTOS(false)
+  }
+
+  const handleTOSDecline = () => {
+    // Redirect to dashboard if user declines
+    router.push('/dashboard')
+  }
+
   return (
     <div className="w-full -mt-6">
+      {/* Terms of Service Modal */}
+      <TermsOfServiceModal
+        isOpen={showTOS}
+        onAccept={handleTOSAccept}
+        onDecline={handleTOSDecline}
+      />
       {/* Modern Hero Section with Glassmorphism */}
       <div className="relative overflow-hidden rounded-3xl mb-8">
         <div className="absolute inset-0 bg-gradient-to-br from-[#002233] via-[#003344] to-[#FA7921]/20"></div>

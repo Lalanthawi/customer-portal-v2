@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, memo } from 'react'
-import { GroupId, BidFormData, ValidationError } from '../types'
+import { GroupId, GroupBidFormData as BidFormData, ValidationError } from '../types'
 
 interface BidFormProps {
   selectedGroup: GroupId | null
@@ -19,16 +19,18 @@ const BidForm = memo(function BidForm({
   maxQuantity = 10
 }: BidFormProps) {
   const [formData, setFormData] = useState<BidFormData>({
-    groupId: selectedGroup,
-    bidAmount: minBidAmount,
-    quantity: 1
+    groupId: selectedGroup || 'A',
+    vehicleId: '',
+    bidAmount: minBidAmount
   })
   
   const [errors, setErrors] = useState<ValidationError[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    setFormData(prev => ({ ...prev, groupId: selectedGroup }))
+    if (selectedGroup) {
+      setFormData(prev => ({ ...prev, groupId: selectedGroup }))
+    }
   }, [selectedGroup])
 
   const formatCurrency = (amount: number): string => {
@@ -54,13 +56,6 @@ const BidForm = memo(function BidForm({
       })
     }
     
-    if (formData.quantity < 1 || formData.quantity > maxQuantity) {
-      newErrors.push({ 
-        field: 'quantity', 
-        message: `Quantity must be between 1 and ${maxQuantity}` 
-      })
-    }
-    
     return newErrors
   }
 
@@ -80,9 +75,9 @@ const BidForm = memo(function BidForm({
       await onSubmit(formData)
       // Reset form on success
       setFormData({
-        groupId: null,
-        bidAmount: minBidAmount,
-        quantity: 1
+        groupId: selectedGroup || 'A',
+        vehicleId: '',
+        bidAmount: minBidAmount
       })
     } catch (error) {
       console.error('Failed to submit bid:', error)
@@ -95,7 +90,7 @@ const BidForm = memo(function BidForm({
     return errors.find(e => e.field === field)?.message
   }
 
-  const totalAmount = formData.bidAmount * formData.quantity
+  const totalAmount = formData.bidAmount
 
   const quickAmounts = [100000, 250000, 500000, 1000000]
 
@@ -171,10 +166,7 @@ const BidForm = memo(function BidForm({
           <div className="flex items-center gap-3">
             <button
               type="button"
-              onClick={() => setFormData(prev => ({ 
-                ...prev, 
-                quantity: Math.max(1, prev.quantity - 1) 
-              }))}
+              onClick={() => {}}
               className="w-10 h-10 rounded-lg border-2 border-gray-200 hover:border-[#FA7921] hover:bg-[#FA7921]/5 transition-colors flex items-center justify-center"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,13 +176,10 @@ const BidForm = memo(function BidForm({
             
             <input
               type="number"
-              value={formData.quantity}
-              onChange={(e) => setFormData(prev => ({ 
-                ...prev, 
-                quantity: Math.max(1, Math.min(maxQuantity, parseInt(e.target.value) || 1)) 
-              }))}
+              value={1}
+              onChange={() => {}}
               className={`w-24 px-4 py-2 text-center border-2 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent text-lg font-medium placeholder:text-gray-400 ${
-                getFieldError('quantity') ? 'border-red-300' : 'border-gray-200'
+                'border-gray-200'
               }`}
               placeholder="1"
               min={1}
@@ -199,10 +188,7 @@ const BidForm = memo(function BidForm({
             
             <button
               type="button"
-              onClick={() => setFormData(prev => ({ 
-                ...prev, 
-                quantity: Math.min(maxQuantity, prev.quantity + 1) 
-              }))}
+              onClick={() => {}}
               className="w-10 h-10 rounded-lg border-2 border-gray-200 hover:border-[#FA7921] hover:bg-[#FA7921]/5 transition-colors flex items-center justify-center"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -210,9 +196,6 @@ const BidForm = memo(function BidForm({
               </svg>
             </button>
           </div>
-          {getFieldError('quantity') && (
-            <p className="mt-1 text-sm text-red-600">{getFieldError('quantity')}</p>
-          )}
         </div>
 
         {/* Total Amount Display */}
@@ -224,7 +207,7 @@ const BidForm = memo(function BidForm({
             </span>
           </div>
           <p className="text-xs text-gray-600 mt-1">
-            {formatCurrency(formData.bidAmount)} × {formData.quantity} units
+            {formatCurrency(formData.bidAmount)}
           </p>
         </div>
 

@@ -13,7 +13,7 @@ interface InlineBidFormProps {
 }
 
 const InlineBidForm = memo(function InlineBidForm({
-  groupId: _groupId,
+  groupId: _,
   currentHighestBid = 0,
   minBidIncrement = 10000,
   onSubmit,

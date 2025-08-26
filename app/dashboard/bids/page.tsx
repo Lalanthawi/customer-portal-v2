@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import type { AuctionBid, BidStatus, BidStatistics, GroupInfo } from './types'
+import type { AuctionBid, BidStatus, BidStatistics } from './types'
 
 // Mock data for demonstration
 const mockBids: AuctionBid[] = [

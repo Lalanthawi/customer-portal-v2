@@ -1,7 +1,7 @@
 'use client'
 
 import { memo, useMemo } from 'react'
-import { GroupBid, BidStatus } from '../types'
+import { VehicleBid as GroupBid, BidStatus } from '../types'
 
 interface BidSummaryProps {
   bids: GroupBid[]
@@ -15,11 +15,11 @@ const BidSummary = memo(function BidSummary({
   onUpdateBid
 }: BidSummaryProps) {
   const sortedBids = useMemo(() => {
-    return [...bids].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+    return [...bids].sort((a, b) => b.placedAt.getTime() - a.placedAt.getTime())
   }, [bids])
 
   const totalInvestment = useMemo(() => {
-    return bids.reduce((sum, bid) => sum + bid.totalAmount, 0)
+    return bids.reduce((sum, bid) => sum + bid.bidAmount, 0)
   }, [bids])
 
   const winningBids = useMemo(() => {
@@ -57,7 +57,8 @@ const BidSummary = memo(function BidSummary({
       winning: 'bg-green-100 text-green-700 border-green-200',
       outbid: 'bg-red-100 text-red-700 border-red-200 animate-pulse',
       won: 'bg-gradient-to-r from-green-500 to-emerald-500 text-white border-green-500',
-      lost: 'bg-gray-100 text-gray-500 border-gray-200'
+      lost: 'bg-gray-100 text-gray-500 border-gray-200',
+      'partial-win': 'bg-yellow-100 text-yellow-700 border-yellow-200'
     }
     
     const labels = {
@@ -65,7 +66,8 @@ const BidSummary = memo(function BidSummary({
       winning: 'Winning',
       outbid: 'Outbid',
       won: 'Won',
-      lost: 'Lost'
+      lost: 'Lost',
+      'partial-win': 'Partial Win'
     }
     
     return (
@@ -160,18 +162,18 @@ const BidSummary = memo(function BidSummary({
                   {formatCurrency(bid.bidAmount)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {bid.quantity}
+                  1
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className="text-sm font-semibold text-gray-900">
-                    {formatCurrency(bid.totalAmount)}
+                    {formatCurrency(bid.bidAmount)}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {getStatusBadge(bid.status)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {formatTime(bid.timestamp)}
+                  {formatTime(bid.placedAt)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                   {bid.status === 'outbid' && onUpdateBid && (

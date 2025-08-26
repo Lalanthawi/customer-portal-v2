@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { BidGroup, GroupVehicle, VehicleBid, GroupBidSummary } from '../types'
+import { BidGroup, GroupBidSummary } from '../types'
 
 // Mock data for demonstration
 const mockGroups: BidGroup[] = [
@@ -140,9 +140,9 @@ const mockGroups: BidGroup[] = [
 ]
 
 export default function GroupBiddingPanel() {
-  const [activeGroups, setActiveGroups] = useState<BidGroup[]>(mockGroups)
+  const [activeGroups] = useState<BidGroup[]>(mockGroups)
   const [expandedGroups, setExpandedGroups] = useState<string[]>([])
-  const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
+  const [,] = useState<string | null>(null)
 
   const toggleGroupExpansion = (groupId: string) => {
     setExpandedGroups(prev => 
@@ -160,7 +160,7 @@ export default function GroupBiddingPanel() {
         groupId: group.groupId,
         vehicleId: v.vehicleId,
         bidAmount: v.yourBid!,
-        status: v.bidStatus || 'pending' as any,
+        status: v.bidStatus || 'pending',
         placedAt: new Date(),
         lastUpdated: new Date()
       }))
@@ -217,7 +217,7 @@ export default function GroupBiddingPanel() {
                 </p>
                 <p className="text-sm text-yellow-800 mt-1">
                   When bidding on vehicles in a group, you must win the specified minimum number of vehicles from that group. 
-                  For example, "Buy any 2 from Group A" means you need to win at least 2 vehicles from the available options in Group A.
+                  For example, &quot;Buy any 2 from Group A&quot; means you need to win at least 2 vehicles from the available options in Group A.
                   You can bid different amounts on each vehicle.
                 </p>
               </div>

@@ -151,6 +151,33 @@ export default function DepositPage() {
                     </svg>
                   )}
                 </label>
+
+                <label className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all hover:bg-gray-50 ${paymentMethod === 'wise' ? 'border-[#FA7921] bg-orange-50' : 'border-gray-200'}`}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="wise"
+                    checked={paymentMethod === 'wise'}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="w-4 h-4 text-[#FA7921] focus:ring-[#FA7921]"
+                  />
+                  <div className="ml-3 flex-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                        </svg>
+                      </div>
+                      <span className="font-medium text-gray-900">Wise</span>
+                    </div>
+                    <p className="text-xs text-gray-600 mt-1">International Transfer (Best Rates)</p>
+                  </div>
+                  {paymentMethod === 'wise' && (
+                    <svg className="w-5 h-5 text-[#FA7921]" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </label>
               </div>
             </div>
 

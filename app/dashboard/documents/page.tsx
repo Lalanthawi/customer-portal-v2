@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 
 // Types
@@ -196,7 +195,7 @@ const purchasedVehicles: PurchasedVehicle[] = [
 export default function DocumentsPage() {
   const [activeTab, setActiveTab] = useState<'translations' | 'purchased'>('translations')
   const [showUploadModal, setShowUploadModal] = useState(false)
-  const [selectedInspection, setSelectedInspection] = useState<VehicleInspection | null>(null)
+  const [, setSelectedInspection] = useState<VehicleInspection | null>(null)
   const [dragActive, setDragActive] = useState(false)
 
   // Calculate total inspection fees

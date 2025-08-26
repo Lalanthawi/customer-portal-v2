@@ -139,7 +139,6 @@ export function InspectionTimeRestriction() {
       const jstTime = new Date(now.getTime() + (jstOffset + localOffset) * 60000)
       
       const hours = jstTime.getHours()
-      const hoursUntilDeadline = 13 - hours // 1 PM JST deadline
       
       // Show warning if within 2 hours of 1 PM JST
       setShowWarning(hours >= 11 && hours < 13)

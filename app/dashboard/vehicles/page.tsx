@@ -315,7 +315,7 @@ export default function MyVehiclesPage() {
           {/* Status Filter */}
           <select
             value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value as any)}
+            onChange={(e) => setFilterStatus(e.target.value as VehicleStatus | 'all')}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
           >
             <option value="all">All Status</option>
@@ -330,7 +330,7 @@ export default function MyVehiclesPage() {
           {/* Source Filter */}
           <select
             value={filterSource}
-            onChange={(e) => setFilterSource(e.target.value as any)}
+            onChange={(e) => setFilterSource(e.target.value as VehicleSource | 'all')}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
           >
             <option value="all">All Sources</option>
@@ -342,7 +342,7 @@ export default function MyVehiclesPage() {
           {/* Year Filter */}
           <select
             value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value as any)}
+            onChange={(e) => setSelectedYear(e.target.value as string)}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
           >
             <option value="all">All Years</option>
