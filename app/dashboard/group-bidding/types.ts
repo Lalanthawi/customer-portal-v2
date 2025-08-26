@@ -1,48 +1,84 @@
 export type GroupId = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 
   'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z'
 
-export type BidStatus = 'pending' | 'winning' | 'outbid' | 'won' | 'lost'
+export type BidStatus = 'pending' | 'winning' | 'outbid' | 'won' | 'lost' | 'partial-win'
 
-export interface GroupBid {
+// Individual vehicle in a group
+export interface GroupVehicle {
   id: string
-  groupId: GroupId
-  bidAmount: number
-  quantity: number
-  totalAmount: number
-  status: BidStatus
-  timestamp: Date
-  highestBid?: number
-  totalBidders?: number
+  vehicleId: string
+  title: string
+  image: string
+  specs: {
+    year: number
+    mileage: string
+    transmission: string
+  }
+  startingPrice: number
+  currentHighestBid: number
+  yourBid?: number
+  bidStatus?: BidStatus
+  auctionEndTime: Date
 }
 
-export interface GroupInfo {
+// Group configuration - "Buy Y from X vehicles"
+export interface BidGroup {
   groupId: GroupId
-  currentHighestBid: number
-  totalBidders: number
-  yourBid?: GroupBid
-  status: 'available' | 'has-bid' | 'winning' | 'outbid'
+  name: string
+  description: string
+  vehicles: GroupVehicle[]
+  requiredWins: number // Y - number of cars to win from this group
+  totalVehicles: number // X - total number of vehicles in the group
+  status: 'active' | 'completed' | 'cancelled'
+  createdAt: Date
   endTime: Date
 }
 
-export interface BidFormData {
-  groupId: GroupId | null
+// User's bid on a specific vehicle within a group
+export interface VehicleBid {
+  id: string
+  groupId: GroupId
+  vehicleId: string
   bidAmount: number
-  quantity: number
+  status: BidStatus
+  placedAt: Date
+  lastUpdated: Date
+}
+
+// Summary of user's group bidding activity
+export interface GroupBidSummary {
+  groupId: GroupId
+  groupName: string
+  requiredWins: number
+  totalVehicles: number
+  vehicleBids: VehicleBid[]
+  currentWins: number
+  potentialWins: number
+  totalBidAmount: number
+  status: 'in-progress' | 'requirement-met' | 'requirement-not-met' | 'partial'
+}
+
+export interface GroupBidFormData {
+  groupId: GroupId
+  vehicleId: string
+  bidAmount: number
 }
 
 export interface WebSocketMessage {
-  type: 'bid_update' | 'status_change' | 'auction_end'
+  type: 'bid_update' | 'status_change' | 'auction_end' | 'group_update'
   groupId: GroupId
+  vehicleId?: string
   data: {
     highestBid?: number
     totalBidders?: number
     status?: BidStatus
     winnerId?: string
+    groupStatus?: string
   }
 }
 
 export interface ValidationError {
-  field: 'groupId' | 'bidAmount' | 'quantity'
+  field: 'groupId' | 'vehicleId' | 'bidAmount' | 'requiredWins'
   message: string
 }
 

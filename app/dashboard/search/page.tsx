@@ -983,6 +983,191 @@ function SearchResults() {
         </div>
       </div>
 
+      {/* Quick Filter Bar */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4">
+        <div className="flex items-center gap-3 overflow-x-auto pb-2">
+          <span className="text-sm font-medium text-gray-700 flex-shrink-0">Quick Filters:</span>
+          
+          {/* Price Range */}
+          <select
+            value={`${priceRange[0]}-${priceRange[1]}`}
+            onChange={(e) => {
+              const [min, max] = e.target.value.split('-').map(Number)
+              setPriceRange([min, max])
+            }}
+            className="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent flex-shrink-0"
+          >
+            <option value="0-10000000">Any Price</option>
+            <option value="0-1000000">Under ¥1M</option>
+            <option value="1000000-3000000">¥1M - ¥3M</option>
+            <option value="3000000-5000000">¥3M - ¥5M</option>
+            <option value="5000000-10000000">Above ¥5M</option>
+          </select>
+
+          {/* Year Range */}
+          <select
+            value={`${yearRange[0]}-${yearRange[1]}`}
+            onChange={(e) => {
+              const [min, max] = e.target.value.split('-').map(Number)
+              setYearRange([min, max])
+            }}
+            className="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent flex-shrink-0"
+          >
+            <option value="2015-2024">Any Year</option>
+            <option value="2023-2024">2023-2024</option>
+            <option value="2020-2024">2020 & Newer</option>
+            <option value="2015-2019">2015-2019</option>
+          </select>
+
+          <div className="h-6 w-px bg-gray-300 flex-shrink-0"></div>
+
+          {/* Popular Makes */}
+          {['Toyota', 'Honda', 'Nissan', 'Mazda'].map(make => (
+            <button
+              key={make}
+              onClick={() => {
+                if (selectedMakes.includes(make)) {
+                  setSelectedMakes(selectedMakes.filter(m => m !== make))
+                } else {
+                  setSelectedMakes([...selectedMakes, make])
+                }
+              }}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex-shrink-0 ${
+                selectedMakes.includes(make)
+                  ? 'bg-[#FA7921] text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {make}
+            </button>
+          ))}
+
+          <div className="h-6 w-px bg-gray-300 flex-shrink-0"></div>
+
+          {/* Body Types */}
+          {['Sedan', 'SUV', 'Hatchback'].map(type => (
+            <button
+              key={type}
+              onClick={() => {
+                if (selectedBodyTypes.includes(type)) {
+                  setSelectedBodyTypes(selectedBodyTypes.filter(t => t !== type))
+                } else {
+                  setSelectedBodyTypes([...selectedBodyTypes, type])
+                }
+              }}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex-shrink-0 ${
+                selectedBodyTypes.includes(type)
+                  ? 'bg-[#FA7921] text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {type}
+            </button>
+          ))}
+
+          <div className="h-6 w-px bg-gray-300 flex-shrink-0"></div>
+
+          {/* Quick Options */}
+          <button
+            onClick={() => {
+              if (selectedTransmissions.includes('Automatic')) {
+                setSelectedTransmissions(selectedTransmissions.filter(t => t !== 'Automatic'))
+              } else {
+                setSelectedTransmissions([...selectedTransmissions, 'Automatic'])
+              }
+            }}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex-shrink-0 ${
+              selectedTransmissions.includes('Automatic')
+                ? 'bg-[#FA7921] text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Automatic
+          </button>
+
+          <button
+            onClick={() => {
+              if (selectedFuelTypes.includes('Hybrid')) {
+                setSelectedFuelTypes(selectedFuelTypes.filter(f => f !== 'Hybrid'))
+              } else {
+                setSelectedFuelTypes([...selectedFuelTypes, 'Hybrid'])
+              }
+            }}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex-shrink-0 ${
+              selectedFuelTypes.includes('Hybrid')
+                ? 'bg-[#FA7921] text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Hybrid
+          </button>
+
+          <button
+            onClick={() => setVerifiedOnly(!verifiedOnly)}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex-shrink-0 ${
+              verifiedOnly
+                ? 'bg-green-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Verified Only
+          </button>
+
+          {/* Clear All - Shows when filters are active */}
+          {(selectedMakes.length > 0 || selectedBodyTypes.length > 0 || selectedTransmissions.length > 0 || 
+            selectedFuelTypes.length > 0 || priceRange[0] > 0 || priceRange[1] < 10000000 || 
+            yearRange[0] > 2015 || yearRange[1] < 2024 || verifiedOnly) && (
+            <>
+              <div className="h-6 w-px bg-gray-300 flex-shrink-0"></div>
+              <button
+                onClick={() => {
+                  setSelectedMakes([])
+                  setSelectedBodyTypes([])
+                  setSelectedTransmissions([])
+                  setSelectedFuelTypes([])
+                  setPriceRange([0, 10000000])
+                  setYearRange([2015, 2024])
+                  setMileageMax(200000)
+                  setSelectedColors([])
+                  setSelectedDriveTypes([])
+                  setSelectedConditions([])
+                  setSelectedLocations([])
+                  setSelectedSeats([])
+                  setSelectedDoors([])
+                  setSelectedFeatures([])
+                  setEngineSizeRange([0, 5000])
+                  setVerifiedOnly(false)
+                }}
+                className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100 transition-all flex-shrink-0 flex items-center gap-1"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Clear All
+              </button>
+            </>
+          )}
+        </div>
+        
+        {/* Active Filters Summary */}
+        {(selectedMakes.length > 0 || selectedBodyTypes.length > 0 || selectedTransmissions.length > 0 || 
+          selectedFuelTypes.length > 0 || selectedColors.length > 0 || selectedDriveTypes.length > 0 ||
+          selectedConditions.length > 0 || selectedLocations.length > 0 || selectedSeats.length > 0 ||
+          selectedDoors.length > 0 || selectedFeatures.length > 0) && (
+          <div className="pt-3 border-t border-gray-200 flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-gray-500">Active:</span>
+            {[...selectedMakes, ...selectedBodyTypes, ...selectedTransmissions, ...selectedFuelTypes,
+              ...selectedColors, ...selectedDriveTypes, ...selectedConditions, ...selectedLocations,
+              ...selectedSeats.map(s => `${s} seats`), ...selectedDoors.map(d => `${d} doors`),
+              ...selectedFeatures].map((filter, index) => (
+              <span key={index} className="px-2 py-1 bg-[#FA7921]/10 text-[#FA7921] rounded text-xs">
+                {filter}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Controls Bar */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
         <div className="flex items-center justify-between">
@@ -1021,9 +1206,9 @@ function SearchResults() {
               className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
               </svg>
-              Filters
+              {showFilters ? 'Hide' : 'Show'} Advanced Filters
             </button>
           </div>
 

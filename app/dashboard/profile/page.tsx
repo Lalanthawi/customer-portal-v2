@@ -8,6 +8,7 @@ import type { ProfileTab, UserProfileData, PasswordData, Device, NotificationSet
 // Tab definitions
 const tabs: ProfileTab[] = [
   { id: 'account', label: 'Account' },
+  { id: 'company', label: 'Business Details' },
   { id: 'security', label: 'Security' },
   { id: 'notifications', label: 'Notifications' },
   { id: 'billing', label: 'Billing & Payment' },
@@ -93,6 +94,37 @@ function ProfileSettingsContent() {
     country: 'United States',
     language: 'English',
   })
+  const [companyData, setCompanyData] = useState({
+    hasCompany: false,
+    companyName: '',
+    companyRegistrationNumber: '',
+    vatNumber: '',
+    businessType: '',
+    companyAddress: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    country: 'United States',
+    yearEstablished: '',
+    importFrequency: '',
+    averageMonthlyVolume: '',
+  })
+  // Account types based on user profile
+  const getAccountType = () => {
+    if (companyData.hasCompany) {
+      if (companyData.importFrequency === 'monthly' || companyData.importFrequency === 'weekly') {
+        return { type: 'Premier Dealer', description: 'Full access with priority support' }
+      }
+      return { type: 'Business Account', description: 'Verified business with streamlined bidding' }
+    } else {
+      // Check if user has bid history to determine if they're new or regular
+      const hasPreviousPurchases = false // This would check actual purchase history
+      if (hasPreviousPurchases) {
+        return { type: 'Trusted Buyer', description: 'Regular customer with instant bid approval' }
+      }
+      return { type: 'Standard Account', description: 'New buyer - bids require approval' }
+    }
+  }
   const [passwordData, setPasswordData] = useState<PasswordData>({
     currentPassword: '',
     newPassword: '',
@@ -392,6 +424,375 @@ function ProfileSettingsContent() {
                 </div>
               </div>
             </div>
+          </div>
+        )
+
+      case 'company':
+        return (
+          <div className="space-y-8">
+            {/* Account Type Display */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200 p-6">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">Account Type</h3>
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-2xl font-bold text-blue-900">{getAccountType().type}</span>
+                    {getAccountType().type === 'Premier Dealer' && (
+                      <span className="px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs font-bold rounded-full shadow-sm">
+                        PREMIUM
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-600">{getAccountType().description}</p>
+                  
+                  {getAccountType().type === 'Standard Account' && (
+                    <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <p className="text-xs text-yellow-800">
+                        <strong>Note:</strong> Your bids will require approval from your sales representative before being placed.
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <div className="text-right">
+                  {!companyData.hasCompany && (
+                    <p className="text-xs text-gray-500 mb-2">Add business details to upgrade</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Company Toggle */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Business Account</h3>
+                    <p className="text-xs text-gray-500 mt-0.5">Register as a business to unlock additional features</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={companyData.hasCompany}
+                      onChange={(e) => setCompanyData({ ...companyData, hasCompany: e.target.checked })}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FA7921]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FA7921]"></div>
+                  </label>
+                </div>
+              </div>
+              
+              {companyData.hasCompany && (
+                <form className="p-6 space-y-6">
+                  {/* Company Information */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Company Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={companyData.companyName}
+                        onChange={(e) => setCompanyData({ ...companyData, companyName: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                        placeholder="Enter company name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Registration Number <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={companyData.companyRegistrationNumber}
+                        onChange={(e) => setCompanyData({ ...companyData, companyRegistrationNumber: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                        placeholder="Company registration number"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        VAT/Tax Number
+                      </label>
+                      <input
+                        type="text"
+                        value={companyData.vatNumber}
+                        onChange={(e) => setCompanyData({ ...companyData, vatNumber: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                        placeholder="VAT or tax number (optional)"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Business Type <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        value={companyData.businessType}
+                        onChange={(e) => setCompanyData({ ...companyData, businessType: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                        required
+                      >
+                        <option value="">Select business type</option>
+                        <option value="dealer">Auto Dealer</option>
+                        <option value="importer">Vehicle Importer</option>
+                        <option value="broker">Auto Broker</option>
+                        <option value="rental">Car Rental Company</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Company Address */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Business Address <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={companyData.companyAddress}
+                      onChange={(e) => setCompanyData({ ...companyData, companyAddress: e.target.value })}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                      placeholder="Street address"
+                      required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        City <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={companyData.city}
+                        onChange={(e) => setCompanyData({ ...companyData, city: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        State/Province <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={companyData.state}
+                        onChange={(e) => setCompanyData({ ...companyData, state: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Postal Code <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={companyData.postalCode}
+                        onChange={(e) => setCompanyData({ ...companyData, postalCode: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Country <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        value={companyData.country}
+                        onChange={(e) => setCompanyData({ ...companyData, country: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                        required
+                      >
+                        {countries.map((country) => (
+                          <option key={country} value={country}>{country}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Business Activity */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Year Established
+                      </label>
+                      <input
+                        type="number"
+                        value={companyData.yearEstablished}
+                        onChange={(e) => setCompanyData({ ...companyData, yearEstablished: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                        placeholder="YYYY"
+                        min="1900"
+                        max={new Date().getFullYear()}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Import Frequency
+                      </label>
+                      <select
+                        value={companyData.importFrequency}
+                        onChange={(e) => setCompanyData({ ...companyData, importFrequency: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                      >
+                        <option value="">Select frequency</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="yearly">Yearly</option>
+                        <option value="occasional">Occasional</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Monthly Volume
+                      </label>
+                      <select
+                        value={companyData.averageMonthlyVolume}
+                        onChange={(e) => setCompanyData({ ...companyData, averageMonthlyVolume: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                      >
+                        <option value="">Select volume</option>
+                        <option value="1-5">1-5 vehicles</option>
+                        <option value="6-20">6-20 vehicles</option>
+                        <option value="21-50">21-50 vehicles</option>
+                        <option value="51-100">51-100 vehicles</option>
+                        <option value="100+">100+ vehicles</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Benefits Display */}
+                  {companyData.importFrequency && (
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
+                      <h4 className="text-sm font-semibold text-green-900 mb-3">Business Account Benefits:</h4>
+                      <ul className="space-y-2 text-sm text-green-800">
+                        <li className="flex items-start gap-2">
+                          <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Instant bid approval - no waiting for staff confirmation</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Priority customer support with dedicated account manager</span>
+                        </li>
+                        {(companyData.importFrequency === 'weekly' || companyData.importFrequency === 'monthly') && (
+                          <>
+                            <li className="flex items-start gap-2">
+                              <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              <span className="font-semibold">Premier Dealer Status - Volume discounts available</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              <span className="font-semibold">Access to exclusive pre-auction listings</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              <span className="font-semibold">Extended payment terms (NET 30)</span>
+                            </li>
+                          </>
+                        )}
+                      </ul>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3 pt-4 border-t border-gray-100">
+                    <button
+                      type="submit"
+                      className="px-6 py-3 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02] flex items-center gap-2"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Save Business Details
+                    </button>
+                    <button
+                      type="button"
+                      className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+                      onClick={() => setCompanyData({ ...companyData, hasCompany: false })}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              )}
+              
+              {!companyData.hasCompany && (
+                <div className="p-6">
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                      </svg>
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Register Your Business</h4>
+                    <p className="text-sm text-gray-600 mb-6 max-w-md mx-auto">
+                      Enable business account to get instant bid approval, priority support, and access to exclusive features.
+                    </p>
+                    <button
+                      onClick={() => setCompanyData({ ...companyData, hasCompany: true })}
+                      className="px-6 py-3 bg-[#FA7921] text-white rounded-xl font-medium hover:bg-[#FA7921]/90 transition-colors"
+                    >
+                      Add Business Details
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Dealer Network (for Premier Dealers) */}
+            {getAccountType().type === 'Premier Dealer' && (
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                  <h3 className="text-lg font-semibold text-gray-900">Customer Network</h3>
+                  <p className="text-xs text-gray-500 mt-0.5">Manage your customers and monitor their activities</p>
+                </div>
+                <div className="p-6">
+                  <div className="mb-4">
+                    <p className="text-sm text-gray-600 mb-4">
+                      As a Premier Dealer, you can view vehicles your registered customers are interested in.
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-gray-900">Customer #1234</p>
+                        <p className="text-sm text-gray-600">Last active: 2 hours ago • 3 active bids</p>
+                      </div>
+                      <button className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium">
+                        View Activity
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-gray-900">Customer #5678</p>
+                        <p className="text-sm text-gray-600">Last active: 1 day ago • Watching 5 vehicles</p>
+                      </div>
+                      <button className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium">
+                        View Activity
+                      </button>
+                    </div>
+                  </div>
+                  <button className="mt-4 px-4 py-2 bg-[#FA7921] text-white rounded-lg text-sm font-medium hover:bg-[#FA7921]/90">
+                    + Register New Customer
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )
 
@@ -949,6 +1350,8 @@ function ProfileSettingsContent() {
               switch(tab.id) {
                 case 'account':
                   return <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                case 'company':
+                  return <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                 case 'security':
                   return <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                 case 'notifications':

@@ -1,5 +1,13 @@
 export type BidStatus = 'won' | 'lost' | 'active' | 'outbid'
 
+export interface GroupInfo {
+  groupId: string
+  groupName: string
+  requiredWins: number
+  totalVehicles: number
+  currentWins?: number
+}
+
 export interface AuctionBid {
   id: string
   auctionId: string
@@ -27,6 +35,7 @@ export interface AuctionBid {
     rating: number
     verified: boolean
   }
+  groupInfo?: GroupInfo // Added group information
 }
 
 export interface BidStatistics {
@@ -36,6 +45,8 @@ export interface BidStatistics {
   activeBids: number
   totalSpent: number
   savedAmount: number
-  winRate: number
+  outbidCount: number
   avgBidAmount: number
+  pendingPayments: number
+  inTransitVehicles: number
 }

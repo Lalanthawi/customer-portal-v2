@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { manufacturerLogos } from './ManufacturerLogos'
 import AdvancedSearchStatic from '../components/search/AdvancedSearchStatic'
@@ -118,19 +118,118 @@ const manufacturers: Manufacturer[] = [
 // Removed unused bodyTypes array
 // Removed unused fuelTypes array
 
-const recentSearches = [
-  'Toyota Camry 2022',
-  'Under ¥3,000,000',
-  'Low Mileage',
-  'Hybrid',
-  'SUV',
-  'Electric',
-]
+// Country-specific trending searches based on import regulations
+const trendingSearchesByCountry: { [key: string]: string[] } = {
+  // Sri Lanka - Can only import cars within 3 years old, prefer specific models
+  'LK': [
+    'Toyota Prius 2023',
+    'Honda Vezel 2024',
+    'Nissan X-Trail 2023',
+    'Toyota Aqua 2024',
+    'Suzuki Swift 2023',
+    'Honda Fit 2024',
+  ],
+  // United States - Only imports 25+ year old cars (JDM classics)
+  'US': [
+    'Nissan Skyline R32',
+    'Toyota Supra MK4',
+    'Mazda RX-7 FD',
+    'Honda NSX 1991',
+    'Mitsubishi Lancer Evo III',
+    'Subaru Impreza WRX STI 1999',
+  ],
+  // United Kingdom - Imports both new and classic cars
+  'GB': [
+    'Toyota GR Yaris 2023',
+    'Nissan GTR R35',
+    'Classic Mini Cooper',
+    'Toyota Land Cruiser 2024',
+    'Mazda MX-5 2023',
+    'JDM Classics',
+  ],
+  // Australia - Similar to UK, both ends of spectrum
+  'AU': [
+    'Toyota HiLux 2023',
+    'Nissan Patrol 2024',
+    'Toyota Land Cruiser 70',
+    'Mitsubishi Pajero 2023',
+    'Mazda BT-50 2024',
+    'JDM Sports Cars',
+  ],
+  // Canada - Similar to US but slightly more flexible (15+ years)
+  'CA': [
+    'Nissan Skyline R33',
+    'Toyota Aristo V300',
+    'Honda Integra Type R',
+    'Subaru Legacy GT',
+    'Mitsubishi Delica',
+    'Toyota Century 2008',
+  ],
+  // New Zealand - Popular JDM imports
+  'NZ': [
+    'Toyota Aqua Hybrid',
+    'Nissan Leaf 2023',
+    'Honda Fit Hybrid',
+    'Mazda Demio 2023',
+    'Suzuki Swift Sport',
+    'Toyota Vitz 2023',
+  ],
+  // Ireland - Mix of UK and EU preferences
+  'IE': [
+    'Toyota Corolla 2023',
+    'Honda Civic Type R',
+    'Nissan Qashqai 2024',
+    'Toyota C-HR 2023',
+    'Mazda CX-5 2024',
+    'Hybrid vehicles',
+  ],
+  // Kenya/East Africa - Prefer specific reliable models
+  'KE': [
+    'Toyota Probox',
+    'Nissan Note 2020',
+    'Toyota Fielder',
+    'Mazda Demio 2019',
+    'Honda Fit 2020',
+    'Toyota Succeed',
+  ],
+  // Russia - Cold weather suitable vehicles
+  'RU': [
+    'Toyota Land Cruiser',
+    'Nissan Patrol',
+    'Mitsubishi Pajero',
+    'Toyota RAV4 2023',
+    'Subaru Forester',
+    'Toyota Camry 2023',
+  ],
+  // Default/Random for other countries
+  'default': [
+    'Toyota Camry 2022',
+    'Under ¥3,000,000',
+    'Low Mileage',
+    'Hybrid',
+    'SUV',
+    'Electric',
+  ],
+}
+
+// Function to detect user's country (in production, this would come from user profile or IP geolocation)
+const getUserCountry = (): string => {
+  // This would normally come from user profile or geolocation API
+  // For now, we'll check browser language or return default
+  if (typeof window !== 'undefined') {
+    const lang = navigator.language || navigator.languages[0]
+    const countryCode = lang.split('-')[1] || 'default'
+    return countryCode.toUpperCase()
+  }
+  return 'default'
+}
 
 export default function ExplorePage() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
   const [showFilters, setShowFilters] = useState(false)
+  const [trendingSearches, setTrendingSearches] = useState<string[]>([])
+  const [userCountry, setUserCountry] = useState<string>('default')
   const [filters, setFilters] = useState<FilterState>({
     manufacturers: [],
     priceRange: [100000, 10000000],
@@ -149,6 +248,24 @@ export default function ExplorePage() {
     location: '',
     sortBy: 'relevance',
   })
+
+  // Load country-specific trending searches on component mount
+  useEffect(() => {
+    const country = getUserCountry()
+    setUserCountry(country)
+    
+    // Get trending searches for the user's country
+    const searches = trendingSearchesByCountry[country] || trendingSearchesByCountry['default']
+    
+    // If country is unknown, randomly select from different regions for variety
+    if (country === 'default' || !trendingSearchesByCountry[country]) {
+      const regions = ['LK', 'US', 'GB', 'AU', 'CA', 'NZ', 'KE']
+      const randomRegion = regions[Math.floor(Math.random() * regions.length)]
+      setTrendingSearches(trendingSearchesByCountry[randomRegion])
+    } else {
+      setTrendingSearches(searches)
+    }
+  }, [])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -269,9 +386,11 @@ export default function ExplorePage() {
             </form>
 
             {/* Recent Searches - Modern Pills */}
-            <div className="flex flex-wrap gap-2 justify-center mt-8">
-              <span className="text-white/60 text-sm">Trending:</span>
-              {recentSearches.map((search, index) => (
+            <div className="flex flex-wrap items-center gap-2 justify-center mt-8">
+              <span className="text-white/60 text-sm font-medium mr-1">
+                Trending {userCountry !== 'default' && `in ${userCountry}`}:
+              </span>
+              {trendingSearches.map((search, index) => (
                 <button
                   key={index}
                   onClick={() => setSearchQuery(search)}

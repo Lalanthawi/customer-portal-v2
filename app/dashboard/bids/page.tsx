@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import type { AuctionBid, BidStatus, BidStatistics } from './types'
+import type { AuctionBid, BidStatus, BidStatistics, GroupInfo } from './types'
 
 // Mock data for demonstration
 const mockBids: AuctionBid[] = [
@@ -33,6 +33,13 @@ const mockBids: AuctionBid[] = [
       name: 'Tokyo Motors',
       rating: 4.8,
       verified: true
+    },
+    groupInfo: {
+      groupId: 'A',
+      groupName: 'Group A - Premium Sedans',
+      requiredWins: 2,
+      totalVehicles: 3,
+      currentWins: 1
     }
   },
   {
@@ -84,6 +91,13 @@ const mockBids: AuctionBid[] = [
       name: 'Premium Cars Japan',
       rating: 4.9,
       verified: true
+    },
+    groupInfo: {
+      groupId: 'B',
+      groupName: 'Group B - Economy Selection',
+      requiredWins: 3,
+      totalVehicles: 6,
+      currentWins: 0
     }
   },
   {
@@ -137,6 +151,13 @@ const mockBids: AuctionBid[] = [
       name: 'Kobe Cars',
       rating: 4.6,
       verified: true
+    },
+    groupInfo: {
+      groupId: 'A',
+      groupName: 'Group A - Premium Sedans',
+      requiredWins: 2,
+      totalVehicles: 3,
+      currentWins: 2
     }
   }
 ]
@@ -148,8 +169,10 @@ const statistics: BidStatistics = {
   activeBids: 5,
   totalSpent: 28500000,
   savedAmount: 1200000,
-  winRate: 60,
-  avgBidAmount: 2375000
+  outbidCount: 18,
+  avgBidAmount: 2375000,
+  pendingPayments: 2,
+  inTransitVehicles: 3
 }
 
 export default function MyBidsPage() {
@@ -248,10 +271,10 @@ export default function MyBidsPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <span className="text-xs text-green-700 font-medium">{statistics.winRate}% Win Rate</span>
+            <span className="text-xs text-green-700 font-medium">{statistics.inTransitVehicles} In Transit</span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{statistics.wonAuctions}</p>
-          <p className="text-xs text-gray-600 mt-1">Auctions Won</p>
+          <p className="text-xs text-gray-600 mt-1">Vehicles Won</p>
         </div>
 
         <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl shadow-sm border border-amber-200 p-4">
@@ -263,21 +286,21 @@ export default function MyBidsPage() {
             </div>
             <span className="text-xs text-amber-700">{statistics.activeBids} Active</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">¥{(statistics.totalSpent / 1000000).toFixed(1)}M</p>
-          <p className="text-xs text-gray-600 mt-1">Total Spent</p>
+          <p className="text-2xl font-bold text-gray-900">{statistics.activeBids + statistics.outbidCount}</p>
+          <p className="text-xs text-gray-600 mt-1">Active Auctions</p>
         </div>
 
         <div className="bg-gradient-to-br from-[#FA7921]/10 to-[#FF9A56]/10 rounded-xl shadow-sm border border-[#FA7921]/30 p-4">
           <div className="flex items-center justify-between mb-2">
             <div className="w-10 h-10 bg-[#FA7921]/20 rounded-lg flex items-center justify-center">
               <svg className="w-5 h-5 text-[#FA7921]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
               </svg>
             </div>
-            <span className="text-xs text-[#FA7921] font-medium">Saved</span>
+            <span className="text-xs text-[#FA7921] font-medium">{statistics.pendingPayments} Pending</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">¥{(statistics.savedAmount / 1000000).toFixed(1)}M</p>
-          <p className="text-xs text-gray-600 mt-1">Amount Saved</p>
+          <p className="text-2xl font-bold text-gray-900">¥{(statistics.avgBidAmount / 1000000).toFixed(1)}M</p>
+          <p className="text-xs text-gray-600 mt-1">Avg Bid Amount</p>
         </div>
       </div>
 
@@ -359,7 +382,19 @@ export default function MyBidsPage() {
                 <div className="flex-1">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">{bid.vehicleTitle}</h3>
+                      <div className="flex items-start gap-3 mb-1">
+                        <h3 className="text-lg font-semibold text-gray-900">{bid.vehicleTitle}</h3>
+                        {bid.groupInfo && (
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center justify-center w-6 h-6 bg-[#FA7921] text-white text-xs font-bold rounded">
+                              {bid.groupInfo.groupId}
+                            </span>
+                            <span className="text-xs text-gray-600">
+                              {bid.groupInfo.currentWins}/{bid.groupInfo.requiredWins} wins needed
+                            </span>
+                          </div>
+                        )}
+                      </div>
                       <p className="text-sm text-gray-500 mb-3">Auction ID: {bid.auctionId}</p>
                       
                       <div className="flex flex-wrap gap-3 text-sm text-gray-600 mb-3">

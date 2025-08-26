@@ -54,6 +54,14 @@ export default function BidDetailPage() {
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [showAddressModal, setShowAddressModal] = useState(false)
   const [selectedAddress, setSelectedAddress] = useState<'default' | 'new'>('default')
+  const [showChangeBidModal, setShowChangeBidModal] = useState(false)
+  const [showCancelBidModal, setShowCancelBidModal] = useState(false)
+  const [newBidAmount, setNewBidAmount] = useState('')
+  const [showUrgentWarning, setShowUrgentWarning] = useState(false)
+  const [cancellationReason, setCancellationReason] = useState('')
+  const [selectedPort, setSelectedPort] = useState('')
+  const [vehicleStatus, setVehicleStatus] = useState<'normal' | 'repair'>('normal')
+  const [repairRemarks, setRepairRemarks] = useState('')
   const [defaultAddress] = useState({
     name: 'John Doe',
     street: '1-2-3 Shibuya',
@@ -106,8 +114,18 @@ export default function BidDetailPage() {
     ]
   })
 
+  // Available ports for shipping
+  const availablePorts = [
+    'Yokohama Port',
+    'Nagoya Port',
+    'Osaka Port',
+    'Kobe Port',
+    'Tokyo Port',
+    'Kawasaki Port'
+  ]
+
   // Shipment timeline stages (only for won auctions)
-  const [shipmentStages] = useState<TimelineStage[]>([
+  const [shipmentStages, setShipmentStages] = useState<TimelineStage[]>([
     {
       id: 'auction-won',
       title: 'Auction Won',
@@ -124,11 +142,11 @@ export default function BidDetailPage() {
       id: 'payment-documents',
       title: 'Payment & Documents',
       description: 'Complete payment and submit required documents',
-      status: 'in-progress',
-      progress: 25,
-      tasksCompleted: 1,
+      status: 'completed',
+      progress: 100,
+      tasksCompleted: 4,
       totalTasks: 4,
-      estimatedDate: new Date('2024-01-17T17:00:00'),
+      completedDate: new Date('2024-01-14T15:30:00'),
       isExpandable: true,
       details: [
         {
@@ -145,19 +163,31 @@ export default function BidDetailPage() {
         {
           id: 'payment-2',
           title: 'Confirm Shipping Address',
-          status: 'pending',
-          description: 'Confirm or update delivery address',
-          dueDate: new Date('2024-01-13T17:00:00'),
+          status: 'completed',
+          description: 'Delivery address confirmed',
+          completedDate: new Date('2024-01-12T14:20:00'),
           actions: [
             { label: 'Manage Address', icon: 'location', onClick: () => setShowAddressModal(true) }
           ]
         },
         {
           id: 'payment-3',
-          title: 'Shipping Information',
-          status: 'pending',
-          description: 'Port selection and customs details',
-          dueDate: new Date('2024-01-14T17:00:00')
+          title: 'Port Selection',
+          status: 'completed',
+          description: selectedPort ? `Departure: ${selectedPort}` : 'Select departure port',
+          completedDate: selectedPort ? new Date('2024-01-14T11:00:00') : undefined,
+          actions: [
+            { 
+              label: 'Select Port', 
+              icon: 'anchor',
+              onClick: () => {
+                const port = prompt(`Select departure port:\n${availablePorts.join('\n')}`, selectedPort || availablePorts[0])
+                if (port && availablePorts.includes(port)) {
+                  setSelectedPort(port)
+                }
+              }
+            }
+          ]
         },
         {
           id: 'payment-4',
@@ -170,20 +200,89 @@ export default function BidDetailPage() {
       ]
     },
     {
+      id: 'inland-transport',
+      title: 'Inland Transport',
+      description: selectedPort ? `USS Tokyo to ${selectedPort}` : 'Transport to departure port',
+      status: 'in-progress',
+      progress: 60,
+      tasksCompleted: 1,
+      totalTasks: 2,
+      estimatedDate: new Date('2024-01-18T17:00:00'),
+      isExpandable: true,
+      details: [
+        {
+          id: 'transport-1',
+          title: 'Vehicle Pickup',
+          status: 'completed',
+          description: 'Vehicle collected from USS Tokyo',
+          completedDate: new Date('2024-01-15T09:00:00'),
+          completedBy: 'Transport Team'
+        },
+        {
+          id: 'transport-2',
+          title: vehicleStatus === 'repair' ? 'Vehicle Under Repair' : 'In Transit to Port',
+          status: vehicleStatus === 'repair' ? 'pending' : 'in-progress',
+          description: vehicleStatus === 'repair' 
+            ? `Repair required: ${repairRemarks || 'Awaiting inspection'}` 
+            : selectedPort ? `En route to ${selectedPort}` : 'Transporting to port',
+          estimatedDate: new Date('2024-01-18T17:00:00'),
+          note: vehicleStatus === 'repair' ? repairRemarks : undefined,
+          actions: vehicleStatus === 'repair' ? [
+            {
+              label: 'Update Repair Status',
+              icon: 'wrench',
+              onClick: () => {
+                const remarks = prompt('Update repair remarks:', repairRemarks)
+                if (remarks !== null) {
+                  setRepairRemarks(remarks)
+                  if (remarks.toLowerCase().includes('completed')) {
+                    setVehicleStatus('normal')
+                  }
+                }
+              }
+            }
+          ] : undefined
+        }
+      ]
+    },
+    {
       id: 'shipping-preparation',
-      title: 'Shipping Preparation',
-      description: 'Vehicle inspection and preparation',
+      title: 'Port Processing',
+      description: selectedPort ? `At ${selectedPort} - Preparing for shipment` : 'Vehicle inspection and export preparation',
       status: 'pending',
       progress: 0,
       tasksCompleted: 0,
-      totalTasks: 2,
-      estimatedDate: new Date('2024-01-20T17:00:00'),
-      isExpandable: false
+      totalTasks: 3,
+      estimatedDate: new Date('2024-01-22T17:00:00'),
+      isExpandable: true,
+      details: [
+        {
+          id: 'prep-1',
+          title: 'Arrival at Port',
+          status: 'pending',
+          description: selectedPort ? `Vehicle arrived at ${selectedPort}` : 'Waiting for port arrival',
+          estimatedDate: new Date('2024-01-19T10:00:00')
+        },
+        {
+          id: 'prep-2',
+          title: 'Export Inspection',
+          status: 'pending',
+          description: 'JEVIC export inspection',
+          estimatedDate: new Date('2024-01-20T14:00:00')
+        },
+        {
+          id: 'prep-3',
+          title: 'Container Loading',
+          status: 'pending',
+          description: 'Vehicle loaded into shipping container',
+          estimatedDate: new Date('2024-01-22T16:00:00')
+        }
+      ]
     },
     {
-      id: 'in-transit',
-      title: 'In Transit',
-      description: 'Vehicle is being shipped',
+      id: 'ocean-transit',
+      title: 'Ocean Freight',
+      description: 'Vessel departure and ocean transport',
       status: 'pending',
       progress: 0,
       tasksCompleted: 0,
@@ -203,6 +302,15 @@ export default function BidDetailPage() {
       isExpandable: false
     }
   ])
+
+  // Simulate vehicle breakdown (for demo)
+  useEffect(() => {
+    // This would be triggered by actual events in production
+    if (selectedPort && Math.random() > 0.8) { // 20% chance for demo
+      setVehicleStatus('repair')
+      setRepairRemarks('Engine coolant leak detected during transport')
+    }
+  }, [selectedPort])
 
   const formatJPY = (amount: number) => {
     return new Intl.NumberFormat('ja-JP', {
@@ -282,6 +390,45 @@ export default function BidDetailPage() {
                     Complete Payment
                   </button>
                 )}
+                <Link
+                  href={`/dashboard/vehicle/${bidDetail.auctionId}`}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                >
+                  View Vehicle
+                </Link>
+              </div>
+            )}
+            
+            {(bidDetail.status === 'active' || bidDetail.status === 'outbid') && (
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={() => {
+                    const hoursUntilAuction = Math.abs(new Date(bidDetail.auctionEndDate).getTime() - new Date().getTime()) / (1000 * 60 * 60)
+                    if (hoursUntilAuction <= 3) {
+                      setShowUrgentWarning(true)
+                      setShowChangeBidModal(true)
+                    } else {
+                      setShowChangeBidModal(true)
+                    }
+                  }}
+                  className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
+                >
+                  Change Bid
+                </button>
+                <button 
+                  onClick={() => {
+                    const hoursUntilAuction = Math.abs(new Date(bidDetail.auctionEndDate).getTime() - new Date().getTime()) / (1000 * 60 * 60)
+                    if (hoursUntilAuction <= 3) {
+                      setShowUrgentWarning(true)
+                      setShowCancelBidModal(true)
+                    } else {
+                      setShowCancelBidModal(true)
+                    }
+                  }}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                >
+                  Cancel Bid
+                </button>
                 <Link
                   href={`/dashboard/vehicle/${bidDetail.auctionId}`}
                   className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
@@ -446,12 +593,77 @@ export default function BidDetailPage() {
 
         {/* Shipment Tracking Tab */}
         {activeTab === 'shipment' && bidDetail.status === 'won' && bidDetail.paymentStatus === 'completed' && (
-          <ShipmentTimeline
-            orderId={bidDetail.auctionId}
-            stages={shipmentStages}
-            onStageToggle={(stageId) => console.log('Stage toggled:', stageId)}
-            onTaskUpdate={(stageId, taskId) => console.log('Task updated:', stageId, taskId)}
-          />
+          <>
+            {/* Vehicle Status Alert */}
+            {vehicleStatus === 'repair' && (
+              <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <div>
+                    <h4 className="text-sm font-semibold text-amber-900">Vehicle Under Repair</h4>
+                    <p className="text-sm text-amber-800 mt-1">{repairRemarks || 'Vehicle is currently being repaired. We will update you once repairs are completed.'}</p>
+                    <div className="flex gap-3 mt-3">
+                      <button 
+                        onClick={() => {
+                          const remarks = prompt('Update repair status:', repairRemarks)
+                          if (remarks !== null) {
+                            setRepairRemarks(remarks)
+                            if (remarks.toLowerCase().includes('completed')) {
+                              setVehicleStatus('normal')
+                            }
+                          }
+                        }}
+                        className="text-sm text-amber-700 font-medium hover:text-amber-900"
+                      >
+                        Update Status
+                      </button>
+                      <button 
+                        onClick={() => alert('Your sales representative will contact you shortly.')}
+                        className="text-sm text-amber-700 font-medium hover:text-amber-900"
+                      >
+                        Contact Support
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Port Selection Alert */}
+            {!selectedPort && (
+              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <h4 className="text-sm font-semibold text-blue-900">Port Selection Required</h4>
+                    <p className="text-sm text-blue-800 mt-1">Shipping staff needs to select the departure port for your vehicle.</p>
+                    <button 
+                      onClick={() => {
+                        const port = prompt(`Select departure port:\n${availablePorts.join('\n')}`, availablePorts[0])
+                        if (port && availablePorts.includes(port)) {
+                          setSelectedPort(port)
+                        }
+                      }}
+                      className="mt-3 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700"
+                    >
+                      Select Port (Staff Only)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <ShipmentTimeline
+              orderId={bidDetail.auctionId}
+              stages={shipmentStages}
+              onStageToggle={(stageId) => console.log('Stage toggled:', stageId)}
+              onTaskUpdate={(stageId, taskId) => console.log('Task updated:', stageId, taskId)}
+            />
+          </>
         )}
         
         {/* Payment Required Message */}
@@ -582,6 +794,29 @@ export default function BidDetailPage() {
                   </svg>
                 </div>
               </button>
+              
+              {/* Wise */}
+              <button className="w-full p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-[#FA7921] transition-all group text-left">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                      <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Wise (formerly TransferWise)</p>
+                      <p className="text-sm text-gray-600">Low-cost international money transfer</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-gray-500">Best rates for international payments</span>
+                      </div>
+                    </div>
+                  </div>
+                  <svg className="w-5 h-5 text-gray-400 group-hover:text-[#FA7921]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </button>
             </div>
             
             {/* Security Notice */}
@@ -608,6 +843,219 @@ export default function BidDetailPage() {
               </button>
               <button className="flex-1 py-3 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium">
                 Continue to Payment
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Change Bid Modal */}
+      {showChangeBidModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl max-w-lg w-full p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Change Your Bid</h3>
+              <button
+                onClick={() => {
+                  setShowChangeBidModal(false)
+                  setShowUrgentWarning(false)
+                  setNewBidAmount('')
+                }}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Urgent Warning */}
+            {showUrgentWarning && (
+              <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <div>
+                    <p className="text-sm font-semibold text-yellow-900">Auction Starting Soon</p>
+                    <p className="text-sm text-yellow-800 mt-1">
+                      This auction is starting in less than 3 hours. There's a chance our bidding staff may not see your change in time.
+                    </p>
+                    <p className="text-sm text-yellow-800 mt-2 font-medium">
+                      Please contact your sales person immediately after submitting this change.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Current Bid Info */}
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">Current Your Bid</span>
+                <span className="font-semibold text-gray-900">{formatJPY(bidDetail.yourBid)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Current Highest Bid</span>
+                <span className="font-semibold text-gray-900">{formatJPY(bidDetail.currentHighestBid)}</span>
+              </div>
+            </div>
+
+            {/* New Bid Amount */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">New Bid Amount</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">¥</span>
+                <input
+                  type="number"
+                  value={newBidAmount}
+                  onChange={(e) => setNewBidAmount(e.target.value)}
+                  className="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                  placeholder="Enter new bid amount"
+                  min={bidDetail.currentHighestBid + 1000}
+                />
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                Minimum bid: {formatJPY(bidDetail.currentHighestBid + 1000)}
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowChangeBidModal(false)
+                  setShowUrgentWarning(false)
+                  setNewBidAmount('')
+                }}
+                className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => {
+                  // Submit bid change
+                  console.log('Submitting bid change:', newBidAmount)
+                  setShowChangeBidModal(false)
+                  setShowUrgentWarning(false)
+                  setNewBidAmount('')
+                  // Show notification that bid change is being reviewed
+                  alert('Your bid change request has been submitted. You will receive a notification once it has been reviewed by our staff.')
+                }}
+                className="flex-1 py-3 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
+                disabled={!newBidAmount || parseInt(newBidAmount) <= bidDetail.currentHighestBid}
+              >
+                Submit Change
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cancel Bid Modal */}
+      {showCancelBidModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl max-w-lg w-full p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Cancel Your Bid</h3>
+              <button
+                onClick={() => {
+                  setShowCancelBidModal(false)
+                  setShowUrgentWarning(false)
+                  setCancellationReason('')
+                }}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Urgent Warning */}
+            {showUrgentWarning && (
+              <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <div>
+                    <p className="text-sm font-semibold text-yellow-900">Auction Starting Soon</p>
+                    <p className="text-sm text-yellow-800 mt-1">
+                      This auction is starting in less than 3 hours. There's a chance our bidding staff may not see your cancellation in time.
+                    </p>
+                    <p className="text-sm text-yellow-800 mt-2 font-medium">
+                      Please contact your sales person immediately after submitting this cancellation.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Warning Message */}
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-red-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <div>
+                  <p className="text-sm font-semibold text-red-900">Are you sure you want to cancel this bid?</p>
+                  <p className="text-sm text-red-700 mt-1">
+                    Cancelling your bid will remove you from this auction. This action requires staff review and approval.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Bid Info */}
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <p className="text-sm text-gray-600 mb-2">Vehicle</p>
+              <p className="font-semibold text-gray-900 mb-3">{bidDetail.vehicleTitle}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Your Current Bid</span>
+                <span className="font-semibold text-gray-900">{formatJPY(bidDetail.yourBid)}</span>
+              </div>
+            </div>
+
+            {/* Cancellation Reason */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Reason for Cancellation (Optional)
+              </label>
+              <textarea
+                value={cancellationReason}
+                onChange={(e) => setCancellationReason(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                rows={3}
+                placeholder="Please let us know why you're cancelling this bid..."
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowCancelBidModal(false)
+                  setShowUrgentWarning(false)
+                  setCancellationReason('')
+                }}
+                className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
+                Keep My Bid
+              </button>
+              <button 
+                onClick={() => {
+                  // Submit cancellation request
+                  console.log('Submitting cancellation:', cancellationReason)
+                  setShowCancelBidModal(false)
+                  setShowUrgentWarning(false)
+                  setCancellationReason('')
+                  // Show notification that cancellation is being reviewed
+                  alert('Your bid cancellation request has been submitted for review. You will receive a notification once it has been reviewed and accepted by our staff.')
+                }}
+                className="flex-1 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+              >
+                Cancel My Bid
               </button>
             </div>
           </div>

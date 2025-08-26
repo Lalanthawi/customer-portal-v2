@@ -210,11 +210,17 @@ function ActivityItem({ activity }: { activity: ActivityItem }) {
               {activity.title}
             </p>
             {activity.description && (
-              <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{activity.description}</p>
+              <p className={`text-xs mt-0.5 line-clamp-1 ${
+                activity.description.includes('Change your bid') ? 'text-orange-600 font-medium' :
+                activity.description.includes('Sold out price') ? 'text-red-600' :
+                'text-gray-500'
+              }`}>
+                {activity.description}
+              </p>
             )}
             <div className="flex items-center gap-2 mt-1.5">
               <span className="text-xs text-gray-400">{activity.time}</span>
-              {activity.status && (
+              {activity.status && !activity.title.includes('outbid') && (
                 <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium ${
                   activity.status === 'success' ? 'bg-green-100 text-green-600' :
                   activity.status === 'pending' ? 'bg-amber-100 text-amber-600' :
@@ -223,11 +229,18 @@ function ActivityItem({ activity }: { activity: ActivityItem }) {
                   {activity.status}
                 </span>
               )}
+              {activity.title.includes('Another ZervTek') && (
+                <button className="text-[10px] text-[#FA7921] font-medium hover:text-[#FA7921]/80">
+                  Change Bid →
+                </button>
+              )}
             </div>
           </div>
           {activity.amount && (
             <div className="text-right flex-shrink-0">
-              <p className="text-sm font-semibold text-[#FA7921]">¥{activity.amount}</p>
+              <p className={`text-sm font-semibold ${
+                activity.description?.includes('Sold out price') ? 'text-red-600' : 'text-[#FA7921]'
+              }`}>¥{activity.amount}</p>
             </div>
           )}
         </div>
@@ -336,7 +349,7 @@ export default function DashboardPage() {
       id: '1',
       type: 'bid',
       title: 'You placed a bid on Toyota Camry',
-      description: 'Your bid is currently the highest',
+      description: 'USS Tokyo • Lot #42315',
       time: '2 hours ago',
       amount: '2,750,000',
       status: 'success'
@@ -345,31 +358,40 @@ export default function DashboardPage() {
       id: '2',
       type: 'outbid',
       title: 'You were outbid on Honda Accord',
-      description: 'Another bidder placed a higher bid',
+      description: 'Sold out price: ¥3,450,000',
       time: '5 hours ago',
-      status: 'pending'
+      status: 'pending',
+      amount: '3,450,000'
     },
     { 
       id: '3',
+      type: 'outbid',
+      title: 'Another ZervTek customer outbid you',
+      description: 'HAA Kobe • Lot #78234 - Change your bid',
+      time: '6 hours ago',
+      status: 'pending'
+    },
+    { 
+      id: '4',
       type: 'win',
       title: 'You won the auction for Nissan Altima',
-      description: 'Payment due within 48 hours',
+      description: 'TAA Yokohama • Lot #15643 - Payment due',
       time: '1 day ago',
       amount: '2,100,000',
       status: 'success'
     },
     { 
-      id: '4',
+      id: '5',
       type: 'listing',
-      title: 'New listing: BMW 3 Series 2022',
-      description: 'Matches your saved search criteria',
+      title: 'New match: BMW 3 Series 2022',
+      description: 'USS Nagoya • Lot #89234 - Matches your criteria',
       time: '2 days ago'
     },
     { 
-      id: '5',
+      id: '6',
       type: 'payment',
-      title: 'Payment received for Mazda 6',
-      description: 'Funds have been credited to your account',
+      title: 'Payment confirmed for Mazda CX-5',
+      description: 'JU Tokyo • Lot #34521 - Preparing for shipment',
       time: '3 days ago',
       amount: '1,850,000',
       status: 'success'
