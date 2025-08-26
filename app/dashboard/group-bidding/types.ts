@@ -58,6 +58,17 @@ export interface GroupBidSummary {
   status: 'in-progress' | 'requirement-met' | 'requirement-not-met' | 'partial'
 }
 
+// Group info for selector component
+export interface GroupInfo {
+  status: 'winning' | 'outbid' | 'has-bid' | 'available'
+  yourBid?: {
+    bidAmount: number
+    status: BidStatus
+  }
+  currentHighestBid: number
+  totalBidders: number
+}
+
 export interface GroupBidFormData {
   groupId: GroupId
   vehicleId: string

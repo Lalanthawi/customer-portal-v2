@@ -993,7 +993,7 @@ function SearchResults() {
             value={`${priceRange[0]}-${priceRange[1]}`}
             onChange={(e) => {
               const [min, max] = e.target.value.split('-').map(Number)
-              setPriceRange([min, max])
+              setPriceRange([min || 0, max || 10000000])
             }}
             className="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent flex-shrink-0"
           >
@@ -1009,7 +1009,7 @@ function SearchResults() {
             value={`${yearRange[0]}-${yearRange[1]}`}
             onChange={(e) => {
               const [min, max] = e.target.value.split('-').map(Number)
-              setYearRange([min, max])
+              setYearRange([min || 2015, max || 2024])
             }}
             className="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent flex-shrink-0"
           >

@@ -342,7 +342,7 @@ export default function MyVehiclesPage() {
           {/* Year Filter */}
           <select
             value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value as string)}
+            onChange={(e) => setSelectedYear(e.target.value as 'all' | '2024' | '2023' | '2022' | 'older')}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
           >
             <option value="all">All Years</option>

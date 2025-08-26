@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { GroupId, GroupBid, GroupInfo, BidFormData, WebSocketMessage, BidStatus } from '../types'
+import { GroupId, VehicleBid as GroupBid, GroupInfo, GroupBidFormData as BidFormData, WebSocketMessage, BidStatus } from '../types'
 
 interface UseGroupBidsReturn {
   groups: Map<GroupId, GroupInfo>
@@ -38,11 +38,9 @@ export function useGroupBids(): UseGroupBidsReturn {
     
     groupIds.forEach(id => {
       mockGroups.set(id, {
-        groupId: id,
         currentHighestBid: Math.floor(Math.random() * 1000000) + 100000,
         totalBidders: Math.floor(Math.random() * 20),
-        status: 'available',
-        endTime: new Date(Date.now() + Math.random() * 7 * 24 * 60 * 60 * 1000)
+        status: 'available'
       })
     })
     
@@ -148,13 +146,11 @@ export function useGroupBids(): UseGroupBidsReturn {
       const newBid: GroupBid = {
         id: `bid-${Date.now()}`,
         groupId: data.groupId,
+        vehicleId: data.vehicleId,
         bidAmount: data.bidAmount,
-        quantity: data.quantity,
-        totalAmount: data.bidAmount * data.quantity,
         status: 'pending',
-        timestamp: new Date(),
-        highestBid: groups.get(data.groupId)?.currentHighestBid || 0,
-        totalBidders: groups.get(data.groupId)?.totalBidders || 0
+        placedAt: new Date(),
+        lastUpdated: new Date()
       }
       
       // Optimistic update
