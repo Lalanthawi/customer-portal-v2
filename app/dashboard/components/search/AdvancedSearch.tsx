@@ -247,7 +247,7 @@ export default function AdvancedSearch({ onSearch, onReset, className = '' }: Ad
                     value={filters.specific.model}
                     onChange={(e) => updateSpecificFilter('model', e.target.value)}
                     placeholder="---All models---"
-                    className="mt-1 w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-gray-400"
+                    className="mt-1 w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                   />
                 </div>
 
@@ -289,7 +289,7 @@ export default function AdvancedSearch({ onSearch, onReset, className = '' }: Ad
                     value={filters.specific.modelType}
                     onChange={(e) => updateSpecificFilter('modelType', e.target.value)}
                     placeholder="Enter model type"
-                    className="mt-1 w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-gray-400"
+                    className="mt-1 w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                   />
                 </div>
 
@@ -301,7 +301,7 @@ export default function AdvancedSearch({ onSearch, onReset, className = '' }: Ad
                     value={filters.specific.chassisNumber}
                     onChange={(e) => updateSpecificFilter('chassisNumber', e.target.value)}
                     placeholder="Enter chassis number"
-                    className="mt-1 w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-gray-400"
+                    className="mt-1 w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                   />
                 </div>
 
@@ -313,7 +313,7 @@ export default function AdvancedSearch({ onSearch, onReset, className = '' }: Ad
                     value={filters.specific.modification}
                     onChange={(e) => updateSpecificFilter('modification', e.target.value)}
                     placeholder="Enter modification"
-                    className="mt-1 w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-gray-400"
+                    className="mt-1 w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                   />
                 </div>
               </div>

@@ -29,7 +29,7 @@ const mockBids: AuctionBid[] = [
     paymentStatus: 'completed',
     shippingStatus: 'pending',
     location: 'Tokyo, Japan',
-    seller: {
+    auctionHouse: {
       name: 'Tokyo Motors',
       rating: 4.8,
       verified: true
@@ -62,7 +62,7 @@ const mockBids: AuctionBid[] = [
     auctionEndDate: new Date('2024-01-12'),
     winningBid: 2100000,
     location: 'Osaka, Japan',
-    seller: {
+    auctionHouse: {
       name: 'Osaka Auto Hub',
       rating: 4.5,
       verified: true
@@ -87,7 +87,7 @@ const mockBids: AuctionBid[] = [
     bidDate: new Date('2024-01-18'),
     auctionEndDate: new Date('2024-01-25'),
     location: 'Yokohama, Japan',
-    seller: {
+    auctionHouse: {
       name: 'Premium Cars Japan',
       rating: 4.9,
       verified: true
@@ -119,7 +119,7 @@ const mockBids: AuctionBid[] = [
     bidDate: new Date('2024-01-17'),
     auctionEndDate: new Date('2024-01-24'),
     location: 'Nagoya, Japan',
-    seller: {
+    auctionHouse: {
       name: 'Luxury Motors',
       rating: 4.7,
       verified: true
@@ -147,7 +147,7 @@ const mockBids: AuctionBid[] = [
     paymentStatus: 'pending',
     shippingStatus: 'pending',
     location: 'Kobe, Japan',
-    seller: {
+    auctionHouse: {
       name: 'Kobe Cars',
       rating: 4.6,
       verified: true
@@ -176,16 +176,19 @@ const statistics: BidStatistics = {
 }
 
 export default function MyBidsPage() {
-  const [activeTab, setActiveTab] = useState<'all' | 'active' | 'won' | 'lost'>('all')
+  const [activeTab, setActiveTab] = useState<'active' | 'previous' | 'won'>('active')
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<'date' | 'price' | 'status'>('date')
+  const [showBidModal, setShowBidModal] = useState(false)
+  const [modalType, setModalType] = useState<'change' | 'cancel'>('change')
+  const [selectedBid, setSelectedBid] = useState<AuctionBid | null>(null)
+  const [newBidAmount, setNewBidAmount] = useState('')
 
   // Filter bids based on active tab
   const filteredBids = mockBids.filter(bid => {
-    if (activeTab === 'all') return true
     if (activeTab === 'active') return bid.status === 'active' || bid.status === 'outbid'
+    if (activeTab === 'previous') return bid.status === 'lost'
     if (activeTab === 'won') return bid.status === 'won'
-    if (activeTab === 'lost') return bid.status === 'lost'
     return true
   }).filter(bid => 
     bid.vehicleTitle.toLowerCase().includes(searchQuery.toLowerCase())
@@ -222,7 +225,7 @@ export default function MyBidsPage() {
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
             <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" />
             </svg>
             Outbid
           </span>
@@ -230,6 +233,40 @@ export default function MyBidsPage() {
       default:
         return null
     }
+  }
+
+  const handleChangeBid = (bid: AuctionBid) => {
+    setSelectedBid(bid)
+    setNewBidAmount(bid.yourBid.toString())
+    setModalType('change')
+    setShowBidModal(true)
+  }
+
+  const handleCancelBid = (bid: AuctionBid) => {
+    setSelectedBid(bid)
+    setModalType('cancel')
+    setShowBidModal(true)
+  }
+
+  const checkIfUrgent = (auctionEndDate: Date) => {
+    const hoursUntilAuction = (auctionEndDate.getTime() - new Date().getTime()) / (1000 * 60 * 60)
+    return hoursUntilAuction <= 3
+  }
+
+  const handleConfirmAction = () => {
+    // Simulate API call
+    if (modalType === 'cancel') {
+      console.log('Cancelling bid for:', selectedBid?.vehicleTitle)
+      // Show success message
+      alert('Bid cancellation request submitted. You will receive a notification once it has been reviewed by staff.')
+    } else {
+      console.log('Changing bid to:', newBidAmount, 'for:', selectedBid?.vehicleTitle)
+      // Show success message
+      alert('Bid change request submitted. You will receive a notification once it has been processed.')
+    }
+    setShowBidModal(false)
+    setSelectedBid(null)
+    setNewBidAmount('')
   }
 
   return (
@@ -309,7 +346,7 @@ export default function MyBidsPage() {
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Tabs */}
           <div className="flex gap-2">
-            {(['all', 'active', 'won', 'lost'] as const).map((tab) => (
+            {(['active', 'previous', 'won'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -319,11 +356,10 @@ export default function MyBidsPage() {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                {tab === 'all' && <span className="ml-1.5">({mockBids.length})</span>}
+                {tab === 'previous' ? 'Previous' : tab.charAt(0).toUpperCase() + tab.slice(1)}
                 {tab === 'active' && <span className="ml-1.5">({mockBids.filter(b => b.status === 'active' || b.status === 'outbid').length})</span>}
+                {tab === 'previous' && <span className="ml-1.5">({mockBids.filter(b => b.status === 'lost').length})</span>}
                 {tab === 'won' && <span className="ml-1.5">({mockBids.filter(b => b.status === 'won').length})</span>}
-                {tab === 'lost' && <span className="ml-1.5">({mockBids.filter(b => b.status === 'lost').length})</span>}
               </button>
             ))}
           </div>
@@ -336,7 +372,7 @@ export default function MyBidsPage() {
                 placeholder="Search vehicles..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-gray-500"
+                className="pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
               />
               <svg className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -434,11 +470,11 @@ export default function MyBidsPage() {
                           </svg>
                           {bid.location}
                         </span>
-                        {bid.seller && (
+                        {bid.auctionHouse && (
                           <span className="flex items-center gap-1">
-                            <span className="text-gray-500">Seller:</span>
-                            <span className="font-medium text-gray-700">{bid.seller.name}</span>
-                            {bid.seller.verified && (
+                            <span className="text-gray-500">Auction House:</span>
+                            <span className="font-medium text-gray-700">{bid.auctionHouse.name}</span>
+                            {bid.auctionHouse.verified && (
                               <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                               </svg>
@@ -471,6 +507,28 @@ export default function MyBidsPage() {
                   {/* Action Buttons and Status */}
                   <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t border-gray-100">
                     <div className="flex flex-wrap items-center gap-3">
+                      {(bid.status === 'active' || bid.status === 'outbid') && (
+                        <>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault()
+                              handleChangeBid(bid)
+                            }}
+                            className="px-3 py-1.5 bg-[#FA7921] text-white text-sm font-medium rounded-lg hover:bg-[#FA7921]/90 transition-colors"
+                          >
+                            Change Bid
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault()
+                              handleCancelBid(bid)
+                            }}
+                            className="px-3 py-1.5 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
+                          >
+                            Cancel Bid
+                          </button>
+                        </>
+                      )}
                       {bid.status === 'won' && (
                       <>
                         {bid.paymentStatus === 'completed' ? (
@@ -562,6 +620,109 @@ export default function MyBidsPage() {
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No bids found</h3>
           <p className="text-sm text-gray-500">Start bidding on vehicles to see them here</p>
+        </div>
+      )}
+
+      {/* Bid Change/Cancel Modal */}
+      {showBidModal && selectedBid && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <div className="mb-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
+                {modalType === 'cancel' ? 'Cancel Bid' : 'Change Bid'}
+              </h2>
+              <p className="text-sm text-gray-600">
+                {selectedBid.vehicleTitle} - {selectedBid.auctionId}
+              </p>
+            </div>
+
+            {/* Urgent Warning */}
+            {checkIfUrgent(selectedBid.auctionEndDate) && (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-amber-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <p className="font-medium text-amber-800 mb-1">Urgent: Auction Starting Soon</p>
+                    <p className="text-sm text-amber-700">
+                      This auction is starting in less than 3 hours. The staff in charge of bidding might not see your {modalType === 'cancel' ? 'cancellation' : 'change'} in time.
+                    </p>
+                    <p className="text-sm text-amber-700 mt-2 font-medium">
+                      Please contact your sales person immediately:
+                    </p>
+                    <div className="mt-2 space-y-1">
+                      <a href="tel:+81312345678" className="text-sm text-amber-900 underline block">📞 Call: +81-3-1234-5678</a>
+                      <a href="https://wa.me/81312345678" className="text-sm text-amber-900 underline block">💬 WhatsApp: +81-3-1234-5678</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Change Bid Amount */}
+            {modalType === 'change' && (
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  New Bid Amount
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">¥</span>
+                  <input
+                    type="number"
+                    value={newBidAmount}
+                    onChange={(e) => setNewBidAmount(e.target.value)}
+                    className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                    placeholder="Enter new bid amount"
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Current bid: ¥{selectedBid.yourBid.toLocaleString()}
+                </p>
+              </div>
+            )}
+
+            {/* Cancel Bid Confirmation */}
+            {modalType === 'cancel' && (
+              <div className="mb-6">
+                <p className="text-gray-700">
+                  Are you sure you want to cancel your bid of <span className="font-semibold">¥{selectedBid.yourBid.toLocaleString()}</span> for this vehicle?
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                  This action requires staff approval and cannot be undone once processed.
+                </p>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowBidModal(false)
+                  setSelectedBid(null)
+                  setNewBidAmount('')
+                }}
+                className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmAction}
+                className={`flex-1 px-4 py-2.5 font-medium rounded-lg transition-colors ${
+                  modalType === 'cancel' 
+                    ? 'bg-red-600 text-white hover:bg-red-700' 
+                    : 'bg-[#FA7921] text-white hover:bg-[#FA7921]/90'
+                }`}
+              >
+                {modalType === 'cancel' ? 'Confirm Cancellation' : 'Submit Change'}
+              </button>
+            </div>
+
+            {/* Additional Information */}
+            <p className="text-xs text-gray-500 text-center mt-4">
+              You will receive a notification once your request has been {modalType === 'cancel' ? 'reviewed and accepted' : 'processed'} by our staff.
+            </p>
+          </div>
         </div>
       )}
     </div>

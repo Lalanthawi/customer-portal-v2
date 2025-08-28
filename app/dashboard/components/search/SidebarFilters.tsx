@@ -345,7 +345,7 @@ export default function SidebarFilters({ onSearch, onReset, className = '' }: Si
                   value={filters.specific.model}
                   onChange={(e) => updateSpecificFilter('model', e.target.value)}
                   placeholder="Enter model name"
-                  className="mt-1 w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-gray-400"
+                  className="mt-1 w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                 />
               </div>
 
@@ -387,7 +387,7 @@ export default function SidebarFilters({ onSearch, onReset, className = '' }: Si
                   value={filters.specific.modelType}
                   onChange={(e) => updateSpecificFilter('modelType', e.target.value)}
                   placeholder="e.g., Sedan, SUV"
-                  className="mt-1 w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-gray-400"
+                  className="mt-1 w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                 />
               </div>
 
@@ -399,7 +399,7 @@ export default function SidebarFilters({ onSearch, onReset, className = '' }: Si
                   value={filters.specific.chassisNumber}
                   onChange={(e) => updateSpecificFilter('chassisNumber', e.target.value)}
                   placeholder="Enter chassis number"
-                  className="mt-1 w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-gray-400"
+                  className="mt-1 w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                 />
               </div>
 
@@ -411,7 +411,7 @@ export default function SidebarFilters({ onSearch, onReset, className = '' }: Si
                   value={filters.specific.modification}
                   onChange={(e) => updateSpecificFilter('modification', e.target.value)}
                   placeholder="Enter modification"
-                  className="mt-1 w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-gray-400"
+                  className="mt-1 w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                 />
               </div>
             </div>

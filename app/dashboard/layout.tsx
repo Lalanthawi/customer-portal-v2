@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import type { NavigationItem, UserProfile } from './types'
 import JapanTime from './components/JapanTime'
-import AccountStatusBanner from './components/AccountStatusBanner'
 
 const navigation: NavigationItem[] = [
   {
@@ -520,7 +519,7 @@ function Footer() {
             <ul className="space-y-2">
               <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">About Us</a></li>
               <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">How It Works</a></li>
-              <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">Seller Guide</a></li>
+              <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">Auction House Guide</a></li>
               <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">Buyer Guide</a></li>
               <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">FAQ</a></li>
             </ul>
@@ -564,7 +563,6 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-[#FAFAFA] flex flex-col">
       <JapanTime />
-      <AccountStatusBanner />
       <NavigationBar />
       <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         <div className="max-w-[1400px] mx-auto">

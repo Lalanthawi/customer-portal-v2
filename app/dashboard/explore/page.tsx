@@ -259,6 +259,20 @@ export default function ExplorePage() {
     }
   }, [hasAcceptedTOS])
 
+  // Lock body scroll when filters sidebar is open
+  useEffect(() => {
+    if (showFilters) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [showFilters])
+
   // Load country-specific trending searches on component mount
   useEffect(() => {
     const country = getUserCountry()
@@ -378,21 +392,27 @@ export default function ExplorePage() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search make, model, or keyword..."
-                      className="flex-1 py-3 text-gray-900 placeholder-gray-400 focus:outline-none bg-transparent"
+                      className="flex-1 py-3 text-gray-900 placeholder-black/70 focus:outline-none bg-transparent"
                     />
                   </div>
                   
                   <button
                     type="button"
                     onClick={() => setShowFilters(!showFilters)}
-                    className="relative px-5 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all flex items-center gap-2"
+                    className={`relative px-5 py-3 rounded-xl transition-all flex items-center gap-2 ${
+                      activeFiltersCount > 0 
+                        ? 'bg-[#FA7921]/10 text-[#FA7921] hover:bg-[#FA7921]/20 border-2 border-[#FA7921]/30' 
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className={`w-5 h-5 ${activeFiltersCount > 0 ? 'text-[#FA7921]' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                     </svg>
-                    Filters
+                    <span className="font-medium">
+                      {activeFiltersCount > 0 ? `Filters (${activeFiltersCount})` : 'Filters'}
+                    </span>
                     {activeFiltersCount > 0 && (
-                      <span className="absolute -top-2 -right-2 w-6 h-6 bg-[#FA7921] text-white text-xs rounded-full flex items-center justify-center font-bold">
+                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#FA7921] text-white text-xs rounded-full flex items-center justify-center font-bold animate-pulse">
                         {activeFiltersCount}
                       </span>
                     )}
@@ -433,20 +453,75 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      {/* New Advanced Filters Panel */}
-      {showFilters && (
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 mb-8 animate-in slide-in-from-top duration-300 overflow-hidden">
-          <AdvancedSearchStatic 
-            onSearch={(filters) => {
-              // Handle the search with new filters
-              console.log('Searching with filters:', filters)
-              setShowFilters(false)
-            }}
-            onReset={() => setShowFilters(false)}
-            className="border-0"
+      {/* Advanced Filters Sidebar */}
+      <>
+        {/* Backdrop */}
+        {showFilters && (
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 ease-out animate-in fade-in"
+            onClick={() => setShowFilters(false)}
           />
-        </div>
-      )}
+        )}
+        
+        {/* Sidebar */}
+        <div className={`fixed right-0 top-0 h-full w-full sm:w-[480px] bg-white shadow-2xl z-50 transform transition-all duration-300 ease-out ${
+          showFilters ? 'translate-x-0' : 'translate-x-full'
+        }`}>
+            {/* Header */}
+            <div className="sticky top-0 z-10 bg-white border-b border-gray-200">
+              <div className="flex items-center justify-between px-6 py-4">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">Advanced Filters</h2>
+                  <p className="text-sm text-gray-500 mt-1">Refine your search criteria</p>
+                </div>
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            {/* Filters Content */}
+            <div className="h-[calc(100vh-140px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+              <div className="py-6">
+                <AdvancedSearchStatic 
+                  onSearch={(filters) => {
+                    // Handle the search with new filters
+                    console.log('Searching with filters:', filters)
+                    setShowFilters(false)
+                  }}
+                  onReset={() => setShowFilters(false)}
+                  className="border-0"
+                />
+              </div>
+            </div>
+            
+            {/* Footer Actions */}
+            <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4">
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    // Apply filters logic here
+                    setShowFilters(false)
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-lg hover:shadow-lg transition-all font-medium"
+                >
+                  Apply Filters
+                </button>
+              </div>
+            </div>
+          </div>
+      </>
 
       {/* Quick Actions Bar - Sticky when scrolling */}
       <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md border-y border-gray-100 px-6 py-3 mb-8">

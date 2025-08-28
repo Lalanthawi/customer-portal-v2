@@ -42,7 +42,7 @@ export default function RangeFilter({
             onChange={handleMinChange}
             placeholder={minPlaceholder}
             step={step}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-gray-400"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
           />
           {unit && minValue && (
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500">
@@ -60,7 +60,7 @@ export default function RangeFilter({
             onChange={handleMaxChange}
             placeholder={maxPlaceholder}
             step={step}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-gray-400"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
           />
           {unit && maxValue && (
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500">

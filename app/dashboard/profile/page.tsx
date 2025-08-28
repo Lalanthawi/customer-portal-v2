@@ -276,7 +276,7 @@ function ProfileSettingsContent() {
                       type="text"
                       value={profileData.firstName}
                       onChange={(e) => setProfileData({ ...profileData, firstName: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent focus:bg-white transition-all placeholder:text-gray-400"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent focus:bg-white transition-all placeholder:text-black/70"
                       placeholder="Enter first name"
                     />
                   </div>
@@ -289,7 +289,7 @@ function ProfileSettingsContent() {
                       type="text"
                       value={profileData.lastName}
                       onChange={(e) => setProfileData({ ...profileData, lastName: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent focus:bg-white transition-all placeholder:text-gray-400"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent focus:bg-white transition-all placeholder:text-black/70"
                       placeholder="Enter last name"
                     />
                   </div>

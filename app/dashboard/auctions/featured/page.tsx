@@ -22,7 +22,7 @@ interface FeaturedAuction {
   engine: string
   condition: 'excellent' | 'very-good' | 'good' | 'fair'
   description: string
-  sellerRating: number
+  auctionHouseRating: number
   verified: boolean
   premium: boolean
 }
@@ -46,7 +46,7 @@ const featuredAuctions: FeaturedAuction[] = [
     engine: '2JZ-GTE Twin Turbo',
     condition: 'excellent',
     description: 'Immaculate example with full service history',
-    sellerRating: 4.9,
+    auctionHouseRating: 4.9,
     verified: true,
     premium: true
   },
@@ -68,7 +68,7 @@ const featuredAuctions: FeaturedAuction[] = [
     engine: 'RB26DETT Twin Turbo',
     condition: 'excellent',
     description: 'Final edition R34, one of only 1000 made',
-    sellerRating: 5.0,
+    auctionHouseRating: 5.0,
     verified: true,
     premium: true
   },
@@ -89,7 +89,7 @@ const featuredAuctions: FeaturedAuction[] = [
     engine: 'C30A VTEC',
     condition: 'excellent',
     description: 'Rare Type R in original Championship White',
-    sellerRating: 4.8,
+    auctionHouseRating: 4.8,
     verified: true,
     premium: true
   },
@@ -111,7 +111,7 @@ const featuredAuctions: FeaturedAuction[] = [
     engine: '13B-REW Twin Turbo Rotary',
     condition: 'very-good',
     description: 'Limited Spirit R edition, meticulously maintained',
-    sellerRating: 4.7,
+    auctionHouseRating: 4.7,
     verified: true,
     premium: false
   }
@@ -190,7 +190,7 @@ export default function FeaturedAuctionsPage() {
                 </div>
               </div>
               <h1 className="text-4xl font-bold mb-3">Featured Auctions</h1>
-              <p className="text-gray-300 text-lg">Handpicked premium vehicles from verified sellers</p>
+              <p className="text-gray-300 text-lg">Handpicked premium vehicles from verified auction houses</p>
             </div>
             <Link
               href="/dashboard"
@@ -341,18 +341,18 @@ export default function FeaturedAuctionsPage() {
                     <span className="text-sm text-gray-600">{auction.watching} watching</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <span className="text-sm text-gray-600">Seller Rating:</span>
+                    <span className="text-sm text-gray-600">Auction House Rating:</span>
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
                         <svg
                           key={i}
-                          className={`w-4 h-4 ${i < Math.floor(auction.sellerRating) ? 'text-yellow-400' : 'text-gray-300'} fill-current`}
+                          className={`w-4 h-4 ${i < Math.floor(auction.auctionHouseRating) ? 'text-yellow-400' : 'text-gray-300'} fill-current`}
                           viewBox="0 0 20 20"
                         >
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
                       ))}
-                      <span className="text-sm text-gray-600 ml-1">({auction.sellerRating})</span>
+                      <span className="text-sm text-gray-600 ml-1">({auction.auctionHouseRating})</span>
                     </div>
                   </div>
                 </div>

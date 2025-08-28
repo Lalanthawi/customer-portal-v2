@@ -12,6 +12,7 @@ interface BidDetail {
   auctionId: string
   vehicleTitle: string
   vehicleImage: string
+  vin: string
   vehicleSpecs: {
     year: number
     mileage: string
@@ -32,7 +33,7 @@ interface BidDetail {
   paymentStatus?: 'pending' | 'processing' | 'completed'
   shippingStatus?: 'preparing' | 'in-transit' | 'delivered'
   location: string
-  seller: {
+  auctionHouse: {
     name: string
     rating: number
     verified: boolean
@@ -62,6 +63,12 @@ export default function BidDetailPage() {
   const [selectedPort, setSelectedPort] = useState('')
   const [vehicleStatus, setVehicleStatus] = useState<'normal' | 'repair'>('normal')
   const [repairRemarks, setRepairRemarks] = useState('')
+  const [billOfLadingUploaded, setBillOfLadingUploaded] = useState(false)
+  const [isShipped, setIsShipped] = useState(false)
+  const [deliveryPhotosUploaded, setDeliveryPhotosUploaded] = useState(false)
+  const [estimatedArrivalDate] = useState(new Date('2024-02-20T17:00:00'))
+  const [isDelivered, setIsDelivered] = useState(false)
+  const [autoCompletedAfter3Months, setAutoCompletedAfter3Months] = useState(false)
   const [defaultAddress] = useState({
     name: 'John Doe',
     street: '1-2-3 Shibuya',
@@ -77,6 +84,7 @@ export default function BidDetailPage() {
     id: bidId,
     auctionId: 'AUC-2024-0892',
     vehicleTitle: '2018 Toyota Corolla Axio',
+    vin: 'JTDBR32E180123456',
     vehicleImage: 'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800',
     vehicleSpecs: {
       year: 2018,
@@ -98,7 +106,7 @@ export default function BidDetailPage() {
     paymentStatus: 'completed', // Changed to completed to show shipment tracking
     shippingStatus: 'preparing',
     location: 'Tokyo, Japan',
-    seller: {
+    auctionHouse: {
       name: 'Tokyo Motors',
       rating: 4.8,
       verified: true
@@ -246,12 +254,12 @@ export default function BidDetailPage() {
     },
     {
       id: 'shipping-preparation',
-      title: 'Port Processing',
+      title: 'Port Processing & Documents',
       description: selectedPort ? `At ${selectedPort} - Preparing for shipment` : 'Vehicle inspection and export preparation',
       status: 'pending',
       progress: 0,
       tasksCompleted: 0,
-      totalTasks: 3,
+      totalTasks: 4,
       estimatedDate: new Date('2024-01-22T17:00:00'),
       isExpandable: true,
       details: [
@@ -275,6 +283,24 @@ export default function BidDetailPage() {
           status: 'pending',
           description: 'Vehicle loaded into shipping container',
           dueDate: new Date('2024-01-22T16:00:00')
+        },
+        {
+          id: 'prep-4',
+          title: 'Export Documents',
+          status: 'pending',
+          description: billOfLadingUploaded ? 'Bill of Lading uploaded - Documents ready' : 'Awaiting document upload by staff',
+          dueDate: new Date('2024-01-22T16:00:00'),
+          note: billOfLadingUploaded ? 'Bill of Lading and other export documents are available' : 'Documents will be available once uploaded by staff',
+          actions: isShipped && billOfLadingUploaded ? [
+            {
+              label: 'Check Documents',
+              icon: 'document' as const,
+              onClick: () => {
+                // Navigate to documents page
+                router.push(`/dashboard/documents/${bidId}`)
+              }
+            }
+          ] : undefined
         }
       ]
     },
@@ -292,13 +318,47 @@ export default function BidDetailPage() {
     {
       id: 'delivered',
       title: 'Delivered',
-      description: 'Vehicle delivered to destination',
-      status: 'pending',
-      progress: 0,
-      tasksCompleted: 0,
+      description: autoCompletedAfter3Months 
+        ? 'Auto-completed after 3 months' 
+        : (deliveryPhotosUploaded 
+          ? 'Vehicle delivered and confirmed' 
+          : 'Awaiting delivery confirmation'),
+      status: (deliveryPhotosUploaded || autoCompletedAfter3Months) ? 'completed' : 'pending',
+      progress: (deliveryPhotosUploaded || autoCompletedAfter3Months) ? 100 : 0,
+      tasksCompleted: (deliveryPhotosUploaded || autoCompletedAfter3Months) ? 1 : 0,
       totalTasks: 1,
-      estimatedDate: new Date('2024-02-20T17:00:00'),
-      isExpandable: false
+      estimatedDate: estimatedArrivalDate,
+      completedDate: deliveryPhotosUploaded ? new Date() : undefined,
+      isExpandable: true,
+      details: [
+        {
+          id: 'delivery-1',
+          title: 'Delivery Confirmation',
+          status: (deliveryPhotosUploaded || autoCompletedAfter3Months) ? 'completed' : 'pending',
+          description: autoCompletedAfter3Months 
+            ? 'Auto-completed (3+ months since arrival)' 
+            : (deliveryPhotosUploaded 
+              ? 'Photos uploaded - Delivery confirmed' 
+              : 'Upload photos to confirm delivery'),
+          completedDate: deliveryPhotosUploaded ? new Date() : undefined,
+          note: !deliveryPhotosUploaded && !autoCompletedAfter3Months 
+            ? 'Please upload photos of the delivered vehicle to mark as complete' 
+            : undefined,
+          actions: isDelivered && !deliveryPhotosUploaded && !autoCompletedAfter3Months ? [
+            {
+              label: 'Upload Delivery Photos',
+              icon: 'document' as const,
+              onClick: () => {
+                // In production, this would open a file upload dialog
+                const confirmed = confirm('Upload photos of the delivered vehicle to confirm receipt?')
+                if (confirmed) {
+                  setDeliveryPhotosUploaded(true)
+                }
+              }
+            }
+          ] : undefined
+        }
+      ]
     }
   ])
 
@@ -310,6 +370,19 @@ export default function BidDetailPage() {
       setRepairRemarks('Engine coolant leak detected during transport')
     }
   }, [selectedPort])
+  
+  // Auto-complete delivery after 3 months
+  useEffect(() => {
+    if (isDelivered && !deliveryPhotosUploaded) {
+      // Calculate if 3 months have passed since estimated arrival
+      const threeMonthsLater = new Date(estimatedArrivalDate)
+      threeMonthsLater.setMonth(threeMonthsLater.getMonth() + 3)
+      
+      if (new Date() >= threeMonthsLater) {
+        setAutoCompletedAfter3Months(true)
+      }
+    }
+  }, [isDelivered, deliveryPhotosUploaded, estimatedArrivalDate])
 
   const formatJPY = (amount: number) => {
     return new Intl.NumberFormat('ja-JP', {
@@ -552,9 +625,9 @@ export default function BidDetailPage() {
                 </div>
               </div>
 
-              {/* Seller Information */}
+              {/* Auction House Information */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Seller Information</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Auction House Information</h3>
                 
                 <div className="flex items-start gap-3">
                   <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
@@ -564,8 +637,8 @@ export default function BidDetailPage() {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <p className="font-semibold text-gray-900">{bidDetail.seller.name}</p>
-                      {bidDetail.seller.verified && (
+                      <p className="font-semibold text-gray-900">{bidDetail.auctionHouse.name}</p>
+                      {bidDetail.auctionHouse.verified && (
                         <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -574,12 +647,12 @@ export default function BidDetailPage() {
                     <div className="flex items-center gap-1 mt-1">
                       <div className="flex text-yellow-400">
                         {[...Array(5)].map((_, i) => (
-                          <svg key={i} className={`w-4 h-4 ${i < Math.floor(bidDetail.seller.rating) ? 'fill-current' : 'fill-gray-200'}`} viewBox="0 0 20 20">
+                          <svg key={i} className={`w-4 h-4 ${i < Math.floor(bidDetail.auctionHouse.rating) ? 'fill-current' : 'fill-gray-200'}`} viewBox="0 0 20 20">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                           </svg>
                         ))}
                       </div>
-                      <span className="text-sm text-gray-600">({bidDetail.seller.rating})</span>
+                      <span className="text-sm text-gray-600">({bidDetail.auctionHouse.rating})</span>
                     </div>
                     <p className="text-sm text-gray-600 mt-2">{bidDetail.location}</p>
                   </div>
@@ -630,31 +703,192 @@ export default function BidDetailPage() {
               </div>
             )}
 
-            {/* Port Selection Alert */}
-            {!selectedPort && (
-              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                <div className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div>
-                    <h4 className="text-sm font-semibold text-blue-900">Port Selection Required</h4>
-                    <p className="text-sm text-blue-800 mt-1">Shipping staff needs to select the departure port for your vehicle.</p>
-                    <button 
-                      onClick={() => {
-                        const port = prompt(`Select departure port:\n${availablePorts.join('\n')}`, availablePorts[0])
-                        if (port && availablePorts.includes(port)) {
-                          setSelectedPort(port)
-                        }
-                      }}
-                      className="mt-3 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700"
-                    >
-                      Select Port (Staff Only)
-                    </button>
-                  </div>
-                </div>
+
+            {/* Demo Controls for Testing */}
+            <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-sm font-semibold text-yellow-800 mb-2">Demo Controls (Remove in Production)</p>
+              <div className="flex gap-3 flex-wrap">
+                <button
+                  onClick={() => setIsShipped(!isShipped)}
+                  className={`px-4 py-2 rounded text-sm font-medium ${
+                    isShipped ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700'
+                  }`}
+                >
+                  {isShipped ? '✓ Shipped' : 'Mark as Shipped'}
+                </button>
+                <button
+                  onClick={() => setBillOfLadingUploaded(!billOfLadingUploaded)}
+                  className={`px-4 py-2 rounded text-sm font-medium ${
+                    billOfLadingUploaded ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700'
+                  }`}
+                >
+                  {billOfLadingUploaded ? '✓ Bill of Lading Uploaded' : 'Upload Bill of Lading'}
+                </button>
+                <button
+                  onClick={() => setIsDelivered(!isDelivered)}
+                  className={`px-4 py-2 rounded text-sm font-medium ${
+                    isDelivered ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
+                  }`}
+                >
+                  {isDelivered ? '✓ Delivered' : 'Mark as Delivered'}
+                </button>
+                <button
+                  onClick={() => setDeliveryPhotosUploaded(!deliveryPhotosUploaded)}
+                  disabled={!isDelivered}
+                  className={`px-4 py-2 rounded text-sm font-medium ${
+                    deliveryPhotosUploaded ? 'bg-green-600 text-white' : 
+                    !isDelivered ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-700'
+                  }`}
+                >
+                  {deliveryPhotosUploaded ? '✓ Photos Uploaded' : 'Upload Delivery Photos'}
+                </button>
               </div>
-            )}
+              <p className="text-xs text-yellow-700 mt-2">
+                • &quot;Check Documents&quot; appears when shipped + bill of lading uploaded<br/>
+                • &quot;Upload Delivery Photos&quot; appears when vehicle is delivered<br/>
+                • Auto-completes 3 months after estimated arrival ({estimatedArrivalDate.toLocaleDateString()})
+              </p>
+            </div>
+
+            {/* Print Label / QR Code Section */}
+            <div className="mb-4 p-4 bg-white border border-gray-200 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-900">Office Document Management</h3>
+                  <p className="text-xs text-gray-600 mt-1">Print label for document organization</p>
+                </div>
+                <button
+                  onClick={() => {
+                    // Generate print-friendly page
+                    const printWindow = window.open('', '_blank')
+                    if (printWindow) {
+                      const qrCodeUrl = `${window.location.origin}/dashboard/bids/${bidId}`
+                      printWindow.document.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                          <title>Document Label - ${bidDetail.vehicleTitle}</title>
+                          <style>
+                            @page { size: A4; margin: 20mm; }
+                            body { 
+                              font-family: Arial, sans-serif; 
+                              display: flex;
+                              flex-direction: column;
+                              align-items: center;
+                              justify-content: center;
+                              height: 100vh;
+                              margin: 0;
+                            }
+                            .container {
+                              text-align: center;
+                              padding: 40px;
+                              border: 3px solid #000;
+                              border-radius: 10px;
+                              max-width: 80%;
+                            }
+                            h1 { font-size: 36px; margin-bottom: 30px; }
+                            .info { font-size: 24px; margin: 20px 0; text-align: left; }
+                            .info strong { display: inline-block; min-width: 150px; }
+                            .qr-section { margin: 40px 0; }
+                            .qr-placeholder { 
+                              width: 200px; 
+                              height: 200px; 
+                              border: 2px solid #000; 
+                              margin: 0 auto 10px;
+                              display: flex;
+                              align-items: center;
+                              justify-content: center;
+                              font-size: 14px;
+                            }
+                            .checklist { 
+                              text-align: left; 
+                              margin-top: 30px; 
+                              padding-top: 30px;
+                              border-top: 2px solid #ccc;
+                            }
+                            .checklist h2 { font-size: 24px; margin-bottom: 15px; }
+                            .checklist-item { 
+                              font-size: 18px; 
+                              margin: 10px 0;
+                              display: flex;
+                              align-items: center;
+                            }
+                            .checkbox {
+                              width: 20px;
+                              height: 20px;
+                              border: 2px solid #000;
+                              margin-right: 10px;
+                              display: inline-block;
+                            }
+                          </style>
+                        </head>
+                        <body>
+                          <div class="container">
+                            <h1>VEHICLE DOCUMENTS</h1>
+                            
+                            <div class="info">
+                              <strong>VIN:</strong> ${bidDetail.vin}<br/>
+                              <strong>Vehicle:</strong> ${bidDetail.vehicleTitle}<br/>
+                              <strong>Customer:</strong> ${defaultAddress.name}<br/>
+                              <strong>Address:</strong><br/>
+                              ${defaultAddress.street}<br/>
+                              ${defaultAddress.city}, ${defaultAddress.state} ${defaultAddress.postalCode}<br/>
+                              ${defaultAddress.country}<br/>
+                              <strong>Phone:</strong> ${defaultAddress.phone}
+                            </div>
+                            
+                            <div class="qr-section">
+                              <div class="qr-placeholder">
+                                QR Code<br/>
+                                (${qrCodeUrl})
+                              </div>
+                              <p style="font-size: 14px;">Scan to view shipment details</p>
+                            </div>
+                            
+                            <div class="checklist">
+                              <h2>Document Checklist:</h2>
+                              <div class="checklist-item">
+                                <span class="checkbox"></span> Export Certificate
+                              </div>
+                              <div class="checklist-item">
+                                <span class="checkbox"></span> Bill of Lading
+                              </div>
+                              <div class="checklist-item">
+                                <span class="checkbox"></span> Invoice
+                              </div>
+                              <div class="checklist-item">
+                                <span class="checkbox"></span> Deregistration Certificate
+                              </div>
+                              <div class="checklist-item">
+                                <span class="checkbox"></span> Insurance Documents
+                              </div>
+                              <div class="checklist-item">
+                                <span class="checkbox"></span> Keys (Quantity: ___)
+                              </div>
+                              <div class="checklist-item">
+                                <span class="checkbox"></span> Service Records
+                              </div>
+                              <div class="checklist-item">
+                                <span class="checkbox"></span> Owner's Manual
+                              </div>
+                            </div>
+                          </div>
+                        </body>
+                        </html>
+                      `)
+                      printWindow.document.close()
+                      printWindow.print()
+                    }
+                  }}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                  </svg>
+                  Print Document Label
+                </button>
+              </div>
+            </div>
 
             <ShipmentTimeline
               orderId={bidDetail.auctionId}

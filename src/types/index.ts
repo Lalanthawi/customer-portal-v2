@@ -34,7 +34,7 @@ export interface Auction extends Vehicle {
   status: 'upcoming' | 'active' | 'ended' | 'cancelled'
   bidsCount: number
   watchersCount: number
-  sellerId: string
+  auctionHouseId: string
   winnerId?: string
 }
 

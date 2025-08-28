@@ -175,13 +175,13 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
   }
 
   return (
-    <div className={`bg-white rounded-xl ${className}`}>
-      <div className="p-6">
-        {/* Main Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Left Column - Basic Filters */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic Filters</h3>
+    <div className={`bg-white ${className}`}>
+      <div className="px-6 pb-6">
+        {/* Single Column Layout optimized for Sidebar */}
+        <div className="space-y-1">
+          {/* Basic Filters Section */}
+          <div className="border-b border-gray-200 pb-5">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">Basic Filters</h3>
             <div className="space-y-4">
               {/* Steering Wheel */}
               <div>
@@ -220,7 +220,7 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
                     placeholder="from"
                     value={filters.yearFrom}
                     onChange={(e) => setFilters(prev => ({ ...prev, yearFrom: e.target.value }))}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                   />
                   <span className="text-gray-500">~</span>
                   <input
@@ -228,7 +228,7 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
                     placeholder="to"
                     value={filters.yearTo}
                     onChange={(e) => setFilters(prev => ({ ...prev, yearTo: e.target.value }))}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                   />
                 </div>
               </div>
@@ -242,7 +242,7 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
                     placeholder="from"
                     value={filters.mileageFrom}
                     onChange={(e) => setFilters(prev => ({ ...prev, mileageFrom: e.target.value }))}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                   />
                   <span className="text-gray-500">~</span>
                   <input
@@ -250,7 +250,7 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
                     placeholder="to"
                     value={filters.mileageTo}
                     onChange={(e) => setFilters(prev => ({ ...prev, mileageTo: e.target.value }))}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                   />
                 </div>
               </div>
@@ -264,7 +264,7 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
                     placeholder="from"
                     value={filters.engineFrom}
                     onChange={(e) => setFilters(prev => ({ ...prev, engineFrom: e.target.value }))}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                   />
                   <span className="text-gray-500">~</span>
                   <input
@@ -272,7 +272,7 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
                     placeholder="to"
                     value={filters.engineTo}
                     onChange={(e) => setFilters(prev => ({ ...prev, engineTo: e.target.value }))}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                   />
                 </div>
               </div>
@@ -286,7 +286,7 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
                     placeholder="from"
                     value={filters.priceFrom}
                     onChange={(e) => setFilters(prev => ({ ...prev, priceFrom: e.target.value }))}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                   />
                   <span className="text-gray-500">~</span>
                   <input
@@ -294,7 +294,7 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
                     placeholder="to"
                     value={filters.priceTo}
                     onChange={(e) => setFilters(prev => ({ ...prev, priceTo: e.target.value }))}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
                   />
                 </div>
               </div>
@@ -312,9 +312,9 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
             </div>
           </div>
 
-          {/* Right Column - Specific Filters */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Specific Filters</h3>
+          {/* Specific Filters Section */}
+          <div className="border-b border-gray-200 py-5">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">Specific Filters</h3>
             <div className="space-y-4">
               {/* Result */}
               <div>
@@ -409,11 +409,12 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
         </div>
 
         {/* Date of Auction */}
-        <div className="border-t border-gray-200 pt-6 mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Date of Auction</h3>
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm text-gray-700">since</span>
-            <div className="flex items-center gap-2">
+        <div className="border-b border-gray-200 py-5">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">Auction Date Range</h3>
+          <div className="space-y-3">
+            <div>
+              <label className="block text-xs text-gray-600 mb-2">From Date</label>
+              <div className="grid grid-cols-3 gap-2">
               <select
                 value={filters.auctionDateFrom.day}
                 onChange={(e) => setFilters(prev => ({
@@ -454,8 +455,10 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
                 ))}
               </select>
             </div>
-            <span className="text-sm text-gray-700">till</span>
-            <div className="flex items-center gap-2">
+            </div>
+            <div>
+              <label className="block text-xs text-gray-600 mb-2">To Date</label>
+              <div className="grid grid-cols-3 gap-2">
               <select
                 value={filters.auctionDateTo.day}
                 onChange={(e) => setFilters(prev => ({
@@ -500,9 +503,9 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
         </div>
 
         {/* Color Selection */}
-        <div className="border-t border-gray-200 pt-6 mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Color Selection</h3>
-          <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-15 gap-3">
+        <div className="border-b border-gray-200 py-5">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">Colors</h3>
+          <div className="grid grid-cols-6 gap-2">
             {colors.map((color) => (
               <button
                 key={color.name}
@@ -511,7 +514,7 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
                 title={color.name}
               >
                 <div
-                  className={`w-10 h-10 rounded border-2 ${color.code === '#FFFFFF' ? 'border-gray-300' : 'border-gray-200'} hover:scale-110 transition-transform`}
+                  className={`w-8 h-8 rounded border ${color.code === '#FFFFFF' ? 'border-gray-300' : 'border-gray-200'} hover:scale-110 transition-transform`}
                   style={{ backgroundColor: color.code }}
                 >
                   {filters.colors.includes(color.name) && (
@@ -526,8 +529,8 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
         </div>
 
         {/* Scores Filter */}
-        <div className="border-t border-gray-200 pt-6 mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Scores Filter</h3>
+        <div className="border-b border-gray-200 py-5">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">Auction Scores</h3>
           <div className="flex flex-wrap gap-3">
             {scores.map((score) => (
               <label key={score} className="flex items-center gap-2">
@@ -544,9 +547,9 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
         </div>
 
         {/* Equipment Filter */}
-        <div className="border-t border-gray-200 pt-6 mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Equipment Filter</h3>
-          <div className="flex flex-wrap gap-4">
+        <div className="border-b border-gray-200 py-5">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">Equipment</h3>
+          <div className="grid grid-cols-2 gap-3">
             {equipmentOptions.map((equip) => (
               <label key={equip} className="flex items-center gap-2">
                 <input
@@ -562,12 +565,12 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
         </div>
 
         {/* Vehicle Type Filters */}
-        <div className="border-t border-gray-200 pt-6 mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Vehicle Type Filters</h3>
+        <div className="py-5">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">Vehicle Types</h3>
           <div className="space-y-4">
             <div>
               <h4 className="text-sm font-medium text-gray-700 mb-2">Truck Types</h4>
-              <div className="flex flex-wrap gap-3">
+              <div className="grid grid-cols-2 gap-2">
                 {truckTypes.map((type) => (
                   <label key={type} className="flex items-center gap-2">
                     <input
@@ -583,7 +586,7 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
             </div>
             <div>
               <h4 className="text-sm font-medium text-gray-700 mb-2">Vehicle Types</h4>
-              <div className="flex flex-wrap gap-3">
+              <div className="grid grid-cols-2 gap-2">
                 {vehicleTypes.map((type) => (
                   <label key={type} className="flex items-center gap-2">
                     <input
@@ -600,8 +603,9 @@ export default function AdvancedSearchStatic({ onSearch, onReset, className = ''
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-4 pt-6 border-t border-gray-200">
+        </div>
+        {/* Action Buttons removed - handled by sidebar */}
+        <div className="hidden">
           <button
             onClick={handleSearch}
             className="flex-1 px-6 py-3 bg-[#FA7921] text-white rounded-lg font-semibold hover:bg-[#e86f1e] transition-colors"

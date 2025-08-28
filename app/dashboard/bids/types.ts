@@ -30,7 +30,7 @@ export interface AuctionBid {
   shippingStatus?: 'pending' | 'in_transit' | 'delivered'
   paymentStatus?: 'pending' | 'completed' | 'failed'
   location?: string
-  seller?: {
+  auctionHouse?: {
     name: string
     rating: number
     verified: boolean

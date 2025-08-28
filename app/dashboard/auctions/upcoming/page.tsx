@@ -229,7 +229,7 @@ export default function UpcomingAuctionsPage() {
               <p className="text-2xl font-bold text-blue-600">
                 {upcomingAuctions.filter(a => a.verified).length}
               </p>
-              <p className="text-sm text-gray-500">Verified Sellers</p>
+              <p className="text-sm text-gray-500">Verified Auction Houses</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold text-purple-600">
@@ -274,7 +274,7 @@ export default function UpcomingAuctionsPage() {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                Verified Sellers
+                Verified Auction Houses
               </button>
             </div>
 

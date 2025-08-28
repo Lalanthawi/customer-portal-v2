@@ -39,7 +39,7 @@ export default function LotNumberInput({ lotNumbers, onChange }: LotNumberInputP
           onChange={(e) => setInputValue(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="Enter lot number and press Enter"
-          className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-gray-400"
+          className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FA7921] focus:border-transparent placeholder-black/70"
         />
         <button
           type="button"
