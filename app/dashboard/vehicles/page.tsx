@@ -178,14 +178,13 @@ export default function MyVehiclesPage() {
 
   const getSourceBadge = (source: VehicleSource) => {
     const sourceConfig = {
-      auction: { color: 'bg-orange-100 text-orange-800', label: 'Auction', icon: '🔨' },
-      direct: { color: 'bg-blue-100 text-blue-800', label: 'Direct Purchase', icon: '🏪' },
-      export: { color: 'bg-green-100 text-green-800', label: 'Export Service', icon: '📦' }
+      auction: { color: 'bg-orange-100 text-orange-800', label: 'Auction' },
+      direct: { color: 'bg-blue-100 text-blue-800', label: 'Direct Purchase' },
+      export: { color: 'bg-green-100 text-green-800', label: 'Export Service' }
     }
     const config = sourceConfig[source]
     return (
-      <span className={`px-3 py-1 rounded-full text-xs font-medium ${config.color} flex items-center gap-1`}>
-        <span>{config.icon}</span>
+      <span className={`px-3 py-1 rounded-full text-xs font-medium ${config.color}`}>
         {config.label}
       </span>
     )
