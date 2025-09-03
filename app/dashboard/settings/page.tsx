@@ -36,7 +36,6 @@ export default function SettingsPage() {
     { id: 'general', label: 'General' },
     { id: 'privacy', label: 'Privacy' },
     { id: 'auctions', label: 'Auction Preferences' },
-    { id: 'integrations', label: 'Integrations' },
     { id: 'advanced', label: 'Advanced' }
   ]
 
@@ -449,66 +448,7 @@ export default function SettingsPage() {
           </div>
         )
 
-      case 'integrations':
-        return (
-          <div className="space-y-8">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
-                <h3 className="text-lg font-semibold text-gray-900">API & Integrations</h3>
-                <p className="text-xs text-gray-500 mt-0.5">Connect third-party services and manage API access</p>
-              </div>
-              <div className="p-6">
-                <div className="grid gap-4">
-                  {[
-                    { name: 'Google Analytics', connected: true, icon: 'chart' },
-                    { name: 'Stripe Payments', connected: true, icon: 'payment' },
-                    { name: 'Email Service', connected: false, icon: 'email' },
-                    { name: 'SMS Gateway', connected: false, icon: 'sms' }
-                  ].map((service) => (
-                    <div key={service.name} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 flex items-center justify-center bg-white rounded-lg">
-                          {service.icon === 'chart' ? (
-                            <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                            </svg>
-                          ) : service.icon === 'payment' ? (
-                            <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                            </svg>
-                          ) : service.icon === 'email' ? (
-                            <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
-                          ) : (
-                            <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                            </svg>
-                          )}
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{service.name}</p>
-                          <p className="text-xs text-gray-500">
-                            {service.connected ? 'Connected' : 'Not connected'}
-                          </p>
-                        </div>
-                      </div>
-                      <button className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        service.connected
-                          ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                          : 'bg-[#FA7921] text-white hover:bg-[#FA7921]/90'
-                      }`}>
-                        {service.connected ? 'Disconnect' : 'Connect'}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )
-
-      case 'advanced':
+case 'advanced':
         return (
           <div className="space-y-8">
             {/* Advanced Settings */}
@@ -609,8 +549,6 @@ export default function SettingsPage() {
                   return <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                 case 'auctions':
                   return <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                case 'integrations':
-                  return <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                 case 'advanced':
                   return <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
                 default:

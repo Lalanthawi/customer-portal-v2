@@ -171,16 +171,11 @@ export default function StageDetails({ details, onTaskUpdate }: StageDetailsProp
             </div>
 
             {/* Action Buttons for Pending Tasks */}
-            {detail.status === 'pending' && hoveredTask === detail.id && (
+            {detail.status === 'pending' && hoveredTask === detail.id && detail.documents && detail.documents.some(d => !d.uploaded) && (
               <div className="flex items-center gap-2 mt-3">
-                <button className="px-3 py-1 text-xs bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors font-medium">
-                  Mark Complete
+                <button className="px-3 py-1 text-xs bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors font-medium">
+                  Upload Documents
                 </button>
-                {detail.documents && detail.documents.some(d => !d.uploaded) && (
-                  <button className="px-3 py-1 text-xs bg-gray-50 text-gray-600 rounded-md hover:bg-gray-100 transition-colors font-medium">
-                    Upload Documents
-                  </button>
-                )}
               </div>
             )}
           </div>

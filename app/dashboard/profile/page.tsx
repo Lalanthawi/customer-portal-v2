@@ -8,6 +8,7 @@ import type { ProfileTab, UserProfileData, PasswordData, Device, NotificationSet
 // Tab definitions
 const tabs: ProfileTab[] = [
   { id: 'account', label: 'Account' },
+  { id: 'status', label: 'Account Status' },
   { id: 'company', label: 'Business Details' },
   { id: 'security', label: 'Security' },
   { id: 'notifications', label: 'Notifications' },
@@ -117,18 +118,32 @@ function ProfileSettingsContent() {
   })
   // Account types based on user profile
   const getAccountType = () => {
-    if (companyData.hasCompany) {
-      if (companyData.importFrequency === 'monthly' || companyData.importFrequency === 'weekly') {
-        return { type: 'Premier Dealer', description: 'Full access with priority support' }
+    // Check for staff roles first
+    const userEmail = profileData.email.toLowerCase()
+    if (userEmail.includes('@zervtek.com') || userEmail.includes('@admin')) {
+      // Staff roles based on department
+      if (userEmail.includes('admin')) {
+        return { type: 'Administrator', description: 'Full system access and management', isStaff: true }
+      } else if (userEmail.includes('sales')) {
+        return { type: 'Sales Representative', description: 'Customer management and bid approval', isStaff: true }
+      } else if (userEmail.includes('support')) {
+        return { type: 'Support Agent', description: 'Customer support and assistance', isStaff: true }
+      } else if (userEmail.includes('finance')) {
+        return { type: 'Finance Team', description: 'Payment and billing management', isStaff: true }
       }
-      return { type: 'Business Account', description: 'Verified business with streamlined bidding' }
+      return { type: 'Staff Member', description: 'Internal team member', isStaff: true }
+    }
+    
+    // Customer account types
+    if (companyData.hasCompany) {
+      return { type: 'Business Account', description: 'Verified business with priority support', isStaff: false }
     } else {
       // Check if user has bid history to determine if they're new or regular
       const hasPreviousPurchases = false // This would check actual purchase history
       if (hasPreviousPurchases) {
-        return { type: 'Trusted Buyer', description: 'Regular customer with instant bid approval' }
+        return { type: 'Trusted Buyer', description: 'Regular customer with instant bid approval', isStaff: false }
       }
-      return { type: 'Standard Account', description: 'New buyer - bids require approval' }
+      return { type: 'Standard Account', description: 'New buyer - bids require approval', isStaff: false }
     }
   }
   const [passwordData, setPasswordData] = useState<PasswordData>({
@@ -433,6 +448,370 @@ function ProfileSettingsContent() {
           </div>
         )
 
+      case 'status':
+        return (
+          <div className="space-y-8">
+            {/* Account Tier Overview */}
+            <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl p-8 text-white relative overflow-hidden">
+              <div className="absolute inset-0 bg-black/20"></div>
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-6">
+                  <div>
+                    <p className="text-white/80 text-sm mb-2">Current Account Tier</p>
+                    <h2 className="text-4xl font-bold mb-2">
+                      {getAccountType().type}
+                    </h2>
+                    <p className="text-white/90">{getAccountType().description}</p>
+                  </div>
+                  {getAccountType().isStaff ? (
+                    <div className="px-4 py-2 bg-white/20 backdrop-blur rounded-full border border-white/30">
+                      <span className="text-sm font-bold">STAFF</span>
+                    </div>
+                  ) : getAccountType().type === 'Business Account' ? (
+                    <div className="px-4 py-2 bg-white/20 backdrop-blur rounded-full border border-white/30">
+                      <span className="text-sm font-bold">VERIFIED</span>
+                    </div>
+                  ) : null}
+                </div>
+                
+                {/* Account Benefits */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                  <div className="bg-white/10 backdrop-blur rounded-lg p-4 border border-white/20">
+                    <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center mb-3">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <p className="text-sm font-semibold mb-1">Bid Approval</p>
+                    <p className="text-xs text-white/80">
+                      {getAccountType().type === 'Standard Account' ? 'Requires approval' : 'Instant approval'}
+                    </p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur rounded-lg p-4 border border-white/20">
+                    <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center mb-3">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                    </div>
+                    <p className="text-sm font-semibold mb-1">Support Level</p>
+                    <p className="text-xs text-white/80">
+                      {getAccountType().isStaff ? 'Internal Access' : 
+                       getAccountType().type === 'Business Account' ? 'Priority' : 'Standard'}
+                    </p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur rounded-lg p-4 border border-white/20">
+                    <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center mb-3">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <p className="text-sm font-semibold mb-1">Transaction Fees</p>
+                    <p className="text-xs text-white/80">
+                      {getAccountType().isStaff ? 'N/A' :
+                       getAccountType().type === 'Business Account' ? 'Reduced rates' : 'Standard rates'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Account Tiers Comparison */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                <h3 className="text-lg font-semibold text-gray-900">{getAccountType().isStaff ? 'Staff Roles' : 'Account Tiers'}</h3>
+                <p className="text-xs text-gray-500 mt-0.5">{getAccountType().isStaff ? 'Different staff access levels' : 'Compare benefits across different account levels'}</p>
+              </div>
+              <div className="p-6">
+                {getAccountType().isStaff ? (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Administrator */}
+                    <div className={`rounded-xl border-2 p-6 ${
+                      getAccountType().type === 'Administrator' 
+                        ? 'border-[#FA7921] bg-orange-50/30' 
+                        : 'border-gray-200'
+                    }`}>
+                      <div className="text-center mb-4">
+                        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                          </svg>
+                        </div>
+                        <h4 className="font-bold text-gray-900">Administrator</h4>
+                        <p className="text-xs text-gray-500 mt-1">System management</p>
+                      </div>
+                      <ul className="space-y-3 text-sm">
+                        <li className="flex items-start gap-2">
+                          <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="text-gray-600">Full system access</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="text-gray-600">User management</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="text-gray-600">System configuration</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* Sales Representative */}
+                    <div className={`rounded-xl border-2 p-6 ${
+                      getAccountType().type === 'Sales Representative' 
+                        ? 'border-[#FA7921] bg-orange-50/30' 
+                        : 'border-gray-200'
+                    }`}>
+                      <div className="text-center mb-4">
+                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>
+                        </div>
+                        <h4 className="font-bold text-gray-900">Sales Representative</h4>
+                        <p className="text-xs text-gray-500 mt-1">Customer management</p>
+                      </div>
+                      <ul className="space-y-3 text-sm">
+                        <li className="flex items-start gap-2">
+                          <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="text-gray-600">Bid approval</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="text-gray-600">Customer claims</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="text-gray-600">Sales reports</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* Support Agent */}
+                    <div className={`rounded-xl border-2 p-6 ${
+                      getAccountType().type === 'Support Agent' 
+                        ? 'border-[#FA7921] bg-orange-50/30' 
+                        : 'border-gray-200'
+                    }`}>
+                      <div className="text-center mb-4">
+                        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                          </svg>
+                        </div>
+                        <h4 className="font-bold text-gray-900">Support Agent</h4>
+                        <p className="text-xs text-gray-500 mt-1">Customer assistance</p>
+                      </div>
+                      <ul className="space-y-3 text-sm">
+                        <li className="flex items-start gap-2">
+                          <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="text-gray-600">Ticket management</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="text-gray-600">Customer chat</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="text-gray-600">Issue resolution</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Standard Account */}
+                  <div className={`rounded-xl border-2 p-6 ${
+                    getAccountType().type === 'Standard Account' 
+                      ? 'border-[#FA7921] bg-orange-50/30' 
+                      : 'border-gray-200'
+                  }`}>
+                    <div className="text-center mb-4">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      </div>
+                      <h4 className="font-bold text-gray-900">Standard</h4>
+                      <p className="text-xs text-gray-500 mt-1">New buyers</p>
+                    </div>
+                    <ul className="space-y-3 text-sm">
+                      <li className="flex items-start gap-2">
+                        <svg className="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span className="text-gray-600">Bid approval required</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-gray-600">Basic support</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-gray-600">Access to auctions</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Trusted Buyer */}
+                  <div className={`rounded-xl border-2 p-6 ${
+                    getAccountType().type === 'Trusted Buyer' 
+                      ? 'border-[#FA7921] bg-orange-50/30' 
+                      : 'border-gray-200'
+                  }`}>
+                    <div className="text-center mb-4">
+                      <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                      </div>
+                      <h4 className="font-bold text-gray-900">Trusted Buyer</h4>
+                      <p className="text-xs text-gray-500 mt-1">Regular customers</p>
+                    </div>
+                    <ul className="space-y-3 text-sm">
+                      <li className="flex items-start gap-2">
+                        <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-gray-600">Instant bid approval</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-gray-600">Standard support</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-gray-600">Purchase history</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Business Account */}
+                  <div className={`rounded-xl border-2 p-6 ${
+                    getAccountType().type === 'Business Account' 
+                      ? 'border-[#FA7921] bg-orange-50/30' 
+                      : 'border-gray-200'
+                  }`}>
+                    <div className="text-center mb-4">
+                      <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                      </div>
+                      <h4 className="font-bold text-gray-900">Business</h4>
+                      <p className="text-xs text-gray-500 mt-1">Verified businesses</p>
+                    </div>
+                    <ul className="space-y-3 text-sm">
+                      <li className="flex items-start gap-2">
+                        <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-gray-600">Instant approval</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-gray-600">Priority support</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-gray-600">Business tools</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                )}
+              </div>
+            </div>
+
+            {/* Verification Request */}
+            {(getAccountType().type === 'Standard Account' || getAccountType().type === 'Trusted Buyer') && (
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200 p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Upgrade Your Account</h3>
+                    <p className="text-sm text-gray-700 mb-4">
+                      Verify your business to unlock instant bid approval, priority support, and exclusive dealer benefits.
+                    </p>
+                    <div className="flex gap-3">
+                      <button 
+                        onClick={() => setActiveTab('company')}
+                        className="px-6 py-3 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02]"
+                      >
+                        Request Verification
+                      </button>
+                      <button className="px-6 py-3 bg-white text-gray-700 rounded-xl font-medium border border-gray-200 hover:bg-gray-50 transition-colors">
+                        Learn More
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Account Statistics */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                <h3 className="text-lg font-semibold text-gray-900">Account Statistics</h3>
+                <p className="text-xs text-gray-500 mt-0.5">Your platform engagement metrics</p>
+              </div>
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="text-center">
+                    <p className="text-3xl font-bold text-gray-900">45</p>
+                    <p className="text-sm text-gray-600 mt-1">Vehicles Viewed</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-3xl font-bold text-green-600">8</p>
+                    <p className="text-sm text-gray-600 mt-1">Active Bids</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-3xl font-bold text-blue-600">23</p>
+                    <p className="text-sm text-gray-600 mt-1">Watchlist Items</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-3xl font-bold text-purple-600">15</p>
+                    <p className="text-sm text-gray-600 mt-1">Days Active</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
       case 'company':
         return (
           <div className="space-y-8">
@@ -443,9 +822,9 @@ function ProfileSettingsContent() {
                   <h3 className="text-lg font-semibold text-gray-900 mb-1">Account Type</h3>
                   <div className="flex items-center gap-3 mb-3">
                     <span className="text-2xl font-bold text-blue-900">{getAccountType().type}</span>
-                    {getAccountType().type === 'Premier Dealer' && (
-                      <span className="px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs font-bold rounded-full shadow-sm">
-                        PREMIUM
+                    {getAccountType().type === 'Business Account' && (
+                      <span className="px-3 py-1 bg-gradient-to-r from-blue-400 to-indigo-400 text-white text-xs font-bold rounded-full shadow-sm">
+                        VERIFIED
                       </span>
                     )}
                   </div>
@@ -696,7 +1075,7 @@ function ProfileSettingsContent() {
                               <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                               </svg>
-                              <span className="font-semibold">Premier Dealer Status - Volume discounts available</span>
+                              <span className="font-semibold">Business Account - Priority support available</span>
                             </li>
                             <li className="flex items-start gap-2">
                               <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -760,45 +1139,6 @@ function ProfileSettingsContent() {
               )}
             </div>
 
-            {/* Dealer Network (for Premier Dealers) */}
-            {getAccountType().type === 'Premier Dealer' && (
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
-                  <h3 className="text-lg font-semibold text-gray-900">Customer Network</h3>
-                  <p className="text-xs text-gray-500 mt-0.5">Manage your customers and monitor their activities</p>
-                </div>
-                <div className="p-6">
-                  <div className="mb-4">
-                    <p className="text-sm text-gray-600 mb-4">
-                      As a Premier Dealer, you can view vehicles your registered customers are interested in.
-                    </p>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                      <div>
-                        <p className="font-medium text-gray-900">Customer #1234</p>
-                        <p className="text-sm text-gray-600">Last active: 2 hours ago • 3 active bids</p>
-                      </div>
-                      <button className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium">
-                        View Activity
-                      </button>
-                    </div>
-                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                      <div>
-                        <p className="font-medium text-gray-900">Customer #5678</p>
-                        <p className="text-sm text-gray-600">Last active: 1 day ago • Watching 5 vehicles</p>
-                      </div>
-                      <button className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium">
-                        View Activity
-                      </button>
-                    </div>
-                  </div>
-                  <button className="mt-4 px-4 py-2 bg-[#FA7921] text-white rounded-lg text-sm font-medium hover:bg-[#FA7921]/90">
-                    + Register New Customer
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         )
 
@@ -1361,6 +1701,8 @@ function ProfileSettingsContent() {
               switch(tab.id) {
                 case 'account':
                   return <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                case 'status':
+                  return <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                 case 'company':
                   return <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                 case 'security':

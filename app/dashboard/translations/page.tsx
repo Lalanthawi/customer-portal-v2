@@ -91,6 +91,14 @@ const auctionSheetTranslations: AuctionSheetTranslation[] = [
 
 export default function TranslationsPage() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'in-progress' | 'completed'>('all')
+  const [showRequestModal, setShowRequestModal] = useState(false)
+  const [requestForm, setRequestForm] = useState({
+    vehicleName: '',
+    auctionHouse: '',
+    lotNumber: '',
+    auctionDate: '',
+    notes: ''
+  })
   
   const getStatusBadge = (status: string) => {
     const badges = {
@@ -122,7 +130,13 @@ export default function TranslationsPage() {
                 <p className="text-xs text-blue-600">Total Translations</p>
                 <p className="text-lg font-bold text-blue-900">{auctionSheetTranslations.length}</p>
               </div>
-              <button className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium">
+              <button 
+                onClick={() => setShowRequestModal(true)}
+                className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
                 Request Translation
               </button>
             </div>
@@ -255,6 +269,167 @@ export default function TranslationsPage() {
           </div>
         )}
       </div>
+
+      {/* Request Translation Modal */}
+      {showRequestModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-900">Request Auction Sheet Translation</h2>
+                <button 
+                  onClick={() => setShowRequestModal(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-4">
+              {/* Vehicle Information */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Vehicle Name/Model
+                </label>
+                <input
+                  type="text"
+                  value={requestForm.vehicleName}
+                  onChange={(e) => setRequestForm({...requestForm, vehicleName: e.target.value})}
+                  placeholder="e.g., 2023 Toyota Camry Hybrid"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                />
+              </div>
+
+              {/* Auction House */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Auction House
+                </label>
+                <select
+                  value={requestForm.auctionHouse}
+                  onChange={(e) => setRequestForm({...requestForm, auctionHouse: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                >
+                  <option value="">Select Auction House</option>
+                  <option value="USS Tokyo">USS Tokyo</option>
+                  <option value="USS Nagoya">USS Nagoya</option>
+                  <option value="USS Osaka">USS Osaka</option>
+                  <option value="USS Yokohama">USS Yokohama</option>
+                  <option value="HAA Kobe">HAA Kobe</option>
+                  <option value="HAA Kansai">HAA Kansai</option>
+                  <option value="TAA Yokohama">TAA Yokohama</option>
+                  <option value="TAA Tohoku">TAA Tohoku</option>
+                  <option value="JAA">JAA</option>
+                  <option value="CAA Tokyo">CAA Tokyo</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {/* Lot Number */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Lot Number
+                  </label>
+                  <input
+                    type="text"
+                    value={requestForm.lotNumber}
+                    onChange={(e) => setRequestForm({...requestForm, lotNumber: e.target.value})}
+                    placeholder="e.g., 42315"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                  />
+                </div>
+
+                {/* Auction Date */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Auction Date
+                  </label>
+                  <input
+                    type="date"
+                    value={requestForm.auctionDate}
+                    onChange={(e) => setRequestForm({...requestForm, auctionDate: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              {/* Auction Sheet Upload */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Upload Auction Sheet
+                </label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+                  <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  <p className="text-sm text-gray-600">Drop files here or click to browse</p>
+                  <p className="text-xs text-gray-500 mt-1">PDF, JPG, PNG up to 10MB</p>
+                  <input type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png" />
+                </div>
+              </div>
+
+              {/* Additional Notes */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Additional Notes (Optional)
+                </label>
+                <textarea
+                  value={requestForm.notes}
+                  onChange={(e) => setRequestForm({...requestForm, notes: e.target.value})}
+                  rows={3}
+                  placeholder="Any specific areas of concern or details you need translated..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                />
+              </div>
+
+              {/* Service Notice */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div className="text-sm">
+                    <p className="font-medium text-blue-900">Free Translation Service</p>
+                    <p className="text-blue-700 mt-1">
+                      All auction sheet translations are provided free of charge. Our professional translators ensure accurate and detailed translations including grade, condition notes, and repair history.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-gray-200 flex items-center justify-end gap-3">
+              <button 
+                onClick={() => setShowRequestModal(false)}
+                className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => {
+                  // Handle form submission
+                  setShowRequestModal(false)
+                  // Reset form
+                  setRequestForm({
+                    vehicleName: '',
+                    auctionHouse: '',
+                    lotNumber: '',
+                    auctionDate: '',
+                    notes: ''
+                  })
+                }}
+                className="px-6 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
+              >
+                Submit Request
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

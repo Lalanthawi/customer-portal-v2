@@ -128,7 +128,6 @@ export default function InspectionsPage() {
   
   // Calculate total inspection fees
   const totalInspectionFees = vehicleInspections.filter(i => i.status === 'completed').length * 3000
-  const pendingInspections = vehicleInspections.filter(i => i.status !== 'completed').length
   
   const getStatusBadge = (status: string) => {
     const badges = {

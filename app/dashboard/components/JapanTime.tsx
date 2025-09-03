@@ -48,35 +48,40 @@ export default function JapanTime() {
   return (
     <div className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
-              <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span className="text-sm text-gray-600">Japan Time (JST):</span>
-              <span className="text-sm font-semibold text-gray-900">
-                {formatTime(japanTime)}
-              </span>
-              <span className="text-sm text-gray-600">•</span>
-              <span className="text-sm text-gray-600">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">JST:</span>
+                <span className="text-xs sm:text-sm font-semibold text-gray-900 whitespace-nowrap">
+                  {formatTime(japanTime)}
+                </span>
+              </div>
+              <span className="hidden sm:inline text-sm text-gray-600">•</span>
+              <span className="text-xs sm:text-sm text-gray-600 hidden md:inline">
                 {formatDate(japanTime)}
+              </span>
+              <span className="text-xs sm:text-sm text-gray-600 md:hidden">
+                {japanTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
               </span>
             </div>
             
             {isNearDeadline && (
-              <div className="flex items-center gap-2 px-3 py-1 bg-yellow-50 border border-yellow-200 rounded-full">
-                <svg className="w-3 h-3 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+              <div className="flex items-center gap-2 px-2 sm:px-3 py-1 bg-yellow-50 border border-yellow-200 rounded-full">
+                <svg className="w-3 h-3 text-yellow-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
-                <span className="text-xs font-medium text-yellow-800">
-                  Inspection deadline: 1:00 PM JST
+                <span className="text-xs font-medium text-yellow-800 whitespace-nowrap">
+                  Deadline: 1PM JST
                 </span>
               </div>
             )}
           </div>
           
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-gray-500 hidden lg:block">
             Auctions typically end 1-3 minutes after start time
           </div>
         </div>

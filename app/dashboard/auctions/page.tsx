@@ -225,7 +225,7 @@ const getUserCountry = (): string => {
   return 'default'
 }
 
-export default function ExplorePage() {
+export default function AuctionsPage() {
   const router = useRouter()
   const { hasAcceptedTOS, acceptTOS } = useTOSAcceptance()
   const [showTOS, setShowTOS] = useState(false)

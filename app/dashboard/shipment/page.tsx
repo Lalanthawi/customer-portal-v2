@@ -9,7 +9,11 @@ function ShipmentContent() {
   const searchParams = useSearchParams()
   const orderId = searchParams.get('orderId') || 'AUC-2024-0892'
   
-  const [stages] = useState<TimelineStage[]>([
+  // Configuration options (would come from admin settings in real app)
+  const [exportInspectionEnabled, setExportInspectionEnabled] = useState(true)
+  const [inspectionCompany, setInspectionCompany] = useState('JEVIC')
+  
+  const baseStages: TimelineStage[] = [
     {
       id: 'auction-won',
       title: 'Auction Won',
@@ -127,6 +131,40 @@ function ShipmentContent() {
       ]
     },
     {
+      id: 'port-photos',
+      title: 'Port Documentation',
+      description: 'Vehicle photos taken at port before shipping',
+      status: 'pending',
+      progress: 0,
+      tasksCompleted: 0,
+      totalTasks: 2,
+      estimatedDate: new Date('2024-01-21T17:00:00'),
+      isExpandable: true,
+      details: [
+        {
+          id: 'port-1',
+          title: 'Port arrival photos',
+          status: 'pending',
+          description: 'Comprehensive photos of vehicle condition at port',
+          dueDate: new Date('2024-01-21T10:00:00'),
+          assignee: 'Port Team',
+          documents: [
+            { id: 'port-doc-1', name: 'Exterior Photos', type: 'images', required: true, uploaded: false },
+            { id: 'port-doc-2', name: 'Interior Photos', type: 'images', required: true, uploaded: false },
+            { id: 'port-doc-3', name: 'Engine Bay Photos', type: 'images', required: true, uploaded: false }
+          ]
+        },
+        {
+          id: 'port-2',
+          title: 'Customer notification',
+          status: 'pending',
+          description: 'Notify customer that port photos are available',
+          dueDate: new Date('2024-01-21T14:00:00'),
+          assignee: 'Customer Service'
+        }
+      ]
+    },
+    {
       id: 'in-transit',
       title: 'In Transit',
       description: 'Vehicle is being shipped to destination',
@@ -152,6 +190,48 @@ function ShipmentContent() {
           description: 'Expected arrival at destination',
           dueDate: new Date('2024-02-15T14:00:00'),
           assignee: 'Shipping Line'
+        }
+      ]
+    },
+    {
+      id: 'document-shipping',
+      title: 'Document Shipping',
+      description: 'Original documents sent via DHL/EMS for vehicle release',
+      status: 'pending',
+      progress: 0,
+      tasksCompleted: 0,
+      totalTasks: 3,
+      estimatedDate: new Date('2024-01-23T17:00:00'),
+      isExpandable: true,
+      details: [
+        {
+          id: 'doc-ship-1',
+          title: 'Prepare release documents',
+          status: 'pending',
+          description: 'Bill of Lading, Export Certificate, and vehicle keys',
+          dueDate: new Date('2024-01-22T14:00:00'),
+          assignee: 'Documentation Team',
+          documents: [
+            { id: 'dhl-doc-1', name: 'Original Bill of Lading', type: 'pdf', required: true, uploaded: false },
+            { id: 'dhl-doc-2', name: 'Export Certificate', type: 'pdf', required: true, uploaded: false },
+            { id: 'dhl-doc-3', name: 'Deregistration Certificate', type: 'pdf', required: true, uploaded: false }
+          ]
+        },
+        {
+          id: 'doc-ship-2',
+          title: 'Ship via DHL/EMS',
+          status: 'pending',
+          description: 'Express shipping to customer',
+          dueDate: new Date('2024-01-23T10:00:00'),
+          assignee: 'Shipping Team'
+        },
+        {
+          id: 'doc-ship-3',
+          title: 'Customer notification',
+          status: 'pending',
+          description: 'Send tracking number to customer',
+          dueDate: new Date('2024-01-23T14:00:00'),
+          assignee: 'Customer Service'
         }
       ]
     },
@@ -196,7 +276,50 @@ function ShipmentContent() {
         }
       ]
     }
-  ])
+  ]
+  
+  // Add optional export inspection stage if enabled
+  const exportInspectionStage: TimelineStage = {
+    id: 'export-inspection',
+    title: `Export Inspection (${inspectionCompany})`,
+    description: `Vehicle inspection by ${inspectionCompany} for export compliance`,
+    status: 'pending',
+    progress: 0,
+    tasksCompleted: 0,
+    totalTasks: 2,
+    estimatedDate: new Date('2024-01-19T17:00:00'),
+    isExpandable: true,
+    details: [
+      {
+        id: 'export-1',
+        title: `Schedule ${inspectionCompany} inspection`,
+        status: 'pending',
+        description: `Arrange inspection appointment with ${inspectionCompany}`,
+        dueDate: new Date('2024-01-17T10:00:00'),
+        assignee: 'Export Team'
+      },
+      {
+        id: 'export-2',
+        title: 'Receive inspection certificate',
+        status: 'pending',
+        description: `${inspectionCompany} inspection certificate for export`,
+        dueDate: new Date('2024-01-19T14:00:00'),
+        assignee: 'Export Team',
+        documents: [
+          { id: 'insp-doc-1', name: `${inspectionCompany} Certificate`, type: 'pdf', required: true, uploaded: false }
+        ]
+      }
+    ]
+  }
+  
+  // Insert export inspection after payment if enabled
+  const stages = [...baseStages]
+  if (exportInspectionEnabled) {
+    const paymentIndex = stages.findIndex(s => s.id === 'payment-documents')
+    stages.splice(paymentIndex + 1, 0, exportInspectionStage)
+  }
+  
+  const [currentStages, setCurrentStages] = useState<TimelineStage[]>(stages)
 
   const handleStageToggle = (stageId: string) => {
     console.log('Stage toggled:', stageId)
@@ -254,10 +377,53 @@ function ShipmentContent() {
           </div>
         </div>
 
+        {/* Export Inspection Settings (Staff Only) */}
+        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-yellow-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-yellow-900 mb-2">Export Inspection Settings (Staff Only)</h3>
+              <div className="flex items-center gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={exportInspectionEnabled}
+                    onChange={(e) => {
+                      setExportInspectionEnabled(e.target.checked)
+                      const newStages = [...baseStages]
+                      if (e.target.checked) {
+                        const paymentIndex = newStages.findIndex(s => s.id === 'payment-documents')
+                        newStages.splice(paymentIndex + 1, 0, exportInspectionStage)
+                      }
+                      setCurrentStages(newStages)
+                    }}
+                    className="w-4 h-4 text-[#FA7921] rounded focus:ring-[#FA7921]"
+                  />
+                  <span className="text-sm text-gray-700">Export inspection required</span>
+                </label>
+                {exportInspectionEnabled && (
+                  <div className="flex items-center gap-2">
+                    <label className="text-sm text-gray-700">Company:</label>
+                    <input
+                      type="text"
+                      value={inspectionCompany}
+                      onChange={(e) => setInspectionCompany(e.target.value)}
+                      className="px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[#FA7921]"
+                      placeholder="e.g., JEVIC, QISJ"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Timeline Component */}
         <ShipmentTimeline
           orderId={orderId}
-          stages={stages}
+          stages={currentStages}
           onStageToggle={handleStageToggle}
           onTaskUpdate={handleTaskUpdate}
         />
