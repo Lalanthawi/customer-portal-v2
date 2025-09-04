@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import ShipmentTimeline from '../../components/ShipmentTimeline'
 import { TimelineStage } from '../../components/types'
+import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
 
 interface BidDetail {
   id: string
@@ -78,6 +79,9 @@ export default function BidDetailPage() {
     country: 'Japan',
     phone: '+81-3-1234-5678'
   })
+  
+  // Generate a random auction house for this bid
+  const auctionHouseName = getRandomAuctionHouse()
   
   // Mock data - In production, fetch from API based on bidId
   const [bidDetail] = useState<BidDetail>({
@@ -210,7 +214,7 @@ export default function BidDetailPage() {
     {
       id: 'inland-transport',
       title: 'Inland Transport',
-      description: selectedPort ? `USS Tokyo to ${selectedPort}` : 'Transport to departure port',
+      description: selectedPort ? `${auctionHouseName} to ${selectedPort}` : 'Transport to departure port',
       status: 'in-progress',
       progress: 60,
       tasksCompleted: 1,
@@ -222,7 +226,7 @@ export default function BidDetailPage() {
           id: 'transport-1',
           title: 'Vehicle Pickup',
           status: 'completed',
-          description: 'Vehicle collected from USS Tokyo',
+          description: `Vehicle collected from ${auctionHouseName}`,
           completedDate: new Date('2024-01-15T09:00:00')
         },
         {

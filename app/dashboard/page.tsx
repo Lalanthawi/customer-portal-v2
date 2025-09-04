@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ClaimRequiredModal, useClaimStatus } from './components/ClaimRequired'
+import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
 
 // Skeleton component for loading states
 function Skeleton({ className }: { className?: string }) {
@@ -289,7 +290,7 @@ export default function DashboardPage() {
       currentBid: 2750000,
       yourBid: 2750000,
       endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-      auctionHouse: 'USS Tokyo',
+      auctionHouse: getRandomAuctionHouse(),
       lotNumber: '42315',
       bidsCount: 23,
       watching: 67,
@@ -302,7 +303,7 @@ export default function DashboardPage() {
       startingPrice: 1800000,
       currentBid: 1950000,
       endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
-      auctionHouse: 'HAA Kobe',
+      auctionHouse: getRandomAuctionHouse(),
       lotNumber: '78921',
       bidsCount: 15,
       watching: 42,
@@ -316,7 +317,7 @@ export default function DashboardPage() {
       currentBid: 3350000,
       yourBid: 3350000,
       endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-      auctionHouse: 'TAA Yokohama',
+      auctionHouse: getRandomAuctionHouse(),
       lotNumber: '15643',
       bidsCount: 31,
       watching: 89,
@@ -329,7 +330,7 @@ export default function DashboardPage() {
       startingPrice: 4500000,
       currentBid: 4650000,
       endDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000),
-      auctionHouse: 'JU Nagoya',
+      auctionHouse: getRandomAuctionHouse(),
       lotNumber: '89234',
       bidsCount: 18,
       watching: 54,
@@ -343,7 +344,7 @@ export default function DashboardPage() {
       currentBid: 5350000,
       yourBid: 5350000,
       endDate: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
-      auctionHouse: 'CAA Tokyo',
+      auctionHouse: getRandomAuctionHouse(),
       lotNumber: '34521',
       bidsCount: 27,
       watching: 93,
@@ -356,7 +357,7 @@ export default function DashboardPage() {
       startingPrice: 3800000,
       currentBid: 3950000,
       endDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
-      auctionHouse: 'AUCNET',
+      auctionHouse: getRandomAuctionHouse(),
       lotNumber: '67892',
       bidsCount: 34,
       watching: 78,
@@ -368,7 +369,7 @@ export default function DashboardPage() {
       id: '1',
       type: 'bid',
       title: 'You placed a bid on Toyota Camry',
-      description: 'USS Tokyo • Lot #42315',
+      description: `${getRandomAuctionHouse()} • Lot #42315`,
       time: '2 hours ago',
       amount: '2,750,000',
       status: 'success'
@@ -386,7 +387,7 @@ export default function DashboardPage() {
       id: '3',
       type: 'outbid',
       title: 'Another ZervTek customer outbid you',
-      description: 'HAA Kobe • Lot #78234 - Change your bid',
+      description: `${getRandomAuctionHouse()} • Lot #78234 - Change your bid`,
       time: '6 hours ago',
       status: 'pending'
     },
@@ -394,7 +395,7 @@ export default function DashboardPage() {
       id: '4',
       type: 'win',
       title: 'You won the auction for Nissan Altima',
-      description: 'TAA Yokohama • Lot #15643 - Payment due',
+      description: `${getRandomAuctionHouse()} • Lot #15643 - Payment due`,
       time: '1 day ago',
       amount: '2,100,000',
       status: 'success'
@@ -403,14 +404,14 @@ export default function DashboardPage() {
       id: '5',
       type: 'listing',
       title: 'New match: BMW 3 Series 2022',
-      description: 'USS Nagoya • Lot #89234 - Matches your criteria',
+      description: `${getRandomAuctionHouse()} • Lot #89234 - Matches your criteria`,
       time: '2 days ago'
     },
     { 
       id: '6',
       type: 'payment',
       title: 'Payment confirmed for Mazda CX-5',
-      description: 'JU Tokyo • Lot #34521 - Preparing for shipment',
+      description: `${getRandomAuctionHouse()} • Lot #34521 - Preparing for shipment`,
       time: '3 days ago',
       amount: '1,850,000',
       status: 'success'

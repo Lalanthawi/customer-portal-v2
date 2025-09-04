@@ -6,6 +6,7 @@ import ShipmentTimeline from '../../components/ShipmentTimeline'
 import { TimelineStage } from '../../components/types'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
 
 interface Document {
   id: string
@@ -66,9 +67,36 @@ interface VehicleDetails {
 
 export default function VehicleDetailPage() {
   const params = useParams()
-  const [activeTab, setActiveTab] = useState<'overview' | 'documents' | 'shipping' | 'history'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'documents' | 'shipping' | 'history' | 'inspection' | 'translation'>('overview')
   const [uploadModalOpen, setUploadModalOpen] = useState(false)
   const [selectedDocumentType, setSelectedDocumentType] = useState<Document['type']>('invoice')
+  
+  // Inspection and Translation states
+  const [inspectionRequested, setInspectionRequested] = useState(false)
+  const [inspectionData, setInspectionData] = useState<{ report?: string; date?: Date } | null>(null)
+  const [translationRequested, setTranslationRequested] = useState(false)
+  const [translationData, setTranslationData] = useState<{ translation?: string; original?: string } | null>(null)
+  const [showInspectionModal, setShowInspectionModal] = useState(false)
+  const [showTranslationModal, setShowTranslationModal] = useState(false)
+  
+  // Handlers for inspection and translation requests
+  const handleRequestInspection = () => {
+    setShowInspectionModal(false)
+    setInspectionRequested(true)
+    // Simulate inspection completion after 3 seconds
+    setTimeout(() => {
+      setInspectionData({ report: 'Inspection Report', date: new Date() })
+    }, 3000)
+  }
+  
+  const handleRequestTranslation = () => {
+    setShowTranslationModal(false)
+    setTranslationRequested(true)
+    // Simulate translation completion after 3 seconds
+    setTimeout(() => {
+      setTranslationData({ translation: 'Translated content', original: 'Original content' })
+    }, 3000)
+  }
 
   // Timeline stages for the ShipmentTimeline component
   const shipmentStages: TimelineStage[] = [
@@ -89,7 +117,7 @@ export default function VehicleDetailPage() {
           id: 'auction-1',
           title: 'Auction Details',
           status: 'completed',
-          description: 'USS Tokyo - Lot #42315',
+          description: `${getRandomAuctionHouse()} - Lot #42315`,
           completedDate: new Date('2024-01-10')
         },
         { 
@@ -412,7 +440,7 @@ export default function VehicleDetailPage() {
       bookingNumber: 'BK20240110001'
     },
     auctionDetails: {
-      auctionHouse: 'USS Tokyo',
+      auctionHouse: getRandomAuctionHouse(),
       lotNumber: '42315',
       auctionDate: new Date('2024-01-10'),
       grade: '4.5',
@@ -596,10 +624,10 @@ export default function VehicleDetailPage() {
       <div className="bg-white rounded-xl border border-gray-200">
         <div className="border-b border-gray-200">
           <nav className="flex -mb-px">
-            {['overview', 'documents', 'shipping', 'history'].map((tab) => (
+            {['overview', 'documents', 'shipping', 'inspection', 'translation', 'history'].map((tab) => (
               <button
                 key={tab}
-                onClick={() => setActiveTab(tab as 'overview' | 'documents' | 'shipping' | 'history')}
+                onClick={() => setActiveTab(tab as 'overview' | 'documents' | 'shipping' | 'history' | 'inspection' | 'translation')}
                 className={`py-4 px-6 text-sm font-medium capitalize transition-colors ${
                   activeTab === tab
                     ? 'border-b-2 border-[#FA7921] text-[#FA7921]'
@@ -895,6 +923,165 @@ export default function VehicleDetailPage() {
           )}
 
           {/* History Tab */}
+          {/* Inspection Tab */}
+          {activeTab === 'inspection' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Vehicle Inspection</h3>
+                {!inspectionRequested && !inspectionData && (
+                  <button
+                    onClick={() => setShowInspectionModal(true)}
+                    className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
+                  >
+                    Request Inspection
+                  </button>
+                )}
+              </div>
+
+              {/* If inspection is already available (shared from another user) */}
+              {inspectionData && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="text-sm font-medium text-green-800">Inspection Available</p>
+                      <p className="text-sm text-green-700 mt-1">
+                        This vehicle has already been inspected. The inspection report is available for viewing.
+                      </p>
+                      <button className="mt-3 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium text-sm">
+                        View Inspection Report
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* If inspection is requested but pending */}
+              {inspectionRequested && !inspectionData && (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="text-sm font-medium text-amber-800">Inspection Requested</p>
+                      <p className="text-sm text-amber-700 mt-1">
+                        Your inspection request has been submitted. The inspection will be completed within 24-48 hours.
+                      </p>
+                      <div className="mt-3 flex items-center gap-4">
+                        <span className="text-xs text-amber-600">Request ID: #INS-2024-0892</span>
+                        <span className="text-xs text-amber-600">Fee: ¥3,000</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* If no inspection */}
+              {!inspectionRequested && !inspectionData && (
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                  <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  <h4 className="text-lg font-medium text-gray-900 mb-1">No Inspection Available</h4>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Request a professional inspection for this vehicle (¥3,000 fee)
+                  </p>
+                  <button
+                    onClick={() => setShowInspectionModal(true)}
+                    className="px-6 py-2.5 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
+                  >
+                    Request Inspection
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Translation Tab */}
+          {activeTab === 'translation' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Auction Sheet Translation</h3>
+                {!translationRequested && !translationData && (
+                  <button
+                    onClick={() => setShowTranslationModal(true)}
+                    className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
+                  >
+                    Request Translation
+                  </button>
+                )}
+              </div>
+
+              {/* If translation is already available (shared from another user) */}
+              {translationData && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="text-sm font-medium text-green-800">Translation Available</p>
+                      <p className="text-sm text-green-700 mt-1">
+                        The auction sheet for this vehicle has already been translated and is ready for viewing.
+                      </p>
+                      <div className="mt-3 flex gap-3">
+                        <button className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium text-sm">
+                          View Original Sheet
+                        </button>
+                        <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium text-sm">
+                          View Translation
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* If translation is requested but pending */}
+              {translationRequested && !translationData && (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="text-sm font-medium text-amber-800">Translation In Progress</p>
+                      <p className="text-sm text-amber-700 mt-1">
+                        Your translation request has been submitted. The translation will be completed within 2-4 hours.
+                      </p>
+                      <div className="mt-3 flex items-center gap-4">
+                        <span className="text-xs text-amber-600">Request ID: #TRN-2024-1567</span>
+                        <span className="text-xs text-amber-600">Fee: ¥1,500</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* If no translation */}
+              {!translationRequested && !translationData && (
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                  <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                  </svg>
+                  <h4 className="text-lg font-medium text-gray-900 mb-1">No Translation Available</h4>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Request a professional translation of the auction sheet (¥1,500 fee)
+                  </p>
+                  <button
+                    onClick={() => setShowTranslationModal(true)}
+                    className="px-6 py-2.5 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
+                  >
+                    Request Translation
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
           {activeTab === 'history' && (
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Activity History</h3>
@@ -978,6 +1165,102 @@ export default function VehicleDetailPage() {
               </button>
               <button className="flex-1 px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium">
                 Upload
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Inspection Request Modal */}
+      {showInspectionModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Request Vehicle Inspection</h3>
+            
+            <div className="space-y-4">
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <p className="text-sm text-amber-800">
+                  <strong>Fee:</strong> ¥3,000 (will be added to your invoice)
+                </p>
+              </div>
+              
+              <div>
+                <p className="text-sm text-gray-600 mb-3">
+                  A professional inspection will be conducted on this vehicle. The inspection report will include:
+                </p>
+                <ul className="text-sm text-gray-600 space-y-1 list-disc list-inside">
+                  <li>Detailed condition assessment</li>
+                  <li>High-resolution photos of key areas</li>
+                  <li>Mechanical inspection results</li>
+                  <li>Accident history verification</li>
+                </ul>
+              </div>
+              
+              <div className="text-sm text-gray-500">
+                Estimated completion: 24-48 hours
+              </div>
+            </div>
+            
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setShowInspectionModal(false)}
+                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleRequestInspection}
+                className="flex-1 px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
+              >
+                Request Inspection
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Translation Request Modal */}
+      {showTranslationModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Request Auction Sheet Translation</h3>
+            
+            <div className="space-y-4">
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <p className="text-sm text-amber-800">
+                  <strong>Fee:</strong> ¥1,500 (will be added to your invoice)
+                </p>
+              </div>
+              
+              <div>
+                <p className="text-sm text-gray-600 mb-3">
+                  Professional translation of the auction sheet will include:
+                </p>
+                <ul className="text-sm text-gray-600 space-y-1 list-disc list-inside">
+                  <li>Complete auction grade translation</li>
+                  <li>Condition notes and remarks</li>
+                  <li>Equipment and features list</li>
+                  <li>Inspector comments</li>
+                </ul>
+              </div>
+              
+              <div className="text-sm text-gray-500">
+                Estimated completion: 2-4 hours
+              </div>
+            </div>
+            
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setShowTranslationModal(false)}
+                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleRequestTranslation}
+                className="flex-1 px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
+              >
+                Request Translation
               </button>
             </div>
           </div>

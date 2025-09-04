@@ -4,6 +4,7 @@ import { useState, useRef, ChangeEvent, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import type { ProfileTab, UserProfileData, PasswordData, Device, NotificationSettings, PaymentMethod } from './types'
+import TwoFactorAuth from '../components/TwoFactorAuth'
 
 // Tab definitions
 const tabs: ProfileTab[] = [
@@ -177,6 +178,10 @@ function ProfileSettingsContent() {
       paymentReminders: false,
     },
   })
+  const [show2FA, setShow2FA] = useState(false)
+  const [twoFAPurpose, setTwoFAPurpose] = useState<'setup' | 'verify' | 'upgrade'>('verify')
+  const [twoFAEnabled, setTwoFAEnabled] = useState(false)
+  const [pendingUpgrade, setPendingUpgrade] = useState(false)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -203,6 +208,26 @@ function ProfileSettingsContent() {
     { met: /[a-z]/.test(passwordData.newPassword), text: 'At least one lowercase character' },
     { met: /[\d\W\s]/.test(passwordData.newPassword), text: 'At least one number, symbol, or whitespace character' },
   ]
+
+  const handle2FAVerification = (code: string) => {
+    console.log('2FA verification successful with code:', code)
+    setShow2FA(false)
+    
+    if (pendingUpgrade) {
+      // After successful 2FA verification, proceed with upgrade
+      setCompanyData({
+        ...companyData,
+        hasCompany: true,
+      })
+      setPendingUpgrade(false)
+      setActiveTab('company')
+      // Show success message
+      alert('2FA verification successful! Please complete your business details to upgrade your account.')
+    } else if (twoFAPurpose === 'setup') {
+      setTwoFAEnabled(true)
+      alert('Two-factor authentication has been successfully enabled!')
+    }
+  }
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -768,7 +793,11 @@ function ProfileSettingsContent() {
                     </p>
                     <div className="flex gap-3">
                       <button 
-                        onClick={() => setActiveTab('company')}
+                        onClick={() => {
+                          setTwoFAPurpose('upgrade')
+                          setShow2FA(true)
+                          setPendingUpgrade(true)
+                        }}
                         className="px-6 py-3 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02]"
                       >
                         Request Verification
@@ -1289,21 +1318,62 @@ function ProfileSettingsContent() {
             <div className="bg-white rounded-xl border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Two-step Verification</h3>
               <div className="flex items-start gap-4 mb-6">
-                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                <div className={`w-12 h-12 ${twoFAEnabled ? 'bg-green-100' : 'bg-yellow-100'} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                  <svg className={`w-6 h-6 ${twoFAEnabled ? 'text-green-600' : 'text-yellow-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {twoFAEnabled ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    )}
                   </svg>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-gray-600 mb-1">Two factor authentication is not enabled yet.</p>
-                  <p className="text-sm text-gray-500">
-                    Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to sign in.
-                  </p>
+                  {twoFAEnabled ? (
+                    <>
+                      <p className="text-sm text-green-600 font-medium mb-1">Two-factor authentication is enabled</p>
+                      <p className="text-sm text-gray-500">
+                        Your account is protected with an additional layer of security. You&apos;ll need to enter a verification code when signing in.
+                      </p>
+                      <div className="mt-3 flex items-center gap-3">
+                        <span className="text-xs text-gray-500">Methods enabled:</span>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded">SMS</span>
+                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded">Authenticator App</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm text-gray-600 mb-1">Two factor authentication is not enabled yet.</p>
+                      <p className="text-sm text-gray-500">
+                        Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to sign in.
+                        <span className="block mt-2 text-amber-600 font-medium">Required for account upgrades from Basic to Business tier.</span>
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
-              <button className="px-6 py-2.5 bg-[#FA7921] text-white rounded-lg font-medium hover:bg-[#FA7921]/90 transition-colors">
-                Enable Two-Factor Authentication
-              </button>
+              {!twoFAEnabled ? (
+                <button 
+                  onClick={() => {
+                    setTwoFAPurpose('setup')
+                    setShow2FA(true)
+                  }}
+                  className="px-6 py-2.5 bg-[#FA7921] text-white rounded-lg font-medium hover:bg-[#FA7921]/90 transition-colors"
+                >
+                  Enable Two-Factor Authentication
+                </button>
+              ) : (
+                <div className="flex gap-3">
+                  <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                    Manage Methods
+                  </button>
+                  <button 
+                    onClick={() => setTwoFAEnabled(false)}
+                    className="px-4 py-2 bg-red-100 text-red-700 rounded-lg font-medium hover:bg-red-200 transition-colors"
+                  >
+                    Disable 2FA
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Recent Devices */}
@@ -1738,6 +1808,19 @@ function ProfileSettingsContent() {
 
       {/* Tab Content */}
       <div className="space-y-6">{renderTabContent()}</div>
+
+      {/* 2FA Modal */}
+      <TwoFactorAuth
+        isOpen={show2FA}
+        onClose={() => {
+          setShow2FA(false)
+          setPendingUpgrade(false)
+        }}
+        onVerify={handle2FAVerification}
+        purpose={twoFAPurpose}
+        phoneNumber={profileData.phoneNumber}
+        email={profileData.email}
+      />
     </div>
   )
 }

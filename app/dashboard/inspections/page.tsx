@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
 
 // Types
 interface VehicleInspection {
@@ -28,7 +29,7 @@ const vehicleInspections: VehicleInspection[] = [
     vehicleId: 'TOY-CAM-2023',
     vehicleName: '2023 Toyota Camry Hybrid',
     vehicleImage: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400',
-    auctionHouse: 'USS Tokyo',
+    auctionHouse: getRandomAuctionHouse(),
     lotNumber: '42315',
     inspectionDate: '2024-01-22',
     photos: [
@@ -56,7 +57,7 @@ const vehicleInspections: VehicleInspection[] = [
     vehicleId: 'HON-CRV-2022',
     vehicleName: '2022 Honda CR-V',
     vehicleImage: 'https://images.unsplash.com/photo-1568844293986-8d0400bd4745?w=400',
-    auctionHouse: 'HAA Kobe',
+    auctionHouse: getRandomAuctionHouse(),
     lotNumber: '78921',
     inspectionDate: '2024-01-24',
     photos: [],
@@ -71,7 +72,7 @@ const vehicleInspections: VehicleInspection[] = [
     vehicleId: 'NIS-LEAF-2023',
     vehicleName: '2023 Nissan Leaf',
     vehicleImage: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=400',
-    auctionHouse: 'JU Nagoya',
+    auctionHouse: getRandomAuctionHouse(),
     lotNumber: '89234',
     inspectionDate: '2024-01-25',
     photos: [],
@@ -85,7 +86,7 @@ const vehicleInspections: VehicleInspection[] = [
     vehicleId: 'MAZ-CX5-2022',
     vehicleName: '2022 Mazda CX-5',
     vehicleImage: 'https://images.unsplash.com/photo-1609521263047-f8f205293b24?w=400',
-    auctionHouse: 'USS Yokohama',
+    auctionHouse: getRandomAuctionHouse(),
     lotNumber: '56789',
     inspectionDate: '2024-01-20',
     photos: [
@@ -108,7 +109,7 @@ const vehicleInspections: VehicleInspection[] = [
     vehicleId: 'SUB-IMP-2023',
     vehicleName: '2023 Subaru Impreza',
     vehicleImage: 'https://images.unsplash.com/photo-1616422285623-13ff0162193c?w=400',
-    auctionHouse: 'CAA Tokyo',
+    auctionHouse: getRandomAuctionHouse(),
     lotNumber: '34521',
     inspectionDate: '2024-01-26',
     photos: [],
@@ -123,7 +124,8 @@ const vehicleInspections: VehicleInspection[] = [
 export default function InspectionsPage() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'requested' | 'processing' | 'completed'>('all')
   const [selectedInspection, setSelectedInspection] = useState<VehicleInspection | null>(null)
-  const [showUploadModal, setShowUploadModal] = useState(false)
+  // Upload functionality moved to individual vehicle pages
+  // const [showUploadModal, setShowUploadModal] = useState(false)
   const [dragActive, setDragActive] = useState(false)
   
   // Calculate total inspection fees
@@ -181,12 +183,11 @@ export default function InspectionsPage() {
                 <p className="text-lg font-bold text-amber-900">¥{totalInspectionFees.toLocaleString()}</p>
                 <p className="text-xs text-amber-600">Auto-added to invoice</p>
               </div>
-              <button
-                onClick={() => setShowUploadModal(true)}
-                className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
-              >
-                Upload Media
-              </button>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
+                <p className="text-xs text-blue-700 font-medium">
+                  Request from vehicle page
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -410,14 +411,14 @@ export default function InspectionsPage() {
         </div>
       )}
 
-      {/* Upload Modal */}
-      {showUploadModal && (
+      {/* Upload Modal removed - functionality moved to vehicle pages */}
+      {false && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl max-w-2xl w-full p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-gray-900">Upload Inspection Media</h3>
               <button
-                onClick={() => setShowUploadModal(false)}
+                onClick={() => {}}
                 className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

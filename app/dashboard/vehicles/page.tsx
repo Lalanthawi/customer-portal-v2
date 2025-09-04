@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
 
 type VehicleSource = 'auction' | 'direct' | 'export'
 type VehicleStatus = 'payment_pending' | 'preparing' | 'in_transit' | 'at_port' | 'delivered' | 'completed'
@@ -72,7 +73,7 @@ export default function MyVehiclesPage() {
         arrivalPort: 'Los Angeles Port'
       },
       auctionDetails: {
-        auctionHouse: 'USS Tokyo',
+        auctionHouse: getRandomAuctionHouse(),
         lotNumber: '42315',
         auctionDate: new Date('2024-01-10')
       }
@@ -129,7 +130,7 @@ export default function MyVehiclesPage() {
         inspection: true
       },
       auctionDetails: {
-        auctionHouse: 'HAA Kobe',
+        auctionHouse: getRandomAuctionHouse(),
         lotNumber: '78234',
         auctionDate: new Date('2023-06-20')
       }
@@ -152,7 +153,7 @@ export default function MyVehiclesPage() {
         inspection: false
       },
       auctionDetails: {
-        auctionHouse: 'TAA Yokohama',
+        auctionHouse: getRandomAuctionHouse(),
         lotNumber: '15789',
         auctionDate: new Date('2024-01-25')
       }

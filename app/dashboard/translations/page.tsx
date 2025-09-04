@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { getRandomAuctionHouse, allAuctionHouses } from '@/src/data/auctionHouses'
 
 // Types
 interface AuctionSheetTranslation {
@@ -26,7 +27,7 @@ const auctionSheetTranslations: AuctionSheetTranslation[] = [
     vehicleId: 'TOY-CAM-2023',
     vehicleName: '2023 Toyota Camry Hybrid',
     vehicleImage: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400',
-    auctionHouse: 'USS Tokyo',
+    auctionHouse: getRandomAuctionHouse(),
     lotNumber: '42315',
     auctionDate: '2024-01-25',
     sheetUrl: '/auction-sheets/original-001.pdf',
@@ -41,7 +42,7 @@ const auctionSheetTranslations: AuctionSheetTranslation[] = [
     vehicleId: 'HON-CRV-2022',
     vehicleName: '2022 Honda CR-V',
     vehicleImage: 'https://images.unsplash.com/photo-1568844293986-8d0400bd4745?w=400',
-    auctionHouse: 'HAA Kobe',
+    auctionHouse: getRandomAuctionHouse(),
     lotNumber: '78921',
     auctionDate: '2024-01-26',
     sheetUrl: '/auction-sheets/original-002.pdf',
@@ -53,7 +54,7 @@ const auctionSheetTranslations: AuctionSheetTranslation[] = [
     vehicleId: 'MAZ-MX5-2021',
     vehicleName: '2021 Mazda MX-5',
     vehicleImage: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=400',
-    auctionHouse: 'TAA Yokohama',
+    auctionHouse: getRandomAuctionHouse(),
     lotNumber: '15643',
     auctionDate: '2024-01-27',
     sheetUrl: '/auction-sheets/original-003.pdf',
@@ -65,7 +66,7 @@ const auctionSheetTranslations: AuctionSheetTranslation[] = [
     vehicleId: 'SUB-WRX-2023',
     vehicleName: '2023 Subaru WRX STI',
     vehicleImage: 'https://images.unsplash.com/photo-1592198084033-aade902d1aae?w=400',
-    auctionHouse: 'USS Nagoya',
+    auctionHouse: getRandomAuctionHouse(),
     lotNumber: '98234',
     auctionDate: '2024-01-28',
     sheetUrl: '/auction-sheets/original-004.pdf',
@@ -80,7 +81,7 @@ const auctionSheetTranslations: AuctionSheetTranslation[] = [
     vehicleId: 'NIS-GTR-2022',
     vehicleName: '2022 Nissan GT-R',
     vehicleImage: 'https://images.unsplash.com/photo-1629897048514-3dd7414fe72a?w=400',
-    auctionHouse: 'HAA Kansai',
+    auctionHouse: getRandomAuctionHouse(),
     lotNumber: '45612',
     auctionDate: '2024-01-29',
     sheetUrl: '/auction-sheets/original-005.pdf',
@@ -91,14 +92,15 @@ const auctionSheetTranslations: AuctionSheetTranslation[] = [
 
 export default function TranslationsPage() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'in-progress' | 'completed'>('all')
-  const [showRequestModal, setShowRequestModal] = useState(false)
-  const [requestForm, setRequestForm] = useState({
-    vehicleName: '',
-    auctionHouse: '',
-    lotNumber: '',
-    auctionDate: '',
-    notes: ''
-  })
+  // Request functionality moved to individual vehicle pages
+  // const [showRequestModal, setShowRequestModal] = useState(false)
+  // const [requestForm, setRequestForm] = useState({
+  //   vehicleName: '',
+  //   auctionHouse: '',
+  //   lotNumber: '',
+  //   auctionDate: '',
+  //   notes: ''
+  // })
   
   const getStatusBadge = (status: string) => {
     const badges = {
@@ -130,15 +132,11 @@ export default function TranslationsPage() {
                 <p className="text-xs text-blue-600">Total Translations</p>
                 <p className="text-lg font-bold text-blue-900">{auctionSheetTranslations.length}</p>
               </div>
-              <button 
-                onClick={() => setShowRequestModal(true)}
-                className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium flex items-center gap-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                Request Translation
-              </button>
+              <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                <p className="text-xs text-amber-700 font-medium">
+                  Request from vehicle page
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -270,15 +268,15 @@ export default function TranslationsPage() {
         )}
       </div>
 
-      {/* Request Translation Modal */}
-      {showRequestModal && (
+      {/* Request Translation Modal removed - functionality moved to vehicle pages */}
+      {false && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-900">Request Auction Sheet Translation</h2>
                 <button 
-                  onClick={() => setShowRequestModal(false)}
+                  onClick={() => {}}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -296,8 +294,8 @@ export default function TranslationsPage() {
                 </label>
                 <input
                   type="text"
-                  value={requestForm.vehicleName}
-                  onChange={(e) => setRequestForm({...requestForm, vehicleName: e.target.value})}
+                  value={''}
+                  onChange={() => {}}
                   placeholder="e.g., 2023 Toyota Camry Hybrid"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
                 />
@@ -309,21 +307,14 @@ export default function TranslationsPage() {
                   Auction House
                 </label>
                 <select
-                  value={requestForm.auctionHouse}
-                  onChange={(e) => setRequestForm({...requestForm, auctionHouse: e.target.value})}
+                  value={''}
+                  onChange={() => {}}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
-                >
+>
                   <option value="">Select Auction House</option>
-                  <option value="USS Tokyo">USS Tokyo</option>
-                  <option value="USS Nagoya">USS Nagoya</option>
-                  <option value="USS Osaka">USS Osaka</option>
-                  <option value="USS Yokohama">USS Yokohama</option>
-                  <option value="HAA Kobe">HAA Kobe</option>
-                  <option value="HAA Kansai">HAA Kansai</option>
-                  <option value="TAA Yokohama">TAA Yokohama</option>
-                  <option value="TAA Tohoku">TAA Tohoku</option>
-                  <option value="JAA">JAA</option>
-                  <option value="CAA Tokyo">CAA Tokyo</option>
+                  {allAuctionHouses.map((house) => (
+                    <option key={house} value={house}>{house}</option>
+                  ))}
                   <option value="Other">Other</option>
                 </select>
               </div>
@@ -336,8 +327,8 @@ export default function TranslationsPage() {
                   </label>
                   <input
                     type="text"
-                    value={requestForm.lotNumber}
-                    onChange={(e) => setRequestForm({...requestForm, lotNumber: e.target.value})}
+                    value={''}
+                    onChange={() => {}}
                     placeholder="e.g., 42315"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
                   />
@@ -350,8 +341,8 @@ export default function TranslationsPage() {
                   </label>
                   <input
                     type="date"
-                    value={requestForm.auctionDate}
-                    onChange={(e) => setRequestForm({...requestForm, auctionDate: e.target.value})}
+                    value={''}
+                    onChange={() => {}}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
                   />
                 </div>
@@ -378,8 +369,8 @@ export default function TranslationsPage() {
                   Additional Notes (Optional)
                 </label>
                 <textarea
-                  value={requestForm.notes}
-                  onChange={(e) => setRequestForm({...requestForm, notes: e.target.value})}
+                  value={''}
+                  onChange={() => {}}
                   rows={3}
                   placeholder="Any specific areas of concern or details you need translated..."
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
@@ -404,23 +395,14 @@ export default function TranslationsPage() {
 
             <div className="p-6 border-t border-gray-200 flex items-center justify-end gap-3">
               <button 
-                onClick={() => setShowRequestModal(false)}
+                onClick={() => {}}
                 className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium"
               >
                 Cancel
               </button>
               <button 
                 onClick={() => {
-                  // Handle form submission
-                  setShowRequestModal(false)
-                  // Reset form
-                  setRequestForm({
-                    vehicleName: '',
-                    auctionHouse: '',
-                    lotNumber: '',
-                    auctionDate: '',
-                    notes: ''
-                  })
+                  // Modal removed - functionality moved to vehicle pages
                 }}
                 className="px-6 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
               >
