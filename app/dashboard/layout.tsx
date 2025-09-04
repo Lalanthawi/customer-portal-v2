@@ -526,22 +526,22 @@ function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">About Us</a></li>
-              <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">How It Works</a></li>
-              <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">Auction House Guide</a></li>
-              <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">Buyer Guide</a></li>
-              <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">FAQ</a></li>
+              <li><Link href="/dashboard/auctions" className="text-sm hover:text-[#FA7921] transition-colors">Browse Auctions</Link></li>
+              <li><Link href="/dashboard/search" className="text-sm hover:text-[#FA7921] transition-colors">Search Vehicles</Link></li>
+              <li><Link href="/dashboard/bids" className="text-sm hover:text-[#FA7921] transition-colors">My Bids</Link></li>
+              <li><Link href="/dashboard/vehicles" className="text-sm hover:text-[#FA7921] transition-colors">My Vehicles</Link></li>
+              <li><Link href="/dashboard/support" className="text-sm hover:text-[#FA7921] transition-colors">Support & FAQ</Link></li>
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Services */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Legal</h4>
+            <h4 className="text-white font-semibold mb-4">Services</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">Cookie Policy</a></li>
-              <li><a href="#" className="text-sm hover:text-[#FA7921] transition-colors">Contact Us</a></li>
+              <li><Link href="/dashboard/inspections" className="text-sm hover:text-[#FA7921] transition-colors">Vehicle Inspections</Link></li>
+              <li><Link href="/dashboard/translations" className="text-sm hover:text-[#FA7921] transition-colors">Document Translation</Link></li>
+              <li><Link href="/dashboard/shipment" className="text-sm hover:text-[#FA7921] transition-colors">Shipping Status</Link></li>
+              <li><Link href="/dashboard/profile" className="text-sm hover:text-[#FA7921] transition-colors">Account Settings</Link></li>
             </ul>
           </div>
         </div>

@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
+import { sharedDataStore, InspectionData, InspectionStatus } from '../utils/sharedData'
 
 // Types
 interface VehicleInspection {
@@ -122,27 +123,57 @@ const vehicleInspections: VehicleInspection[] = [
 ]
 
 export default function InspectionsPage() {
-  const [filterStatus, setFilterStatus] = useState<'all' | 'requested' | 'processing' | 'completed'>('all')
+  const [filterStatus, setFilterStatus] = useState<'all' | 'not available' | 'requested' | 'processing' | 'completed'>('all')
   const [selectedInspection, setSelectedInspection] = useState<VehicleInspection | null>(null)
-  // Upload functionality moved to individual vehicle pages
-  // const [showUploadModal, setShowUploadModal] = useState(false)
   const [dragActive, setDragActive] = useState(false)
+  const [inspections, setInspections] = useState<InspectionData[]>([])
+  const [mockInspections] = useState(vehicleInspections)
+  
+  useEffect(() => {
+    // Load inspections from shared store
+    const loadInspections = () => {
+      const sharedInspections = sharedDataStore.getAllInspections()
+      setInspections(sharedInspections)
+    }
+    
+    loadInspections()
+    
+    // Poll for updates every 2 seconds
+    const interval = setInterval(loadInspections, 2000)
+    
+    return () => clearInterval(interval)
+  }, [])
   
   // Calculate total inspection fees
-  const totalInspectionFees = vehicleInspections.filter(i => i.status === 'completed').length * 3000
+  const totalInspectionFees = mockInspections.filter(i => i.status === 'completed').length * 3000
   
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: InspectionStatus | string) => {
     const badges = {
       'completed': 'bg-green-100 text-green-800',
       'processing': 'bg-blue-100 text-blue-800',
       'requested': 'bg-amber-100 text-amber-800',
+      'not available': 'bg-gray-100 text-gray-800',
     }
     return badges[status as keyof typeof badges] || 'bg-gray-100 text-gray-800'
   }
+  
+  const getStatusLabel = (status: InspectionStatus | string) => {
+    const labels: Record<string, string> = {
+      'completed': 'Completed',
+      'processing': 'Processing',
+      'requested': 'Requested',
+      'not available': 'Not Available'
+    }
+    return labels[status] || status
+  }
 
-  const filteredInspections = filterStatus === 'all' 
-    ? vehicleInspections 
-    : vehicleInspections.filter(i => i.status === filterStatus)
+  const filteredMockInspections = filterStatus === 'all' 
+    ? mockInspections 
+    : mockInspections.filter(i => i.status === filterStatus)
+    
+  const filteredSharedInspections = filterStatus === 'all'
+    ? inspections
+    : inspections.filter(i => i.status === filterStatus)
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault()
@@ -198,24 +229,24 @@ export default function InspectionsPage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
             <p className="text-sm text-gray-600">Total Inspections</p>
-            <p className="text-2xl font-bold text-gray-900">{vehicleInspections.length}</p>
+            <p className="text-2xl font-bold text-gray-900">{mockInspections.length + inspections.length}</p>
           </div>
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
             <p className="text-sm text-gray-600">Completed</p>
             <p className="text-2xl font-bold text-green-600">
-              {vehicleInspections.filter(i => i.status === 'completed').length}
+              {mockInspections.filter(i => i.status === 'completed').length + inspections.filter(i => i.status === 'completed').length}
             </p>
           </div>
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
             <p className="text-sm text-gray-600">In Progress</p>
             <p className="text-2xl font-bold text-blue-600">
-              {vehicleInspections.filter(i => i.status === 'processing').length}
+              {mockInspections.filter(i => i.status === 'processing').length + inspections.filter(i => i.status === 'processing').length}
             </p>
           </div>
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
             <p className="text-sm text-gray-600">Pending</p>
             <p className="text-2xl font-bold text-amber-600">
-              {vehicleInspections.filter(i => i.status === 'requested').length}
+              {mockInspections.filter(i => i.status === 'requested').length + inspections.filter(i => i.status === 'requested').length}
             </p>
           </div>
         </div>
@@ -230,7 +261,7 @@ export default function InspectionsPage() {
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            All ({vehicleInspections.length})
+            All ({mockInspections.length + inspections.length})
           </button>
           <button
             onClick={() => setFilterStatus('completed')}
@@ -240,7 +271,7 @@ export default function InspectionsPage() {
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            Completed ({vehicleInspections.filter(i => i.status === 'completed').length})
+            Completed ({mockInspections.filter(i => i.status === 'completed').length + inspections.filter(i => i.status === 'completed').length})
           </button>
           <button
             onClick={() => setFilterStatus('processing')}
@@ -250,7 +281,7 @@ export default function InspectionsPage() {
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            Processing ({vehicleInspections.filter(i => i.status === 'processing').length})
+            Processing ({mockInspections.filter(i => i.status === 'processing').length + inspections.filter(i => i.status === 'processing').length})
           </button>
           <button
             onClick={() => setFilterStatus('requested')}
@@ -260,13 +291,64 @@ export default function InspectionsPage() {
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            Requested ({vehicleInspections.filter(i => i.status === 'requested').length})
+            Requested ({mockInspections.filter(i => i.status === 'requested').length + inspections.filter(i => i.status === 'requested').length})
           </button>
         </div>
 
         {/* Inspections Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredInspections.map((inspection) => (
+          {/* Show shared inspections from customers */}
+          {filteredSharedInspections.map((inspection) => (
+            <div key={inspection.vehicleId} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-start gap-4">
+                    <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
+                      <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">Vehicle ID: {inspection.vehicleId}</h3>
+                      <p className="text-sm text-gray-600">Requested by: {inspection.requestedBy}</p>
+                      <p className="text-sm text-gray-500">Request Date: {inspection.requestedAt.toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(inspection.status)}`}>
+                    {getStatusLabel(inspection.status)}
+                  </span>
+                </div>
+                
+                {inspection.completedAt && (
+                  <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <p className="text-sm text-gray-700">
+                      <span className="font-medium">Completed:</span> {inspection.completedAt.toLocaleString()}
+                    </p>
+                    {inspection.report && (
+                      <p className="text-sm text-gray-600 mt-2">{inspection.report}</p>
+                    )}
+                  </div>
+                )}
+                
+                <div className="mt-4 flex gap-2">
+                  <Link
+                    href={`/dashboard/vehicle/${inspection.vehicleId}`}
+                    className="flex-1 text-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition-colors font-medium"
+                  >
+                    View Vehicle
+                  </Link>
+                  {inspection.status === 'completed' && (
+                    <button className="flex-1 px-4 py-2 bg-[#FA7921] text-white rounded-lg text-sm hover:bg-[#FA7921]/90 transition-colors font-medium">
+                      View Report
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+          
+          {/* Show mock inspections */}
+          {filteredMockInspections.map((inspection) => (
             <div key={inspection.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
+import { sharedDataStore } from '../../utils/sharedData'
 
 // TypeScript interfaces
 interface AuctionCar {
@@ -48,6 +49,11 @@ interface AuctionCar {
     appraisalPoint: string
     shift: string
     openingDay: string
+    grade: string
+    holdingFrequency: string
+    colorSubstitution: string
+    holdingHall: string
+    yearH: string
     notes: string[]
   }
 }
@@ -74,6 +80,19 @@ export default function VehiclePage() {
   const [timeRemaining, setTimeRemaining] = useState('')
   const [favoritesList, setFavoritesList] = useState<string[]>([])
   const [showContactModal, setShowContactModal] = useState(false)
+  const [activeTab, setActiveTab] = useState<'details' | 'production'>('details')
+  
+  // Date of Production states
+  const [selectedCompany, setSelectedCompany] = useState('Mitsubishi')
+  const [chassisInput, setChassisInput] = useState('CT9A-0000001')
+  
+  // Inspection and Translation states
+  const [inspectionStatus, setInspectionStatus] = useState<'not available' | 'requested' | 'processing' | 'completed'>('not available')
+  const [inspectionData, setInspectionData] = useState<{ report?: string; date?: Date; sharedBy?: string } | null>(null)
+  const [translationStatus, setTranslationStatus] = useState<'not available' | 'requested' | 'translating' | 'translated'>('not available')
+  const [translationData, setTranslationData] = useState<{ translation?: string; original?: string; sharedBy?: string } | null>(null)
+  const [showInspectionModal, setShowInspectionModal] = useState(false)
+  const [showTranslationModal, setShowTranslationModal] = useState(false)
   
   // Mock data - In production, this would come from an API
   const vehicleData: AuctionCar = {
@@ -82,24 +101,24 @@ export default function VehiclePage() {
     make: 'Toyota',
     model: 'Corolla Axio',
     year: 2018,
-    mileage: 42360,
+    mileage: 122000,
     transmission: 'Automatic',
-    displacement: 1500,
-    color: 'Pearl White',
+    displacement: 2000,
+    color: 'Pearl',
     scores: {
       interior: 4.5,
       exterior: 4.0,
       overall: 4.5
     },
     pricing: {
-      startPrice: 5200000,
+      startPrice: 3000000,
       currentBid: 343000,
       averagePrice: 7260000
     },
     auction: {
-      deadline: new Date(Date.now() + 3600000 * 24 * 2), // 2 days from now
-      location: 'Tokyo',
-      result: 'Active',
+      deadline: new Date('2025-09-06T13:10:00'),
+      location: 'JU Gifu [ Gifu prefecture Hashima city ]',
+      result: 'not yet auction',
       lotNumber: 'LOT-2024-0892'
     },
     images: [
@@ -112,21 +131,26 @@ export default function VehiclePage() {
       'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1600&q=80', // Wide shot
       'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1200&q=75' // Detail shot
     ],
-    equipment: ['ABS', 'Air Conditioning', 'Power Steering', 'Power Windows', 'Airbags', 'Keyless Entry', 'Navigation System', 'Backup Camera'],
-    condition: 'Excellent - Minor wear consistent with age',
-    fuel: 'Gasoline',
-    drive: 'FWD',
+    equipment: ['P/S', 'P/W', 'ABS', 'leather', 'airbag'],
+    condition: 'bidding is possible',
+    fuel: 'GS',
+    drive: '4WD',
     doors: 4,
     seats: 5,
     bodyType: 'Sedan',
     engineNumber: '1NZ-FE-7896543',
-    registrationDate: '2018-03-15',
+    registrationDate: '2019-03-15',
     inspectionDate: '2024-03-15',
     additionalData: {
-      cooling: 'Air Conditioning',
-      appraisalPoint: '4.5A',
-      shift: 'CVT',
-      openingDay: '2024-01-15 10:00',
+      cooling: 'AAC',
+      appraisalPoint: '4',
+      shift: 'F6',
+      openingDay: '2025-09-06 14:10',
+      grade: '4WD Evolution 9 MR GSR',
+      holdingFrequency: '2010',
+      colorSubstitution: 'equipped',
+      holdingHall: 'JU Gifu [ Gifu prefecture Hashima city ]',
+      yearH: 'H19 year',
       notes: [
         'One owner vehicle',
         'Full service history available',
@@ -206,6 +230,105 @@ export default function VehiclePage() {
         ? prev.filter(l => l !== list)
         : [...prev, list]
     )
+  }
+  
+  // Initialize chassis input with vehicle data
+  useEffect(() => {
+    if (vehicleData && vehicleData.chassisNumber) {
+      const chassisParts = vehicleData.chassisNumber.split('-')
+      setChassisInput(`CT9A-${chassisParts[1] || chassisParts[0] || '0000001'}`)
+    }
+  }, [])
+  
+  // Check if inspection/translation already exists and subscribe to updates
+  useEffect(() => {
+    const vehicleId = params['id'] as string
+    
+    // Check existing data
+    const existingInspection = sharedDataStore.getInspection(vehicleId)
+    const existingTranslation = sharedDataStore.getTranslation(vehicleId)
+    
+    if (existingInspection) {
+      setInspectionStatus(existingInspection.status)
+      setInspectionData({
+        report: existingInspection.report || 'Inspection in progress',
+        date: existingInspection.completedAt || existingInspection.requestedAt,
+        sharedBy: existingInspection.requestedBy
+      })
+    }
+    
+    if (existingTranslation) {
+      setTranslationStatus(existingTranslation.status)
+      setTranslationData({
+        translation: existingTranslation.translation || 'Translation in progress',
+        original: existingTranslation.originalSheet || '',
+        sharedBy: existingTranslation.requestedBy
+      })
+    }
+    
+    // Subscribe to updates
+    const unsubscribe = sharedDataStore.subscribe(vehicleId, (type, data) => {
+      if (type === 'inspection') {
+        setInspectionStatus(data.status)
+        setInspectionData({
+          report: data.report || 'Inspection in progress',
+          date: data.completedAt || data.requestedAt,
+          sharedBy: data.requestedBy
+        })
+      } else if (type === 'translation') {
+        setTranslationStatus(data.status)
+        setTranslationData({
+          translation: data.translation || 'Translation in progress',
+          original: data.originalSheet || '',
+          sharedBy: data.requestedBy
+        })
+      }
+    })
+    
+    return () => unsubscribe()
+  }, [params])
+  
+  // Handlers for inspection and translation requests
+  const handleRequestInspection = () => {
+    const vehicleId = params['id'] as string
+    setShowInspectionModal(false)
+    
+    // Check if already exists
+    const existing = sharedDataStore.getInspection(vehicleId)
+    if (existing && (existing.status === 'completed' || existing.status === 'processing')) {
+      // Already available, just update local state
+      setInspectionStatus(existing.status)
+      setInspectionData({
+        report: existing.report || 'Inspection in progress',
+        date: existing.completedAt || existing.requestedAt,
+        sharedBy: existing.requestedBy
+      })
+    } else {
+      // Request new inspection
+      const newInspection = sharedDataStore.requestInspection(vehicleId, 'Current User')
+      setInspectionStatus(newInspection.status)
+    }
+  }
+  
+  const handleRequestTranslation = () => {
+    const vehicleId = params['id'] as string
+    setShowTranslationModal(false)
+    
+    // Check if already exists
+    const existing = sharedDataStore.getTranslation(vehicleId)
+    if (existing && (existing.status === 'translated' || existing.status === 'translating')) {
+      // Already available, just update local state
+      setTranslationStatus(existing.status)
+      setTranslationData({
+        translation: existing.translation || 'Translation in progress',
+        original: existing.originalSheet || '',
+        sharedBy: existing.requestedBy
+      })
+    } else {
+      // Request new translation
+      const newTranslation = sharedDataStore.requestTranslation(vehicleId, 'Current User')
+      setTranslationStatus(newTranslation.status)
+    }
   }
 
   return (
@@ -486,42 +609,265 @@ export default function VehiclePage() {
               </div>
             </div>
 
-            {/* Additional Data */}
+            {/* Tabbed Interface */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+              {/* Tab Headers */}
+              <div className="border-b border-gray-200">
+                <div className="flex">
+                  <button
+                    onClick={() => setActiveTab('details')}
+                    className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                      activeTab === 'details'
+                        ? 'border-[#FA7921] text-[#FA7921]'
+                        : 'border-transparent text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Vehicle Details
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('production')}
+                    className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                      activeTab === 'production'
+                        ? 'border-[#FA7921] text-[#FA7921]'
+                        : 'border-transparent text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Date of Production
+                  </button>
+                </div>
+              </div>
+              
+              {/* Tab Content */}
+              <div className="p-6">
+                {/* Vehicle Details Tab */}
+                {activeTab === 'details' && (
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900 mb-6">Vehicle Details</h2>
+                    <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                      <div>
+                        <p className="text-sm text-gray-500">Chassis Number</p>
+                        <p className="font-semibold text-gray-900">{vehicleData.chassisNumber}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Engine Number</p>
+                        <p className="font-semibold text-gray-900">{vehicleData.engineNumber}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Registration Date</p>
+                        <p className="font-semibold text-gray-900">{vehicleData.registrationDate}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Inspection Valid Until</p>
+                        <p className="font-semibold text-gray-900">{vehicleData.inspectionDate}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Model Year</p>
+                        <p className="font-semibold text-gray-900">{vehicleData.year}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Body Type</p>
+                        <p className="font-semibold text-gray-900">{vehicleData.bodyType}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Doors</p>
+                        <p className="font-semibold text-gray-900">{vehicleData.doors} Doors</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Seats</p>
+                        <p className="font-semibold text-gray-900">{vehicleData.seats} Seats</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Date of Production Tab */}
+                {activeTab === 'production' && (
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900 mb-6">Date of Production</h2>
+                    
+                    <div className="space-y-6">
+                      {/* Company Dropdown */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Manufacturer
+                        </label>
+                        <select
+                          value={selectedCompany}
+                          onChange={(e) => setSelectedCompany(e.target.value)}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                        >
+                          <option value="Mitsubishi">Mitsubishi</option>
+                          <option value="Toyota">Toyota</option>
+                          <option value="Nissan">Nissan</option>
+                          <option value="Honda">Honda</option>
+                          <option value="Mazda">Mazda</option>
+                          <option value="Subaru">Subaru</option>
+                          <option value="Suzuki">Suzuki</option>
+                          <option value="Daihatsu">Daihatsu</option>
+                          <option value="Lexus">Lexus</option>
+                          <option value="Infiniti">Infiniti</option>
+                          <option value="Acura">Acura</option>
+                        </select>
+                      </div>
+                      
+                      {/* Chassis Number Input */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Chassis Number
+                        </label>
+                        <input
+                          type="text"
+                          value={chassisInput}
+                          onChange={(e) => setChassisInput(e.target.value)}
+                          placeholder="CT9A-0000001"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Enter the chassis number starting with CT9A- prefix
+                        </p>
+                      </div>
+                      
+                      {/* Check Production Date Button */}
+                      <div className="flex items-center gap-4">
+                        <button
+                          className="px-6 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
+                          onClick={() => {
+                            // Simulate production date check
+                            alert(`Checking production date for ${selectedCompany} - ${chassisInput}`)
+                          }}
+                        >
+                          Check Production Date
+                        </button>
+                        
+                        <button
+                          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                          onClick={() => {
+                            const chassisParts = vehicleData.chassisNumber.split('-')
+                            setChassisInput(`CT9A-${chassisParts[1] || chassisParts[0] || '0000001'}`)
+                          }}
+                        >
+                          Reset
+                        </button>
+                      </div>
+                      
+                      {/* Production Date Result (example) */}
+                      <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <h3 className="text-sm font-semibold text-blue-900 mb-2">Production Information</h3>
+                        <div className="space-y-1 text-sm text-blue-800">
+                          <p><span className="font-medium">Production Date:</span> March 15, 2019</p>
+                          <p><span className="font-medium">Factory:</span> Okazaki Plant, Aichi</p>
+                          <p><span className="font-medium">Model Code:</span> Evolution IX MR</p>
+                          <p><span className="font-medium">Production Number:</span> #1,247 of 2,500</p>
+                        </div>
+                      </div>
+                      
+                      {/* Additional Production Details */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="p-3 bg-gray-50 rounded-lg">
+                          <p className="text-xs text-gray-500">Assembly Line</p>
+                          <p className="font-semibold text-gray-900">Line A-3</p>
+                        </div>
+                        <div className="p-3 bg-gray-50 rounded-lg">
+                          <p className="text-xs text-gray-500">Quality Check</p>
+                          <p className="font-semibold text-gray-900">Passed (A Grade)</p>
+                        </div>
+                        <div className="p-3 bg-gray-50 rounded-lg">
+                          <p className="text-xs text-gray-500">Original Destination</p>
+                          <p className="font-semibold text-gray-900">Domestic (JDM)</p>
+                        </div>
+                        <div className="p-3 bg-gray-50 rounded-lg">
+                          <p className="text-xs text-gray-500">Special Edition</p>
+                          <p className="font-semibold text-gray-900">Final Edition</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Additional Information - Separate Section */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Additional Information</h2>
               
               <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                 <div>
-                  <p className="text-sm text-gray-500">Chassis Number</p>
-                  <p className="font-semibold text-gray-900">{vehicleData.chassisNumber}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Engine Number</p>
-                  <p className="font-semibold text-gray-900">{vehicleData.engineNumber}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Registration Date</p>
-                  <p className="font-semibold text-gray-900">{vehicleData.registrationDate}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Inspection Valid Until</p>
-                  <p className="font-semibold text-gray-900">{vehicleData.inspectionDate}</p>
-                </div>
-                <div>
                   <p className="text-sm text-gray-500">Cooling</p>
                   <p className="font-semibold text-gray-900">{vehicleData.additionalData.cooling}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Fuel</p>
+                  <p className="font-semibold text-gray-900">{vehicleData.fuel}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Holding Frequency</p>
+                  <p className="font-semibold text-gray-900">{vehicleData.additionalData.holdingFrequency}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Bidding Deadline</p>
+                  <p className="font-semibold text-gray-900">{vehicleData.auction.deadline.toLocaleString('ja-JP', { 
+                    year: 'numeric', 
+                    month: '2-digit', 
+                    day: '2-digit', 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                  })}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Displacement</p>
+                  <p className="font-semibold text-gray-900">{vehicleData.displacement.toLocaleString()}cc</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Appraisal Point</p>
                   <p className="font-semibold text-gray-900">{vehicleData.additionalData.appraisalPoint}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Shift Type</p>
+                  <p className="text-sm text-gray-500">Year</p>
+                  <p className="font-semibold text-gray-900">{vehicleData.additionalData.yearH}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Shift</p>
                   <p className="font-semibold text-gray-900">{vehicleData.additionalData.shift}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Auction Opens</p>
+                  <p className="text-sm text-gray-500">Mileage</p>
+                  <p className="font-semibold text-gray-900">{(vehicleData.mileage / 1000).toFixed(0)} thousand km</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Result</p>
+                  <p className="font-semibold text-gray-900">{vehicleData.auction.result}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Color</p>
+                  <p className="font-semibold text-gray-900">{vehicleData.color}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Color Substitution</p>
+                  <p className="font-semibold text-gray-900">{vehicleData.additionalData.colorSubstitution}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Start</p>
+                  <p className="font-semibold text-gray-900">{(vehicleData.pricing.startPrice / 10000).toFixed(1)} ten thousand jpy</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Grade</p>
+                  <p className="font-semibold text-gray-900">{vehicleData.additionalData.grade}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Holding Hall</p>
+                  <p className="font-semibold text-gray-900">{vehicleData.additionalData.holdingHall}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Opening Day</p>
                   <p className="font-semibold text-gray-900">{vehicleData.additionalData.openingDay}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Equipment</p>
+                  <p className="font-semibold text-gray-900">{vehicleData.equipment.join(' ')}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Condition</p>
+                  <p className="font-semibold text-gray-900">[ {vehicleData.condition} ]</p>
                 </div>
               </div>
 
@@ -686,6 +1032,170 @@ export default function VehiclePage() {
               </div>
             </div>
 
+            {/* Inspection Section - Compact */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-gray-900">Vehicle Inspection</h3>
+                {inspectionStatus === 'not available' && (
+                  <button
+                    onClick={() => setShowInspectionModal(true)}
+                    className="text-xs text-[#FA7921] hover:text-[#FA7921]/80 font-medium"
+                  >
+                    Request
+                  </button>
+                )}
+              </div>
+
+              {/* Status: Completed */}
+              {inspectionStatus === 'completed' && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                  <div className="flex items-start gap-2">
+                    <svg className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-green-800">Completed</p>
+                      {inspectionData?.sharedBy && inspectionData.sharedBy !== 'Current User' && (
+                        <p className="text-xs text-green-600 mt-1">Free (shared by {inspectionData.sharedBy})</p>
+                      )}
+                      {inspectionData?.date && (
+                        <p className="text-xs text-green-600">Completed: {new Date(inspectionData.date).toLocaleDateString()}</p>
+                      )}
+                    </div>
+                    <button className="text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+                      View Report
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Status: Processing */}
+              {inspectionStatus === 'processing' && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="flex items-center gap-2">
+                    <div className="animate-pulse">
+                      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-blue-700">Processing</p>
+                      <p className="text-xs text-blue-600">Inspector is examining the vehicle</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Status: Requested */}
+              {inspectionStatus === 'requested' && (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-amber-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-amber-700">Requested</p>
+                      <p className="text-xs text-amber-600">Waiting for inspector (24-48h)</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Status: Not Available */}
+              {inspectionStatus === 'not available' && (
+                <div className="text-center py-2">
+                  <p className="text-xs text-gray-500 mb-2">No inspection available</p>
+                  <button
+                    onClick={() => setShowInspectionModal(true)}
+                    className="px-3 py-1.5 bg-[#FA7921] text-white rounded text-xs hover:bg-[#FA7921]/90 transition-colors"
+                  >
+                    Request Inspection
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Translation Section - Compact */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-gray-900">Sheet Translation</h3>
+                {translationStatus === 'not available' && (
+                  <button
+                    onClick={() => setShowTranslationModal(true)}
+                    className="text-xs text-[#FA7921] hover:text-[#FA7921]/80 font-medium"
+                  >
+                    Request
+                  </button>
+                )}
+              </div>
+
+              {/* Status: Translated */}
+              {translationStatus === 'translated' && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                  <div className="flex items-start gap-2">
+                    <svg className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-green-800">Translated</p>
+                      {translationData?.sharedBy && translationData.sharedBy !== 'Current User' && (
+                        <p className="text-xs text-green-600 mt-1">Free (shared by {translationData.sharedBy})</p>
+                      )}
+                      <p className="text-xs text-green-600">Ready to view</p>
+                    </div>
+                    <button className="text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+                      View Translation
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Status: Translating */}
+              {translationStatus === 'translating' && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="flex items-center gap-2">
+                    <div className="animate-pulse">
+                      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-blue-700">Translating</p>
+                      <p className="text-xs text-blue-600">Processing auction sheet</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Status: Requested */}
+              {translationStatus === 'requested' && (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-amber-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-amber-700">Requested</p>
+                      <p className="text-xs text-amber-600">In queue (2-4 hours)</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Status: Not Available */}
+              {translationStatus === 'not available' && (
+                <div className="text-center py-2">
+                  <p className="text-xs text-gray-500 mb-2">No translation available</p>
+                  <button
+                    onClick={() => setShowTranslationModal(true)}
+                    className="px-3 py-1.5 bg-[#FA7921] text-white rounded text-xs hover:bg-[#FA7921]/90 transition-colors"
+                  >
+                    Request Translation
+                  </button>
+                </div>
+              )}
+            </div>
+
             {/* Bid History */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Bids</h2>
@@ -769,6 +1279,98 @@ export default function VehiclePage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Inspection Request Modal */}
+      {showInspectionModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Request Vehicle Inspection</h3>
+            
+            <div className="space-y-4">
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <p className="text-sm font-medium text-amber-800">Inspection Fee: ¥3,000</p>
+                <p className="text-xs text-amber-700 mt-1">Will be added to your final invoice if you win this auction</p>
+              </div>
+              
+              <div>
+                <p className="text-sm font-medium text-gray-700 mb-2">Professional inspection includes:</p>
+                <ul className="text-sm text-gray-600 space-y-1 list-disc list-inside">
+                  <li>Detailed condition assessment with high-resolution photos</li>
+                  <li>Undercarriage and engine inspection</li>
+                  <li>Paint thickness measurements</li>
+                  <li>Accident history verification</li>
+                  <li>Full mechanical inspection</li>
+                </ul>
+              </div>
+              
+              <div className="text-sm text-gray-500">
+                Estimated completion: 24-48 hours before auction ends
+              </div>
+            </div>
+            
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setShowInspectionModal(false)}
+                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleRequestInspection}
+                className="flex-1 px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
+              >
+                Request Inspection
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Translation Request Modal */}
+      {showTranslationModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Request Auction Sheet Translation</h3>
+            
+            <div className="space-y-4">
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <p className="text-sm font-medium text-amber-800">Translation Fee: ¥1,500</p>
+                <p className="text-xs text-amber-700 mt-1">Will be added to your final invoice if you win this auction</p>
+              </div>
+              
+              <div>
+                <p className="text-sm font-medium text-gray-700 mb-2">Professional translation includes:</p>
+                <ul className="text-sm text-gray-600 space-y-1 list-disc list-inside">
+                  <li>Complete auction grade explanation</li>
+                  <li>All condition notes and remarks</li>
+                  <li>Equipment and features list</li>
+                  <li>Inspector comments and observations</li>
+                  <li>Repair history if noted</li>
+                </ul>
+              </div>
+              
+              <div className="text-sm text-gray-500">
+                Estimated completion: 2-4 hours
+              </div>
+            </div>
+            
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setShowTranslationModal(false)}
+                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleRequestTranslation}
+                className="flex-1 px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
+              >
+                Request Translation
+              </button>
+            </div>
           </div>
         </div>
       )}

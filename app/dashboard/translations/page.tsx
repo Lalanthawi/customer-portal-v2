@@ -1,7 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { getRandomAuctionHouse, allAuctionHouses } from '@/src/data/auctionHouses'
+import { sharedDataStore, TranslationData, TranslationStatus } from '../utils/sharedData'
+import Link from 'next/link'
 
 // Types
 interface AuctionSheetTranslation {
@@ -91,29 +93,67 @@ const auctionSheetTranslations: AuctionSheetTranslation[] = [
 ]
 
 export default function TranslationsPage() {
-  const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'in-progress' | 'completed'>('all')
-  // Request functionality moved to individual vehicle pages
-  // const [showRequestModal, setShowRequestModal] = useState(false)
-  // const [requestForm, setRequestForm] = useState({
-  //   vehicleName: '',
-  //   auctionHouse: '',
-  //   lotNumber: '',
-  //   auctionDate: '',
-  //   notes: ''
-  // })
+  const [filterStatus, setFilterStatus] = useState<'all' | 'not available' | 'requested' | 'translating' | 'translated'>('all')
+  const [translations, setTranslations] = useState<TranslationData[]>([])
+  const [mockTranslations, setMockTranslations] = useState(auctionSheetTranslations)
   
-  const getStatusBadge = (status: string) => {
+  useEffect(() => {
+    // Load translations from shared store
+    const loadTranslations = () => {
+      const sharedTranslations = sharedDataStore.getAllTranslations()
+      setTranslations(sharedTranslations)
+    }
+    
+    loadTranslations()
+    
+    // Poll for updates every 2 seconds
+    const interval = setInterval(loadTranslations, 2000)
+    
+    return () => clearInterval(interval)
+  }, [])
+  
+  const getStatusBadge = (status: TranslationStatus | string) => {
     const badges = {
+      'translated': 'bg-green-100 text-green-800',
+      'translating': 'bg-blue-100 text-blue-800',
+      'requested': 'bg-yellow-100 text-yellow-800',
+      'not available': 'bg-gray-100 text-gray-800',
+      // Legacy statuses for mock data
       'completed': 'bg-green-100 text-green-800',
       'in-progress': 'bg-blue-100 text-blue-800',
       'pending': 'bg-yellow-100 text-yellow-800',
     }
     return badges[status as keyof typeof badges] || 'bg-gray-100 text-gray-800'
   }
+  
+  const getStatusLabel = (status: TranslationStatus | string) => {
+    const labels: Record<string, string> = {
+      'translated': 'Translated',
+      'translating': 'Translating',
+      'requested': 'Requested',
+      'not available': 'Not Available',
+      // Legacy statuses for mock data
+      'completed': 'Translated',
+      'in-progress': 'Translating',
+      'pending': 'Requested'
+    }
+    return labels[status] || status
+  }
 
-  const filteredTranslations = filterStatus === 'all' 
-    ? auctionSheetTranslations 
-    : auctionSheetTranslations.filter(t => t.translationStatus === filterStatus)
+  const filteredMockTranslations = filterStatus === 'all' 
+    ? mockTranslations 
+    : mockTranslations.filter(t => {
+        const statusMap: Record<string, TranslationStatus> = {
+          'completed': 'translated',
+          'in-progress': 'translating',
+          'pending': 'requested'
+        }
+        return statusMap[t.translationStatus] === filterStatus || t.translationStatus === filterStatus
+      })
+      
+  const filteredSharedTranslations = filterStatus === 'all'
+    ? translations
+    : translations.filter(t => t.status === filterStatus)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -130,7 +170,7 @@ export default function TranslationsPage() {
             <div className="flex items-center gap-4">
               <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
                 <p className="text-xs text-blue-600">Total Translations</p>
-                <p className="text-lg font-bold text-blue-900">{auctionSheetTranslations.length}</p>
+                <p className="text-lg font-bold text-blue-900">{mockTranslations.length + translations.length}</p>
               </div>
               <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
                 <p className="text-xs text-amber-700 font-medium">
@@ -189,7 +229,68 @@ export default function TranslationsPage() {
 
         {/* Translations List */}
         <div className="mt-6 space-y-4">
-          {filteredTranslations.map((translation) => (
+          {/* Show shared translations from customers */}
+          {filteredSharedTranslations.map((translation) => (
+            <div key={translation.vehicleId} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <div className="w-32 h-24 bg-gray-200 rounded-lg flex items-center justify-center">
+                    <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Vehicle ID: {translation.vehicleId}</h3>
+                    <div className="mt-1 space-y-1">
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">Requested by:</span> {translation.requestedBy}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">Request Date:</span> {translation.requestedAt.toLocaleString()}
+                      </p>
+                      {translation.completedAt && (
+                        <p className="text-sm text-gray-600">
+                          <span className="font-medium">Completed:</span> {translation.completedAt.toLocaleString()}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col items-end gap-3">
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(translation.status)}`}>
+                    {getStatusLabel(translation.status)}
+                  </span>
+                  
+                  <div className="flex gap-2">
+                    <Link
+                      href={`/dashboard/vehicle/${translation.vehicleId}`}
+                      className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition-colors font-medium"
+                    >
+                      View Vehicle
+                    </Link>
+                    {translation.status === 'translated' ? (
+                      <button
+                        className="px-4 py-2 bg-[#FA7921] text-white rounded-lg text-sm hover:bg-[#FA7921]/90 transition-colors font-medium"
+                      >
+                        View Translation
+                      </button>
+                    ) : (
+                      <button
+                        disabled
+                        className="px-4 py-2 bg-gray-200 text-gray-400 rounded-lg text-sm font-medium cursor-not-allowed"
+                      >
+                        Translation {translation.status === 'translating' ? 'In Progress' : 'Pending'}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+          
+          {/* Show mock translations */}
+          {filteredMockTranslations.map((translation) => (
             <div key={translation.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-6">
@@ -221,8 +322,7 @@ export default function TranslationsPage() {
                 
                 <div className="flex flex-col items-end gap-3">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(translation.translationStatus)}`}>
-                    {translation.translationStatus === 'completed' ? 'Translated' : 
-                     translation.translationStatus === 'in-progress' ? 'Translating' : 'Pending'}
+                    {getStatusLabel(translation.translationStatus)}
                   </span>
                   
                   <div className="text-right text-xs text-gray-500">
@@ -261,7 +361,7 @@ export default function TranslationsPage() {
           ))}
         </div>
 
-        {filteredTranslations.length === 0 && (
+        {(filteredMockTranslations.length === 0 && filteredSharedTranslations.length === 0) && (
           <div className="mt-8 text-center py-12 bg-white rounded-xl border border-gray-200">
             <p className="text-gray-500">No translations found with the selected filter</p>
           </div>
