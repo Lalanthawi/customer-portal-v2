@@ -72,7 +72,7 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
   }
 
   return (
-    <Card className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-200 group h-full flex flex-col">
+    <Card className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-200 group h-full flex flex-col"> {/* spacing fix */}
       <div className="relative h-48 bg-gray-100">
         <Image
           src={auction.image}
@@ -85,13 +85,13 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
         </Badge>
       </div>
       
-      <CardContent className="p-5 flex-1 flex flex-col">
-        <div className="flex items-start justify-between gap-2 mb-3">
+      <CardContent className="p-5 md:p-6 flex-1 flex flex-col"> {/* spacing fix */}
+        <div className="flex items-start justify-between gap-3 mb-3"> {/* spacing fix */}
           <CardTitle className="font-semibold text-lg text-gray-900">{auction.title}</CardTitle>
           <span className="text-xs text-gray-500 font-medium flex-shrink-0">Lot #{auction.lotNumber}</span>
         </div>
         
-        <div className="flex flex-wrap gap-3 text-sm text-gray-600 mb-4">
+        <div className="flex flex-wrap gap-3 text-sm text-gray-600 mb-4 space-y-2"> {/* spacing fix */}
           <span className="flex items-center gap-1.5">
             <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -112,7 +112,7 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
           </span>
         </div>
         
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-2 gap-3 mb-4 mt-3"> {/* spacing fix */}
           <div>
             <p className="text-xs text-gray-500 mb-1">Starting Price</p>
             <p className="text-sm font-semibold text-gray-900">¥{auction.startingPrice.toLocaleString()}</p>
@@ -125,9 +125,9 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
           </div>
         </div>
 
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
-          <p className="text-xs text-gray-700 mb-2 font-medium">Bidding Closes In</p>
-          <div className="grid grid-cols-4 gap-2 text-center">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4"> {/* spacing fix */}
+          <p className="text-xs text-gray-700 mb-2 font-medium leading-tight">Bidding Closes In</p> {/* spacing fix */}
+          <div className="grid grid-cols-4 gap-3 text-center"> {/* spacing fix */}
             <div>
               <p className="text-lg font-bold text-red-600">{String(timeLeft.days).padStart(2, '0')}</p>
               <p className="text-xs text-gray-500">Days</p>
@@ -812,7 +812,7 @@ export default function DashboardPage() {
                 <CardTitle className="text-lg font-semibold text-gray-900">Featured Auctions</CardTitle>
                 <CardDescription className="text-xs text-gray-500 mt-0.5">Similar to your interests • Submit bids before deadline</CardDescription>
               </div>
-              <Link href="/dashboard/auctions/featured" className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium transition-colors flex items-center gap-1">
+              <Link href="/dashboard/auctions" className="text-[#FA7921] hover:text-[#FA7921]/80 text-sm font-medium transition-colors flex items-center gap-1">
                 Browse All
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
