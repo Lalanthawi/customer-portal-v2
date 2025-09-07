@@ -1,5 +1,5 @@
 import { api } from './client'
-import { mockDataStore, createApiResponse, createPaginatedResponse } from './mock-data'
+import { mockDataStore, createPaginatedResponse } from './mock-data'
 import { Auction, AuctionFilters, PaginatedResponse, Vehicle } from '@/types/api.types'
 import { API_CONFIG, API_ENDPOINTS } from '@/config/api.config'
 

@@ -68,8 +68,6 @@ interface VehicleDetails {
 export default function VehicleDetailPage() {
   const params = useParams()
   const [activeTab, setActiveTab] = useState<'overview' | 'documents' | 'shipping' | 'history' | 'inspection' | 'translation'>('overview')
-  const [uploadModalOpen, setUploadModalOpen] = useState(false)
-  const [selectedDocumentType, setSelectedDocumentType] = useState<Document['type']>('invoice')
   
   // Inspection and Translation states
   const [inspectionRequested, setInspectionRequested] = useState(false)
@@ -429,6 +427,47 @@ export default function VehicleDetailPage() {
         url: '#',
         status: 'available',
         required: false
+      },
+      // Additional documents (non-required) - managed by admin
+      {
+        id: '6',
+        name: 'Vehicle Manual',
+        type: 'other',
+        uploadDate: new Date('2024-01-23'),
+        size: '2.3 MB',
+        url: '#',
+        status: 'available',
+        required: false
+      },
+      {
+        id: '7',
+        name: 'Service History',
+        type: 'other',
+        uploadDate: new Date('2024-01-23'),
+        size: '890 KB',
+        url: '#',
+        status: 'available',
+        required: false
+      },
+      {
+        id: '8',
+        name: 'Port Photos',
+        type: 'other',
+        uploadDate: new Date('2024-01-24'),
+        size: '5.6 MB',
+        url: '#',
+        status: 'available',
+        required: false
+      },
+      {
+        id: '9',
+        name: 'Insurance Policy',
+        type: 'insurance',
+        uploadDate: new Date('2024-01-25'),
+        size: '340 KB',
+        url: '#',
+        status: 'available',
+        required: false
       }
     ],
     shipping: {
@@ -697,10 +736,6 @@ export default function VehicleDetailPage() {
                     <p className="text-xs text-gray-500 mb-1">Color</p>
                     <p className="text-sm font-medium text-gray-900">{vehicle.color}</p>
                   </div>
-                  <div className="bg-gray-50 rounded-lg p-3">
-                    <p className="text-xs text-gray-500 mb-1">Engine Number</p>
-                    <p className="text-sm font-medium text-gray-900">{vehicle.engineNumber}</p>
-                  </div>
                   {vehicle.specifications && (
                     <>
                       <div className="bg-gray-50 rounded-lg p-3">
@@ -732,31 +767,24 @@ export default function VehicleDetailPage() {
                   <h3 className="text-lg font-semibold text-gray-900">Vehicle Documents</h3>
                   <p className="text-sm text-gray-600 mt-1">All documents related to this vehicle purchase</p>
                 </div>
-                <button 
-                  onClick={() => setUploadModalOpen(true)}
-                  className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors text-sm font-medium flex items-center gap-2"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
-                  Upload Document
-                </button>
               </div>
 
-              {/* Required Documents Alert */}
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
-                <div className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-amber-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                  <div>
-                    <p className="text-sm font-medium text-amber-900">Required Documents Missing</p>
-                    <p className="text-sm text-amber-700 mt-1">
-                      Some required documents are still being processed. They will be available soon.
-                    </p>
+              {/* Documents Processing Alert */}
+              {vehicle.documents.some(doc => doc.status === 'processing' || doc.status === 'pending') && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                  <div className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="text-sm font-medium text-blue-900">Documents Processing</p>
+                      <p className="text-sm text-blue-700 mt-1">
+                        Some documents are still being processed and will be available soon.
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Documents Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -776,14 +804,6 @@ export default function VehicleDetailPage() {
                           <p className="text-xs text-gray-500 mt-1">
                             Uploaded {doc.uploadDate.toLocaleDateString()} • {doc.size}
                           </p>
-                          {doc.required && (
-                            <span className="inline-flex items-center gap-1 mt-2 text-xs text-red-600">
-                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                              </svg>
-                              Required
-                            </span>
-                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -814,20 +834,51 @@ export default function VehicleDetailPage() {
                 ))}
               </div>
 
-              {/* Additional Documents Section */}
-              <div className="mt-8 border-t pt-6">
-                <h4 className="text-sm font-semibold text-gray-900 mb-4">Additional Documents</h4>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                  {['Manuals', 'Service History', 'Spare Keys Receipt', 'Port Photos'].map((item) => (
-                    <button key={item} className="p-3 border border-dashed border-gray-300 rounded-lg text-sm text-gray-600 hover:border-gray-400 hover:text-gray-900 transition-colors">
-                      <svg className="w-5 h-5 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                      {item}
-                    </button>
-                  ))}
+              {/* Additional Documents Section - Only show if there are additional documents */}
+              {vehicle.documents.some(doc => !doc.required) && (
+                <div className="mt-8 border-t pt-6">
+                  <h4 className="text-sm font-semibold text-gray-900 mb-4">Additional Documents</h4>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {vehicle.documents.filter(doc => !doc.required).map((doc) => (
+                      <div key={doc.id} className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start gap-3">
+                            <div className="p-2 rounded-lg bg-gray-100 text-gray-600">
+                              {getDocumentIcon(doc.type)}
+                            </div>
+                            <div>
+                              <h4 className="text-sm font-medium text-gray-900">{doc.name}</h4>
+                              <p className="text-xs text-gray-500 mt-1">
+                                Added {doc.uploadDate.toLocaleDateString()} • {doc.size}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {doc.status === 'available' && doc.url && (
+                              <>
+                                <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors" title="View">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                  </svg>
+                                </button>
+                                <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors" title="Download">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                  </svg>
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-4">
+                    * Additional documents are uploaded by our team to provide you with comprehensive vehicle information
+                  </p>
                 </div>
-              </div>
+              )}
             </div>
           )}
 
@@ -1118,58 +1169,6 @@ export default function VehicleDetailPage() {
         </div>
       </div>
 
-      {/* Upload Modal */}
-      {uploadModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Upload Document</h3>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Document Type</label>
-                <select 
-                  value={selectedDocumentType}
-                  onChange={(e) => setSelectedDocumentType(e.target.value as Document['type'])}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
-                >
-                  <option value="invoice">Invoice</option>
-                  <option value="export_certificate">Export Certificate</option>
-                  <option value="bill_of_lading">Bill of Lading</option>
-                  <option value="deregistration">Deregistration Certificate</option>
-                  <option value="inspection_report">Inspection Report</option>
-                  <option value="insurance">Insurance Document</option>
-                  <option value="customs">Customs Document</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Select File</label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
-                  <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
-                  <p className="text-sm text-gray-600">Drop files here or click to browse</p>
-                  <p className="text-xs text-gray-500 mt-1">PDF, JPG, PNG up to 10MB</p>
-                  <input type="file" className="hidden" />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex gap-3 mt-6">
-              <button 
-                onClick={() => setUploadModalOpen(false)}
-                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
-              >
-                Cancel
-              </button>
-              <button className="flex-1 px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium">
-                Upload
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Inspection Request Modal */}
       {showInspectionModal && (

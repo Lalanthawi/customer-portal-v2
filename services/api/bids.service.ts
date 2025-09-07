@@ -1,5 +1,5 @@
 import { api } from './client'
-import { mockDataStore, createApiResponse } from './mock-data'
+import { mockDataStore } from './mock-data'
 import { Bid, CreateBidRequest } from '@/types/api.types'
 import { API_CONFIG, API_ENDPOINTS } from '@/config/api.config'
 
@@ -75,19 +75,23 @@ export const bidsService = {
     if (API_CONFIG.USE_MOCK_DATA) {
       const bid = mockDataStore.bids.find(b => b.id === bidId)
       if (bid) {
+        // If this was the current highest bid, find the next highest
+        const wasAccepted = bid.status === 'accepted'
         bid.status = 'pending' // Reset to pending (cancelled)
         
-        // If this was the current highest bid, find the next highest
-        if (bid.status === 'accepted') {
+        if (wasAccepted) {
           const vehicleBids = mockDataStore.bids
             .filter(b => b.vehicleId === bid.vehicleId && b.id !== bidId)
             .sort((a, b) => b.amount - a.amount)
           
           if (vehicleBids.length > 0) {
-            vehicleBids[0].status = 'accepted'
-            const vehicle = mockDataStore.vehicles.find(v => v.id === bid.vehicleId)
-            if (vehicle) {
-              vehicle.pricing.currentBid = vehicleBids[0].amount
+            const highestBid = vehicleBids[0]
+            if (highestBid) {
+              highestBid.status = 'accepted'
+              const vehicle = mockDataStore.vehicles.find(v => v.id === bid.vehicleId)
+              if (vehicle) {
+                vehicle.pricing.currentBid = highestBid.amount
+              }
             }
           }
         }

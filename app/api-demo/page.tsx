@@ -242,8 +242,8 @@ export default function ApiDemoPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-2 text-sm font-mono">
-            <div>Mode: {process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'false' ? 'Real API' : 'Mock Data'}</div>
-            <div>Base URL: {process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api'}</div>
+            <div>Mode: {process.env['NEXT_PUBLIC_USE_MOCK_DATA'] === 'false' ? 'Real API' : 'Mock Data'}</div>
+            <div>Base URL: {process.env['NEXT_PUBLIC_API_BASE_URL'] || 'http://localhost:3000/api'}</div>
             <p className="text-xs text-gray-600 mt-2">
               To switch to real API, set NEXT_PUBLIC_USE_MOCK_DATA=false in .env.local
             </p>

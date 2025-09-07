@@ -268,15 +268,29 @@ export default function VehiclePage() {
     
     // Subscribe to updates
     const unsubscribe = sharedDataStore.subscribe(vehicleId, (type, data) => {
-      if (type === 'inspection') {
-        setInspectionStatus(data.status)
+      if (type === 'inspection' && 'report' in data) {
+        // Map InspectionStatus to the component's expected status type
+        const statusMap: Record<string, 'not available' | 'requested' | 'processing' | 'completed'> = {
+          'not available': 'not available',
+          'requested': 'requested',
+          'processing': 'processing',
+          'completed': 'completed'
+        }
+        setInspectionStatus(statusMap[data.status] || 'not available')
         setInspectionData({
           report: data.report || 'Inspection in progress',
           date: data.completedAt || data.requestedAt,
           sharedBy: data.requestedBy
         })
-      } else if (type === 'translation') {
-        setTranslationStatus(data.status)
+      } else if (type === 'translation' && 'translation' in data) {
+        // Map TranslationStatus to the component's expected status type
+        const statusMap: Record<string, 'not available' | 'requested' | 'translating' | 'translated'> = {
+          'not available': 'not available',
+          'requested': 'requested',
+          'translating': 'translating',
+          'translated': 'translated'
+        }
+        setTranslationStatus(statusMap[data.status] || 'not available')
         setTranslationData({
           translation: data.translation || 'Translation in progress',
           original: data.originalSheet || '',

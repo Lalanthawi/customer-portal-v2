@@ -8,9 +8,8 @@ import { sharedDataStore } from '../../utils/sharedData'
 
 // Shadcn UI Components
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
@@ -20,11 +19,10 @@ import { cn } from '@/lib/utils'
 
 // Icons
 import { 
-  ArrowLeft, Clock, MapPin, Camera, ZoomIn, Grid3x3, Eye,
-  ChevronLeft, ChevronRight, Check, Share2, Heart, MessageSquare,
-  Mail, Phone, AlertCircle, CheckCircle, Loader2, FileText,
-  ClipboardList, Download, PlayCircle, ExternalLink, Calendar,
-  Car, Gauge, Fuel, Settings, Users, DollarSign, TrendingUp
+  ArrowLeft, Clock, ZoomIn, Grid3x3, Eye,
+  ChevronLeft, ChevronRight, Check, Share2,
+  Mail, AlertCircle, CheckCircle, Loader2,
+  ExternalLink
 } from 'lucide-react'
 
 // TypeScript interfaces (same as before)
@@ -101,10 +99,7 @@ export default function VehiclePageShadcn() {
   const [timeRemaining, setTimeRemaining] = useState('')
   const [favoritesList, setFavoritesList] = useState<string[]>([])
   
-  // Date of Production states
-  const [selectedCompany, setSelectedCompany] = useState('Mitsubishi')
-  const [chassisInput, setChassisInput] = useState('CT9A-0000001')
-  const [activeTab, setActiveTab] = useState<'details' | 'production'>('details')
+  // Tab state - only details tab now
   
   // Inspection and Translation states
   const [inspectionStatus, setInspectionStatus] = useState<'not available' | 'requested' | 'processing' | 'completed'>('not available')
@@ -249,13 +244,6 @@ export default function VehiclePageShadcn() {
     )
   }
   
-  // Initialize chassis input with vehicle data
-  useEffect(() => {
-    if (vehicleData && vehicleData.chassisNumber) {
-      const chassisParts = vehicleData.chassisNumber.split('-')
-      setChassisInput(`CT9A-${chassisParts[1] || chassisParts[0] || '0000001'}`)
-    }
-  }, [])
   
   // Check if inspection/translation already exists and subscribe to updates
   useEffect(() => {
@@ -283,15 +271,29 @@ export default function VehiclePageShadcn() {
     }
     
     const unsubscribe = sharedDataStore.subscribe(vehicleId, (type, data) => {
-      if (type === 'inspection') {
-        setInspectionStatus(data.status)
+      if (type === 'inspection' && 'report' in data) {
+        // Map InspectionStatus to the component's expected status type
+        const statusMap: Record<string, 'not available' | 'requested' | 'processing' | 'completed'> = {
+          'not available': 'not available',
+          'requested': 'requested',
+          'processing': 'processing',
+          'completed': 'completed'
+        }
+        setInspectionStatus(statusMap[data.status] || 'not available')
         setInspectionData({
           report: data.report || 'Inspection in progress',
           date: data.completedAt || data.requestedAt,
           sharedBy: data.requestedBy
         })
-      } else if (type === 'translation') {
-        setTranslationStatus(data.status)
+      } else if (type === 'translation' && 'translation' in data) {
+        // Map TranslationStatus to the component's expected status type
+        const statusMap: Record<string, 'not available' | 'requested' | 'translating' | 'translated'> = {
+          'not available': 'not available',
+          'requested': 'requested',
+          'translating': 'translating',
+          'translated': 'translated'
+        }
+        setTranslationStatus(statusMap[data.status] || 'not available')
         setTranslationData({
           translation: data.translation || 'Translation in progress',
           original: data.originalSheet || '',
@@ -580,156 +582,31 @@ export default function VehiclePageShadcn() {
               </CardContent>
             </Card>
 
-            {/* Tabbed Interface */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-              <div className="border-b border-gray-200">
-                <div className="flex">
-                  <button
-                    onClick={() => setActiveTab('details')}
-                    className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
-                      activeTab === 'details'
-                        ? 'border-[#FA7921] text-[#FA7921]'
-                        : 'border-transparent text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    Vehicle Details
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('production')}
-                    className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
-                      activeTab === 'production'
-                        ? 'border-[#FA7921] text-[#FA7921]'
-                        : 'border-transparent text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    Date of Production
-                  </button>
+            {/* Vehicle Details Card */}
+            <Card className="bg-white border border-gray-200">
+              <CardHeader>
+                <CardTitle>Vehicle Details</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                  {[
+                    { label: 'Chassis Number', value: vehicleData.chassisNumber },
+                    { label: 'Engine Number', value: vehicleData.engineNumber },
+                    { label: 'Registration Date', value: vehicleData.registrationDate },
+                    { label: 'Inspection Valid Until', value: vehicleData.inspectionDate },
+                    { label: 'Model Year', value: vehicleData.year },
+                    { label: 'Body Type', value: vehicleData.bodyType },
+                    { label: 'Doors', value: `${vehicleData.doors} Doors` },
+                    { label: 'Seats', value: `${vehicleData.seats} Seats` },
+                  ].map((detail, index) => (
+                    <div key={index}>
+                      <p className="text-sm text-muted-foreground">{detail.label}</p>
+                      <p className="font-semibold">{detail.value}</p>
+                    </div>
+                  ))}
                 </div>
-              </div>
-              
-              <div className="p-6">
-                {activeTab === 'details' && (
-                  <div>
-                  <h2 className="text-xl font-bold mb-6">Vehicle Details</h2>
-                  <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                    {[
-                      { label: 'Chassis Number', value: vehicleData.chassisNumber },
-                      { label: 'Engine Number', value: vehicleData.engineNumber },
-                      { label: 'Registration Date', value: vehicleData.registrationDate },
-                      { label: 'Inspection Valid Until', value: vehicleData.inspectionDate },
-                      { label: 'Model Year', value: vehicleData.year },
-                      { label: 'Body Type', value: vehicleData.bodyType },
-                      { label: 'Doors', value: `${vehicleData.doors} Doors` },
-                      { label: 'Seats', value: `${vehicleData.seats} Seats` },
-                    ].map((detail, index) => (
-                      <div key={index}>
-                        <p className="text-sm text-muted-foreground">{detail.label}</p>
-                        <p className="font-semibold">{detail.value}</p>
-                      </div>
-                    ))}
-                  </div>
-                  </div>
-                )}
-                
-                {activeTab === 'production' && (
-                  <div>
-                  <h2 className="text-xl font-bold mb-6">Date of Production</h2>
-                  
-                  <div className="space-y-6">
-                    {/* Company Dropdown */}
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Manufacturer
-                      </label>
-                      <Select value={selectedCompany} onValueChange={setSelectedCompany}>
-                        <SelectTrigger className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent bg-white">
-                          <SelectValue placeholder="Select manufacturer" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white border border-gray-200">
-                          <SelectItem value="Mitsubishi">Mitsubishi</SelectItem>
-                          <SelectItem value="Toyota">Toyota</SelectItem>
-                          <SelectItem value="Nissan">Nissan</SelectItem>
-                          <SelectItem value="Honda">Honda</SelectItem>
-                          <SelectItem value="Mazda">Mazda</SelectItem>
-                          <SelectItem value="Subaru">Subaru</SelectItem>
-                          <SelectItem value="Suzuki">Suzuki</SelectItem>
-                          <SelectItem value="Daihatsu">Daihatsu</SelectItem>
-                          <SelectItem value="Lexus">Lexus</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    {/* Chassis Number Input */}
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Chassis Number
-                      </label>
-                      <Input
-                        type="text"
-                        value={chassisInput}
-                        onChange={(e) => setChassisInput(e.target.value)}
-                        placeholder="CT9A-0000001"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Enter the chassis number starting with CT9A- prefix
-                      </p>
-                    </div>
-                    
-                    {/* Check Production Date Button */}
-                    <div className="flex items-center gap-4">
-                      <Button
-                        className="bg-[#FA7921] hover:bg-[#FA7921]/90 text-white"
-                        onClick={() => {
-                          alert(`Checking production date for ${selectedCompany} - ${chassisInput}`)
-                        }}
-                      >
-                        Check Production Date
-                      </Button>
-                      
-                      <Button
-                        variant="outline"
-                        className="border border-gray-300"
-                        onClick={() => {
-                          const chassisParts = vehicleData.chassisNumber.split('-')
-                          setChassisInput(`CT9A-${chassisParts[1] || chassisParts[0] || '0000001'}`)
-                        }}
-                      >
-                        Reset
-                      </Button>
-                    </div>
-                    
-                    {/* Production Date Result */}
-                    <Alert className="bg-blue-50 border border-blue-200">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertTitle>Production Information</AlertTitle>
-                      <AlertDescription className="space-y-1 mt-2">
-                        <p><span className="font-medium">Production Date:</span> March 15, 2019</p>
-                        <p><span className="font-medium">Factory:</span> Okazaki Plant, Aichi</p>
-                        <p><span className="font-medium">Model Code:</span> Evolution IX MR</p>
-                        <p><span className="font-medium">Production Number:</span> #1,247 of 2,500</p>
-                      </AlertDescription>
-                    </Alert>
-                    
-                    {/* Additional Production Details */}
-                    <div className="grid grid-cols-2 gap-4">
-                      {[
-                        { label: 'Assembly Line', value: 'Line A-3' },
-                        { label: 'Quality Check', value: 'Passed (A Grade)' },
-                        { label: 'Original Destination', value: 'Domestic (JDM)' },
-                        { label: 'Special Edition', value: 'Final Edition' },
-                      ].map((detail, index) => (
-                        <div key={index} className="p-3 bg-gray-50 rounded-lg">
-                          <p className="text-xs text-muted-foreground">{detail.label}</p>
-                          <p className="font-semibold">{detail.value}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  </div>
-                )}
-              </div>
-            </div>
+              </CardContent>
+            </Card>
             
             {/* Additional Information */}
             <Card className="bg-white border border-gray-200">
@@ -963,22 +840,22 @@ export default function VehiclePageShadcn() {
                           Request
                         </Button>
                       </DialogTrigger>
-                      <DialogContent>
+                      <DialogContent className="bg-white dark:bg-white [&>*]:text-gray-900 dark:[&>*]:text-gray-900">
                         <DialogHeader>
                           <DialogTitle>Request Vehicle Inspection</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4">
-                          <Alert>
-                            <AlertCircle className="h-4 w-4" />
-                            <AlertTitle>Inspection Fee: ¥3,000</AlertTitle>
-                            <AlertDescription>
+                          <Alert className="bg-amber-50 dark:bg-amber-50 border-amber-200 dark:border-amber-200">
+                            <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-600" />
+                            <AlertTitle className="text-amber-800 dark:text-amber-800">Inspection Fee: ¥3,000</AlertTitle>
+                            <AlertDescription className="text-amber-700 dark:text-amber-700">
                               Will be added to your final invoice if you win this auction
                             </AlertDescription>
                           </Alert>
                           
                           <div>
-                            <p className="text-sm font-medium mb-2">Professional inspection includes:</p>
-                            <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                            <p className="text-sm font-medium mb-2 text-gray-900 dark:text-gray-900">Professional inspection includes:</p>
+                            <ul className="text-sm text-gray-600 dark:text-gray-600 space-y-1 list-disc list-inside">
                               <li>Detailed condition assessment with high-resolution photos</li>
                               <li>Undercarriage and engine inspection</li>
                               <li>Paint thickness measurements</li>
@@ -987,7 +864,7 @@ export default function VehiclePageShadcn() {
                             </ul>
                           </div>
                           
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-sm text-gray-600 dark:text-gray-600">
                             Estimated completion: 24-48 hours before auction ends
                           </p>
                         </div>
@@ -1004,19 +881,27 @@ export default function VehiclePageShadcn() {
               <CardContent className="pt-0">
                 {/* Status displays */}
                 {inspectionStatus === 'completed' && (
-                  <Alert className="bg-green-50 border-green-200">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <AlertTitle className="text-green-800">Completed</AlertTitle>
-                    <AlertDescription className="text-green-600">
-                      {inspectionData?.sharedBy && inspectionData.sharedBy !== 'Current User' && (
-                        <span>Free (shared by {inspectionData.sharedBy})<br/></span>
-                      )}
-                      {inspectionData?.date && (
-                        <span>Completed: {new Date(inspectionData.date).toLocaleDateString()}</span>
-                      )}
-                    </AlertDescription>
-                    <Button size="sm" className="mt-2">View Report</Button>
-                  </Alert>
+                  <div className="space-y-3">
+                    <Alert className="bg-green-50 border-green-200">
+                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <AlertTitle className="text-green-800">Completed</AlertTitle>
+                      <AlertDescription className="text-green-600">
+                        {inspectionData?.sharedBy && inspectionData.sharedBy !== 'Current User' && (
+                          <span>Free (shared by {inspectionData.sharedBy})<br/></span>
+                        )}
+                        {inspectionData?.date && (
+                          <span>Completed: {new Date(inspectionData.date).toLocaleDateString()}</span>
+                        )}
+                      </AlertDescription>
+                    </Alert>
+                    <Button 
+                      size="sm" 
+                      className="w-full" 
+                      onClick={() => router.push('/dashboard/inspections')}
+                    >
+                      View Report
+                    </Button>
+                  </div>
                 )}
                 
                 {inspectionStatus === 'processing' && (
@@ -1048,22 +933,22 @@ export default function VehiclePageShadcn() {
                           Request Inspection
                         </Button>
                       </DialogTrigger>
-                      <DialogContent>
+                      <DialogContent className="bg-white dark:bg-white [&>*]:text-gray-900 dark:[&>*]:text-gray-900">
                         <DialogHeader>
                           <DialogTitle>Request Vehicle Inspection</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4">
-                          <Alert>
-                            <AlertCircle className="h-4 w-4" />
-                            <AlertTitle>Inspection Fee: ¥3,000</AlertTitle>
-                            <AlertDescription>
+                          <Alert className="bg-amber-50 dark:bg-amber-50 border-amber-200 dark:border-amber-200">
+                            <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-600" />
+                            <AlertTitle className="text-amber-800 dark:text-amber-800">Inspection Fee: ¥3,000</AlertTitle>
+                            <AlertDescription className="text-amber-700 dark:text-amber-700">
                               Will be added to your final invoice if you win this auction
                             </AlertDescription>
                           </Alert>
                           
                           <div>
-                            <p className="text-sm font-medium mb-2">Professional inspection includes:</p>
-                            <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                            <p className="text-sm font-medium mb-2 text-gray-900 dark:text-gray-900">Professional inspection includes:</p>
+                            <ul className="text-sm text-gray-600 dark:text-gray-600 space-y-1 list-disc list-inside">
                               <li>Detailed condition assessment with high-resolution photos</li>
                               <li>Undercarriage and engine inspection</li>
                               <li>Paint thickness measurements</li>
@@ -1072,7 +957,7 @@ export default function VehiclePageShadcn() {
                             </ul>
                           </div>
                           
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-sm text-gray-600 dark:text-gray-600">
                             Estimated completion: 24-48 hours before auction ends
                           </p>
                         </div>
@@ -1100,22 +985,22 @@ export default function VehiclePageShadcn() {
                           Request
                         </Button>
                       </DialogTrigger>
-                      <DialogContent>
+                      <DialogContent className="bg-white dark:bg-white [&>*]:text-gray-900 dark:[&>*]:text-gray-900">
                         <DialogHeader>
                           <DialogTitle>Request Auction Sheet Translation</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4">
-                          <Alert>
-                            <AlertCircle className="h-4 w-4" />
-                            <AlertTitle>Translation Fee: ¥1,500</AlertTitle>
-                            <AlertDescription>
+                          <Alert className="bg-amber-50 dark:bg-amber-50 border-amber-200 dark:border-amber-200">
+                            <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-600" />
+                            <AlertTitle className="text-amber-800 dark:text-amber-800">Translation Fee: ¥1,500</AlertTitle>
+                            <AlertDescription className="text-amber-700 dark:text-amber-700">
                               Will be added to your final invoice if you win this auction
                             </AlertDescription>
                           </Alert>
                           
                           <div>
-                            <p className="text-sm font-medium mb-2">Professional translation includes:</p>
-                            <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                            <p className="text-sm font-medium mb-2 text-gray-900 dark:text-gray-900">Professional translation includes:</p>
+                            <ul className="text-sm text-gray-600 dark:text-gray-600 space-y-1 list-disc list-inside">
                               <li>Complete auction grade explanation</li>
                               <li>All condition notes and remarks</li>
                               <li>Equipment and features list</li>
@@ -1124,7 +1009,7 @@ export default function VehiclePageShadcn() {
                             </ul>
                           </div>
                           
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-sm text-gray-600 dark:text-gray-600">
                             Estimated completion: 2-4 hours
                           </p>
                         </div>
@@ -1141,17 +1026,25 @@ export default function VehiclePageShadcn() {
               <CardContent className="pt-0">
                 {/* Status displays */}
                 {translationStatus === 'translated' && (
-                  <Alert className="bg-green-50 border-green-200">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <AlertTitle className="text-green-800">Translated</AlertTitle>
-                    <AlertDescription className="text-green-600">
-                      {translationData?.sharedBy && translationData.sharedBy !== 'Current User' && (
-                        <span>Free (shared by {translationData.sharedBy})<br/></span>
-                      )}
-                      Ready to view
-                    </AlertDescription>
-                    <Button size="sm" className="mt-2">View Translation</Button>
-                  </Alert>
+                  <div className="space-y-3">
+                    <Alert className="bg-green-50 border-green-200">
+                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <AlertTitle className="text-green-800">Translated</AlertTitle>
+                      <AlertDescription className="text-green-600">
+                        {translationData?.sharedBy && translationData.sharedBy !== 'Current User' && (
+                          <span>Free (shared by {translationData.sharedBy})<br/></span>
+                        )}
+                        Ready to view
+                      </AlertDescription>
+                    </Alert>
+                    <Button 
+                      size="sm" 
+                      className="w-full" 
+                      onClick={() => router.push('/dashboard/translations')}
+                    >
+                      View Translation
+                    </Button>
+                  </div>
                 )}
                 
                 {translationStatus === 'translating' && (
@@ -1183,22 +1076,22 @@ export default function VehiclePageShadcn() {
                           Request Translation
                         </Button>
                       </DialogTrigger>
-                      <DialogContent>
+                      <DialogContent className="bg-white dark:bg-white [&>*]:text-gray-900 dark:[&>*]:text-gray-900">
                         <DialogHeader>
                           <DialogTitle>Request Auction Sheet Translation</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4">
-                          <Alert>
-                            <AlertCircle className="h-4 w-4" />
-                            <AlertTitle>Translation Fee: ¥1,500</AlertTitle>
-                            <AlertDescription>
+                          <Alert className="bg-amber-50 dark:bg-amber-50 border-amber-200 dark:border-amber-200">
+                            <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-600" />
+                            <AlertTitle className="text-amber-800 dark:text-amber-800">Translation Fee: ¥1,500</AlertTitle>
+                            <AlertDescription className="text-amber-700 dark:text-amber-700">
                               Will be added to your final invoice if you win this auction
                             </AlertDescription>
                           </Alert>
                           
                           <div>
-                            <p className="text-sm font-medium mb-2">Professional translation includes:</p>
-                            <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                            <p className="text-sm font-medium mb-2 text-gray-900 dark:text-gray-900">Professional translation includes:</p>
+                            <ul className="text-sm text-gray-600 dark:text-gray-600 space-y-1 list-disc list-inside">
                               <li>Complete auction grade explanation</li>
                               <li>All condition notes and remarks</li>
                               <li>Equipment and features list</li>
@@ -1207,7 +1100,7 @@ export default function VehiclePageShadcn() {
                             </ul>
                           </div>
                           
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-sm text-gray-600 dark:text-gray-600">
                             Estimated completion: 2-4 hours
                           </p>
                         </div>
@@ -1253,7 +1146,7 @@ export default function VehiclePageShadcn() {
 
       {/* Image Modal */}
       <Dialog open={showImageModal} onOpenChange={setShowImageModal}>
-        <DialogContent className="max-w-6xl">
+        <DialogContent className="max-w-6xl bg-white dark:bg-white">
           <Image
             src={vehicleData.images[selectedImage] || '/images/car-placeholder.jpg'}
             alt={`${vehicleData.make} ${vehicleData.model}`}

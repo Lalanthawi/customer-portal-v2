@@ -101,10 +101,7 @@ apiClient.interceptors.response.use(
             const newToken = await refreshToken()
             if (newToken) {
               setAuthToken(newToken)
-              error.config.headers = {
-                ...error.config.headers,
-                'X-Retry-Request': 'true',
-              }
+              error.config.headers['X-Retry-Request'] = 'true'
               return apiClient.request(error.config)
             }
           } catch (refreshError) {

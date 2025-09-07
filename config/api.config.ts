@@ -1,7 +1,7 @@
 // API Configuration
 export const API_CONFIG = {
-  BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api',
-  USE_MOCK_DATA: process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true' || true,
+  BASE_URL: process.env['NEXT_PUBLIC_API_BASE_URL'] || 'http://localhost:3000/api',
+  USE_MOCK_DATA: process.env['NEXT_PUBLIC_USE_MOCK_DATA'] === 'true' || true,
   TIMEOUT: 30000, // 30 seconds
   RETRY_ATTEMPTS: 3,
   RETRY_DELAY: 1000, // 1 second
@@ -96,7 +96,7 @@ export const API_ENDPOINTS = {
 // Feature Flags
 export const FEATURES = {
   USE_REAL_API: !API_CONFIG.USE_MOCK_DATA,
-  ENABLE_WEBSOCKETS: process.env.NEXT_PUBLIC_ENABLE_WEBSOCKETS === 'true' || false,
+  ENABLE_WEBSOCKETS: process.env['NEXT_PUBLIC_ENABLE_WEBSOCKETS'] === 'true' || false,
   ENABLE_NOTIFICATIONS: true,
   ENABLE_2FA: true,
   ENABLE_OFFLINE_MODE: false,

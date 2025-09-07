@@ -28,7 +28,7 @@ export interface InspectionData {
 class SharedDataStore {
   private translations: Map<string, TranslationData> = new Map()
   private inspections: Map<string, InspectionData> = new Map()
-  private subscribers: Map<string, Set<(type: 'translation' | 'inspection', data: any) => void>> = new Map()
+  private subscribers: Map<string, Set<(type: 'translation' | 'inspection', data: TranslationData | InspectionData) => void>> = new Map()
 
   constructor() {
     // Initialize with some sample data
@@ -54,7 +54,7 @@ class SharedDataStore {
   }
 
   // Subscribe to updates for a specific vehicle
-  subscribe(vehicleId: string, callback: (type: 'translation' | 'inspection', data: any) => void) {
+  subscribe(vehicleId: string, callback: (type: 'translation' | 'inspection', data: TranslationData | InspectionData) => void) {
     if (!this.subscribers.has(vehicleId)) {
       this.subscribers.set(vehicleId, new Set())
     }
@@ -73,7 +73,7 @@ class SharedDataStore {
   }
 
   // Notify subscribers of updates
-  private notify(vehicleId: string, type: 'translation' | 'inspection', data: any) {
+  private notify(vehicleId: string, type: 'translation' | 'inspection', data: TranslationData | InspectionData) {
     const subs = this.subscribers.get(vehicleId)
     if (subs) {
       subs.forEach(callback => callback(type, data))

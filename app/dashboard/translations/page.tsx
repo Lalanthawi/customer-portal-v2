@@ -95,7 +95,7 @@ const auctionSheetTranslations: AuctionSheetTranslation[] = [
 export default function TranslationsPage() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'not available' | 'requested' | 'translating' | 'translated'>('all')
   const [translations, setTranslations] = useState<TranslationData[]>([])
-  const [mockTranslations, setMockTranslations] = useState(auctionSheetTranslations)
+  const [mockTranslations] = useState(auctionSheetTranslations)
   const [showTranslationModal, setShowTranslationModal] = useState(false)
   const [selectedTranslation, setSelectedTranslation] = useState<TranslationData | AuctionSheetTranslation | null>(null)
   
@@ -150,7 +150,7 @@ export default function TranslationsPage() {
           'in-progress': 'translating',
           'pending': 'requested'
         }
-        return statusMap[t.translationStatus] === filterStatus || t.translationStatus === filterStatus
+        return statusMap[t.translationStatus] === filterStatus
       })
       
   const filteredSharedTranslations = filterStatus === 'all'
@@ -198,9 +198,9 @@ export default function TranslationsPage() {
             All ({auctionSheetTranslations.length})
           </button>
           <button
-            onClick={() => setFilterStatus('completed')}
+            onClick={() => setFilterStatus('translated')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filterStatus === 'completed' 
+              filterStatus === 'translated' 
                 ? 'bg-[#FA7921] text-white' 
                 : 'text-gray-600 hover:text-gray-900'
             }`}
@@ -208,9 +208,9 @@ export default function TranslationsPage() {
             Completed ({auctionSheetTranslations.filter(t => t.translationStatus === 'completed').length})
           </button>
           <button
-            onClick={() => setFilterStatus('in-progress')}
+            onClick={() => setFilterStatus('translating')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filterStatus === 'in-progress' 
+              filterStatus === 'translating' 
                 ? 'bg-[#FA7921] text-white' 
                 : 'text-gray-600 hover:text-gray-900'
             }`}
@@ -218,9 +218,9 @@ export default function TranslationsPage() {
             In Progress ({auctionSheetTranslations.filter(t => t.translationStatus === 'in-progress').length})
           </button>
           <button
-            onClick={() => setFilterStatus('pending')}
+            onClick={() => setFilterStatus('requested')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filterStatus === 'pending' 
+              filterStatus === 'requested' 
                 ? 'bg-[#FA7921] text-white' 
                 : 'text-gray-600 hover:text-gray-900'
             }`}
