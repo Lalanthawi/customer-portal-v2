@@ -98,6 +98,7 @@ export default function TranslationsPage() {
   const [mockTranslations] = useState(auctionSheetTranslations)
   const [showTranslationModal, setShowTranslationModal] = useState(false)
   const [selectedTranslation, setSelectedTranslation] = useState<TranslationData | AuctionSheetTranslation | null>(null)
+  // Always show last 3 months of data
   
   useEffect(() => {
     // Load translations from shared store
@@ -142,7 +143,15 @@ export default function TranslationsPage() {
     return labels[status] || status
   }
 
-  const filteredMockTranslations = filterStatus === 'all' 
+  // Helper function to check if date is within last 3 months
+  const isWithinLast3Months = (dateString: string | Date) => {
+    const date = new Date(dateString)
+    const threeMonthsAgo = new Date()
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
+    return date >= threeMonthsAgo
+  }
+
+  let filteredMockTranslations = filterStatus === 'all' 
     ? mockTranslations 
     : mockTranslations.filter(t => {
         const statusMap: Record<string, TranslationStatus> = {
@@ -152,10 +161,20 @@ export default function TranslationsPage() {
         }
         return statusMap[t.translationStatus] === filterStatus
       })
+  
+  // Apply date filter - always show last 3 months
+  filteredMockTranslations = filteredMockTranslations.filter(t => 
+    isWithinLast3Months(t.requestDate)
+  )
       
-  const filteredSharedTranslations = filterStatus === 'all'
+  let filteredSharedTranslations = filterStatus === 'all'
     ? translations
     : translations.filter(t => t.status === filterStatus)
+  
+  // Apply date filter - always show last 3 months
+  filteredSharedTranslations = filteredSharedTranslations.filter(t => 
+    isWithinLast3Months(t.requestedAt)
+  )
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -227,6 +246,18 @@ export default function TranslationsPage() {
           >
             Pending ({auctionSheetTranslations.filter(t => t.translationStatus === 'pending').length})
           </button>
+        </div>
+
+        {/* Date Range Notice */}
+        <div className="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <div className="flex items-start">
+            <svg className="h-5 w-5 text-blue-600 mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-sm text-blue-800">
+              This page displays your translation reports from the last 3 months. For older translations, please contact support.
+            </p>
+          </div>
         </div>
 
         {/* Translations List */}

@@ -177,10 +177,8 @@ function handleLogout() {
   localStorage.removeItem('refreshToken')
   setAuthToken(null)
   
-  // Redirect to login page
-  if (typeof window !== 'undefined') {
-    window.location.href = '/login'
-  }
+  // Don't redirect - just log the logout
+  console.log('User logged out')
 }
 
 // Retry logic for failed requests

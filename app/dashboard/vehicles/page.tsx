@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
+import { Card, CardContent } from '@/components/ui/card'
 
 type VehicleSource = 'auction' | 'direct' | 'export'
 type VehicleStatus = 'payment_pending' | 'preparing' | 'in_transit' | 'at_port' | 'delivered' | 'completed'
@@ -242,55 +243,148 @@ export default function MyVehiclesPage() {
     <div className="w-full">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">My Vehicles</h1>
-        <p className="text-gray-600">Manage all your vehicles, documents, and shipping status</p>
+        <h1 className="text-3xl font-bold font-heading text-gray-900 mb-2">My Vehicles</h1>
+        <p className="text-gray-600 font-body">Manage all your vehicles, documents, and shipping status</p>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-xl p-6 border border-gray-200">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-gray-600">Total Vehicles</span>
-            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-            </svg>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {/* Total Vehicles Card */}
+        <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
+          {/* Glassmorphism background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 via-transparent to-purple-500/5"></div>
+          
+          {/* Border gradient */}
+          <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-blue-500/20 via-gray-200/30 to-purple-500/20">
+            <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
           </div>
-          <div className="text-2xl font-bold text-gray-900">{vehiclesByStatus.total}</div>
-          <p className="text-xs text-gray-500 mt-1">All time</p>
-        </div>
+          
+          {/* Animated glow effect */}
+          <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl group-hover:bg-blue-500/30 transition-all duration-700"></div>
+          
+          <CardContent className="relative z-10 flex flex-col justify-center h-full p-4">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-2">
+              <div className="p-1.5 bg-gradient-to-br from-blue-500/20 to-purple-500/10 rounded-lg backdrop-blur-sm border border-blue-500/10">
+                <svg className="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                </svg>
+              </div>
+            </div>
+            
+            {/* Content */}
+            <div>
+              <p className="text-xs font-semibold font-heading text-gray-600 uppercase tracking-wider mb-0.5">Total Vehicles</p>
+              <p className="text-2xl font-bold font-stats bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{vehiclesByStatus.total}</p>
+              <p className="text-xs text-gray-500 mt-0.5">All time</p>
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="bg-white rounded-xl p-6 border border-gray-200">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-gray-600">Active Shipments</span>
-            <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-            </svg>
+        {/* In Transit Card */}
+        <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
+          {/* Glassmorphism background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-[#FA7921]/5 via-transparent to-[#FF9A56]/5"></div>
+          
+          {/* Border gradient */}
+          <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-[#FA7921]/20 via-gray-200/30 to-[#FF9A56]/20">
+            <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
           </div>
-          <div className="text-2xl font-bold text-blue-600">{vehiclesByStatus.active}</div>
-          <p className="text-xs text-gray-500 mt-1">In progress</p>
-        </div>
+          
+          {/* Animated glow effect */}
+          <div className="absolute -top-20 -left-20 w-40 h-40 bg-[#FA7921]/20 rounded-full blur-3xl group-hover:bg-[#FA7921]/30 transition-all duration-700"></div>
+          
+          <CardContent className="relative z-10 flex flex-col justify-center h-full p-4">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-2">
+              <div className="p-1.5 bg-gradient-to-br from-[#FA7921]/20 to-[#FF9A56]/10 rounded-lg backdrop-blur-sm border border-[#FA7921]/10">
+                <svg className="w-3.5 h-3.5 text-[#FA7921]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                </svg>
+              </div>
+              <span className="px-2 py-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-full text-xs font-semibold text-green-700 flex items-center gap-1 border border-green-500/20">
+                <span className="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></span>
+                Live
+              </span>
+            </div>
+            
+            {/* Content */}
+            <div>
+              <p className="text-xs font-semibold font-heading text-gray-600 uppercase tracking-wider mb-0.5">In Transit</p>
+              <p className="text-2xl font-bold font-stats bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{vehiclesByStatus.active}</p>
+              <p className="text-xs text-gray-500 mt-0.5">Active shipping</p>
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="bg-white rounded-xl p-6 border border-gray-200">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-gray-600">Delivered</span>
-            <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+        {/* Delivered Card */}
+        <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
+          {/* Glassmorphism background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-green-500/5 via-transparent to-emerald-500/5"></div>
+          
+          {/* Border gradient */}
+          <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-green-500/20 via-gray-200/30 to-emerald-500/20">
+            <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
           </div>
-          <div className="text-2xl font-bold text-green-600">{vehiclesByStatus.delivered}</div>
-          <p className="text-xs text-gray-500 mt-1">Ready for pickup</p>
-        </div>
+          
+          {/* Animated glow effect */}
+          <div className="absolute -top-20 -right-20 w-40 h-40 bg-green-500/20 rounded-full blur-3xl group-hover:bg-green-500/30 transition-all duration-700"></div>
+          
+          <CardContent className="relative z-10 flex flex-col justify-center h-full p-4">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-2">
+              <div className="p-1.5 bg-gradient-to-br from-green-500/20 to-emerald-500/10 rounded-lg backdrop-blur-sm border border-green-500/10">
+                <svg className="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+            
+            {/* Content */}
+            <div>
+              <p className="text-xs font-semibold font-heading text-gray-600 uppercase tracking-wider mb-0.5">Delivered</p>
+              <p className="text-2xl font-bold font-stats bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{vehiclesByStatus.delivered}</p>
+              <p className="text-xs text-gray-500 mt-0.5">Ready for pickup</p>
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="bg-white rounded-xl p-6 border border-gray-200">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-gray-600">Completed</span>
-            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-            </svg>
+        {/* Completed Card */}
+        <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
+          {/* Glassmorphism background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-gray-500/5 via-transparent to-gray-600/5"></div>
+          
+          {/* Border gradient */}
+          <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-gray-500/20 via-gray-200/30 to-gray-600/20">
+            <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
           </div>
-          <div className="text-2xl font-bold text-gray-900">{vehiclesByStatus.completed}</div>
-          <p className="text-xs text-gray-500 mt-1">Archived</p>
-        </div>
+          
+          {/* Animated glow effect */}
+          <div className="absolute -top-20 -left-20 w-40 h-40 bg-gray-500/20 rounded-full blur-3xl group-hover:bg-gray-500/30 transition-all duration-700"></div>
+          
+          <CardContent className="relative z-10 flex flex-col justify-center h-full p-4">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-2">
+              <div className="p-1.5 bg-gradient-to-br from-gray-500/20 to-gray-600/10 rounded-lg backdrop-blur-sm border border-gray-500/10">
+                <svg className="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+              </div>
+            </div>
+            
+            {/* Content */}
+            <div>
+              <p className="text-xs font-semibold font-heading text-gray-600 uppercase tracking-wider mb-0.5">Completed</p>
+              <p className="text-2xl font-bold font-stats bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{vehiclesByStatus.completed}</p>
+              <p className="text-xs text-gray-500 mt-0.5">Archived</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Filters and Search */}
@@ -444,7 +538,7 @@ export default function MyVehiclesPage() {
                     {vehicle.shipping && (
                       <div className="bg-blue-50 rounded-lg p-3 mb-4">
                         <div className="flex items-center gap-2 text-sm">
-                          <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                           <span className="text-blue-900">
@@ -491,7 +585,7 @@ export default function MyVehiclesPage() {
                           href={`/dashboard/vehicles/${vehicle.id}`}
                           className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors text-sm font-medium flex items-center gap-2"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>

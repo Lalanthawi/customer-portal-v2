@@ -69,7 +69,6 @@ export default function BidDetailPage() {
   const [deliveryPhotosUploaded, setDeliveryPhotosUploaded] = useState(false)
   const [estimatedArrivalDate] = useState(new Date('2024-02-20T17:00:00'))
   const [isDelivered, setIsDelivered] = useState(false)
-  const [autoCompletedAfter3Months, setAutoCompletedAfter3Months] = useState(false)
   const [defaultAddress] = useState({
     name: 'John Doe',
     street: '1-2-3 Shibuya',
@@ -136,7 +135,7 @@ export default function BidDetailPage() {
     'Kawasaki Port'
   ]
 
-  // Shipment timeline stages (only for won auctions)
+  // Shipment timeline stages (only for won auctions) - Simplified timeline
   const [shipmentStages] = useState<TimelineStage[]>([
     {
       id: 'auction-won',
@@ -309,52 +308,88 @@ export default function BidDetailPage() {
       ]
     },
     {
-      id: 'ocean-transit',
-      title: 'Ocean Freight',
-      description: 'Vessel departure and ocean transport',
+      id: 'ocean-shipping',
+      title: 'Ocean Shipping',
+      description: 'In transit to destination port',
       status: 'pending',
       progress: 0,
       tasksCompleted: 0,
-      totalTasks: 1,
+      totalTasks: 2,
       estimatedDate: new Date('2024-02-15T17:00:00'),
-      isExpandable: false
+      isExpandable: true,
+      details: [
+        {
+          id: 'ship-1',
+          title: 'Vessel Departure',
+          status: 'pending',
+          description: selectedPort ? `Departing from ${selectedPort}` : 'Awaiting departure',
+          dueDate: new Date('2024-01-26T10:00:00')
+        },
+        {
+          id: 'ship-2',
+          title: 'Arrival at Destination',
+          status: 'pending',
+          description: 'ETA to destination port',
+          dueDate: new Date('2024-02-15T17:00:00')
+        }
+      ]
+    },
+    {
+      id: 'port-arrival',
+      title: 'Port Arrival',
+      description: 'Vehicle arrival at destination port',
+      status: 'pending',
+      progress: 0,
+      tasksCompleted: 0,
+      totalTasks: 2,
+      estimatedDate: new Date('2024-02-16T17:00:00'),
+      isExpandable: true,
+      details: [
+        {
+          id: 'arrival-1',
+          title: 'Port Entry',
+          status: 'pending',
+          description: 'Vehicle arrived at destination port',
+          dueDate: new Date('2024-02-15T17:00:00')
+        },
+        {
+          id: 'arrival-2',
+          title: 'Container Unloading',
+          status: 'pending',
+          description: 'Vehicle unloaded from container',
+          dueDate: new Date('2024-02-16T17:00:00')
+        }
+      ]
     },
     {
       id: 'delivered',
       title: 'Delivered',
-      description: autoCompletedAfter3Months 
-        ? 'Auto-completed after 3 months' 
-        : (deliveryPhotosUploaded 
-          ? 'Vehicle delivered and confirmed' 
-          : 'Awaiting delivery confirmation'),
-      status: (deliveryPhotosUploaded || autoCompletedAfter3Months) ? 'completed' : 'pending',
-      progress: (deliveryPhotosUploaded || autoCompletedAfter3Months) ? 100 : 0,
-      tasksCompleted: (deliveryPhotosUploaded || autoCompletedAfter3Months) ? 1 : 0,
+      description: deliveryPhotosUploaded 
+        ? 'Vehicle successfully delivered' 
+        : 'Final delivery to customer',
+      status: deliveryPhotosUploaded ? 'completed' : 'pending',
+      progress: deliveryPhotosUploaded ? 100 : 0,
+      tasksCompleted: deliveryPhotosUploaded ? 1 : 0,
       totalTasks: 1,
-      estimatedDate: estimatedArrivalDate,
+      estimatedDate: new Date('2024-02-20T17:00:00'),
       completedDate: deliveryPhotosUploaded ? new Date() : undefined,
       isExpandable: true,
       details: [
         {
           id: 'delivery-1',
-          title: 'Delivery Confirmation',
-          status: (deliveryPhotosUploaded || autoCompletedAfter3Months) ? 'completed' : 'pending',
-          description: autoCompletedAfter3Months 
-            ? 'Auto-completed (3+ months since arrival)' 
-            : (deliveryPhotosUploaded 
-              ? 'Photos uploaded - Delivery confirmed' 
-              : 'Upload photos to confirm delivery'),
+          title: 'Vehicle Delivered',
+          status: deliveryPhotosUploaded ? 'completed' : 'pending',
+          description: deliveryPhotosUploaded 
+            ? 'Delivery confirmed with photos' 
+            : 'Vehicle ready for customer pickup',
           completedDate: deliveryPhotosUploaded ? new Date() : undefined,
-          note: !deliveryPhotosUploaded && !autoCompletedAfter3Months 
-            ? 'Please upload photos of the delivered vehicle to mark as complete' 
-            : undefined,
-          actions: isDelivered && !deliveryPhotosUploaded && !autoCompletedAfter3Months ? [
+          dueDate: !deliveryPhotosUploaded ? new Date('2024-02-20T17:00:00') : undefined,
+          actions: !deliveryPhotosUploaded ? [
             {
-              label: 'Upload Delivery Photos',
+              label: 'Confirm Delivery',
               icon: 'document' as const,
               onClick: () => {
-                // In production, this would open a file upload dialog
-                const confirmed = confirm('Upload photos of the delivered vehicle to confirm receipt?')
+                const confirmed = confirm('Confirm vehicle delivery?')
                 if (confirmed) {
                   setDeliveryPhotosUploaded(true)
                 }
@@ -375,18 +410,6 @@ export default function BidDetailPage() {
     }
   }, [selectedPort])
   
-  // Auto-complete delivery after 3 months
-  useEffect(() => {
-    if (isDelivered && !deliveryPhotosUploaded) {
-      // Calculate if 3 months have passed since estimated arrival
-      const threeMonthsLater = new Date(estimatedArrivalDate)
-      threeMonthsLater.setMonth(threeMonthsLater.getMonth() + 3)
-      
-      if (new Date() >= threeMonthsLater) {
-        setAutoCompletedAfter3Months(true)
-      }
-    }
-  }, [isDelivered, deliveryPhotosUploaded, estimatedArrivalDate])
 
   const formatJPY = (amount: number) => {
     return new Intl.NumberFormat('ja-JP', {

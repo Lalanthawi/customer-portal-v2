@@ -992,9 +992,9 @@ export default function VehiclePageShadcn() {
                         <div className="space-y-4">
                           <Alert className="bg-amber-50 dark:bg-amber-50 border-amber-200 dark:border-amber-200">
                             <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-600" />
-                            <AlertTitle className="text-amber-800 dark:text-amber-800">Translation Fee: ¥1,500</AlertTitle>
+                            <AlertTitle className="text-amber-800 dark:text-amber-800">Translation Fee: FREE</AlertTitle>
                             <AlertDescription className="text-amber-700 dark:text-amber-700">
-                              Will be added to your final invoice if you win this auction
+                              No charge for auction sheet translation service
                             </AlertDescription>
                           </Alert>
                           
@@ -1083,9 +1083,9 @@ export default function VehiclePageShadcn() {
                         <div className="space-y-4">
                           <Alert className="bg-amber-50 dark:bg-amber-50 border-amber-200 dark:border-amber-200">
                             <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-600" />
-                            <AlertTitle className="text-amber-800 dark:text-amber-800">Translation Fee: ¥1,500</AlertTitle>
+                            <AlertTitle className="text-amber-800 dark:text-amber-800">Translation Fee: FREE</AlertTitle>
                             <AlertDescription className="text-amber-700 dark:text-amber-700">
-                              Will be added to your final invoice if you win this auction
+                              No charge for auction sheet translation service
                             </AlertDescription>
                           </Alert>
                           

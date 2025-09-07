@@ -291,62 +291,21 @@ export default function VehicleDetailPage() {
       ]
     },
     {
-      id: 'customs',
-      title: 'Customs Clearance',
-      description: 'Import customs processing',
+      id: 'delivered',
+      title: 'Delivered',
+      description: 'Vehicle successfully delivered',
       status: 'pending',
       progress: 0,
       tasksCompleted: 0,
-      totalTasks: 3,
-      estimatedDate: new Date('2024-02-18'),
-      isExpandable: true,
-      details: [
-        { 
-          id: 'customs-1',
-          title: 'Document Submission',
-          status: 'pending',
-          description: 'Submit import documents',
-          dueDate: new Date('2024-02-16')
-        },
-        { 
-          id: 'customs-2',
-          title: 'Customs Inspection',
-          status: 'pending',
-          description: 'Awaiting inspection',
-          dueDate: new Date('2024-02-17')
-        },
-        { 
-          id: 'customs-3',
-          title: 'Duty Payment',
-          status: 'pending',
-          description: 'Import duty to be calculated',
-          dueDate: new Date('2024-02-18')
-        }
-      ]
-    },
-    {
-      id: 'delivery',
-      title: 'Ready for Pickup',
-      description: 'Vehicle available for collection',
-      status: 'pending',
-      progress: 0,
-      tasksCompleted: 0,
-      totalTasks: 2,
+      totalTasks: 1,
       estimatedDate: new Date('2024-02-20'),
       isExpandable: true,
       details: [
         { 
           id: 'delivery-1',
-          title: 'Release Order',
+          title: 'Vehicle Delivered',
           status: 'pending',
-          description: 'Obtain release from terminal',
-          dueDate: new Date('2024-02-19')
-        },
-        { 
-          id: 'delivery-2',
-          title: 'Vehicle Pickup',
-          status: 'pending',
-          description: 'Ready for customer collection',
+          description: 'Final delivery completed',
           dueDate: new Date('2024-02-20')
         }
       ]
@@ -955,10 +914,6 @@ export default function VehicleDetailPage() {
                     </div>
                   </div>
                 </div>
-
-                <button className="w-full py-3 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium">
-                  Track Shipment
-                </button>
               </div>
               
               {/* Shipment Timeline Component */}
