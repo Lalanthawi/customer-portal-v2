@@ -36,27 +36,27 @@ const demoVehicles: Vehicle[] = [
   {
     id: 1,
     make: 'Toyota',
-    model: 'Camry Hybrid',
-    year: 2023,
-    price: 3200000,
-    mileage: 15000,
+    model: 'Land Cruiser 250 VX',
+    year: 2024,
+    price: 5600000,
+    mileage: 13000,
     transmission: 'Automatic',
-    fuelType: 'Hybrid',
-    color: 'Pearl White',
-    location: 'Tokyo',
-    imageUrl: 'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800&h=600&fit=crop',
+    fuelType: 'Diesel',
+    color: 'Brown',
+    location: 'Osaka',
+    imageUrl: '/images/singlecar/0.jpeg',
     condition: 'Excellent',
-    seats: 5,
-    doors: 4,
-    engineSize: '2.5L',
-    driveType: 'FWD',
-    bodyType: 'Sedan',
-    features: ['Navigation System', 'Leather Seats', 'Backup Camera', 'Bluetooth', 'Apple CarPlay'],
+    seats: 7,
+    doors: 5,
+    engineSize: '2.8L Turbo',
+    driveType: '4WD',
+    bodyType: 'SUV',
+    features: ['Multi-Terrain Select', 'Crawl Control', '360° Camera', 'JBL Premium Audio', 'Leather Seats', 'Panoramic Sunroof'],
     auctionEndTime: new Date(Date.now() + 86400000 * 2),
-    bids: 12,
+    bids: 18,
     verified: true,
-    dealer: 'Tokyo Premium Motors',
-    rating: 4.8
+    dealer: 'TAA Kinki Osaka',
+    rating: 5.0
   },
   {
     id: 2,
@@ -1725,27 +1725,11 @@ function SearchResults() {
                       </div>
                     </div>
 
-                    {/* Dealer Info */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                          <span className="text-xs font-semibold text-gray-600">
-                            {vehicle.dealer.charAt(0)}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="text-xs font-medium text-gray-900">{vehicle.dealer}</p>
-                          <div className="flex items-center gap-1">
-                            <svg className="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <span className="text-xs text-gray-600">{vehicle.rating}</span>
-                          </div>
-                        </div>
-                      </div>
+                    {/* Action Button */}
+                    <div className="pt-4 border-t border-gray-100">
                       <Link
                         href={`/dashboard/vehicle/${vehicle.id}`}
-                        className="px-4 py-2 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white text-sm font-medium rounded-lg hover:shadow-lg transition-all"
+                        className="block w-full px-4 py-2 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white text-sm font-medium rounded-lg hover:shadow-lg transition-all text-center"
                       >
                         View Details
                       </Link>
@@ -1835,33 +1819,7 @@ function SearchResults() {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                              <span className="text-xs font-semibold text-gray-600">
-                                {vehicle.dealer.charAt(0)}
-                              </span>
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-gray-900">{vehicle.dealer}</p>
-                              <div className="flex items-center gap-1">
-                                <svg className="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                                <span className="text-xs text-gray-600">{vehicle.rating}</span>
-                              </div>
-                            </div>
-                          </div>
-                          {vehicle.verified && (
-                            <div className="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full flex items-center gap-1">
-                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                              </svg>
-                              Verified
-                            </div>
-                          )}
-                        </div>
+                      <div className="flex items-center justify-end">
                         <div className="flex items-center gap-3">
                           <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                             <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

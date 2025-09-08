@@ -22,8 +22,12 @@ export default function DepositPage() {
     // Simulate payment processing
     setTimeout(() => {
       setIsProcessing(false)
-      alert('Deposit successful!')
-      router.push('/dashboard/history')
+      // Redirect to success page with transaction details
+      const txnId = `TXN${Date.now()}`
+      const method = paymentMethod === 'stripe' ? 'Credit Card' : 
+                     paymentMethod === 'paypal' ? 'PayPal' : 
+                     paymentMethod === 'bank' ? 'Bank Transfer' : 'Crypto'
+      router.push(`/dashboard/deposit/success?amount=${amount}&method=${encodeURIComponent(method)}&txn=${txnId}`)
     }, 2000)
   }
 

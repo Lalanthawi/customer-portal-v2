@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { manufacturerLogos } from './ManufacturerLogos'
 import AdvancedSearchStatic from '../components/search/AdvancedSearchStatic'
 import { TermsOfServiceModal, useTOSAcceptance } from '../components/TermsOfService'
@@ -531,13 +532,14 @@ export default function AuctionsPage() {
             <select
               value={filters.sortBy}
               onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
-              className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+              className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-900 font-medium focus:ring-2 focus:ring-[#FA7921] focus:border-transparent [&>option]:text-gray-900"
+              style={{ color: '#111827', opacity: 1 }}
             >
-              <option value="relevance">Relevance</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="year-new">Year: Newest First</option>
-              <option value="mileage-low">Mileage: Lowest First</option>
+              <option value="relevance" className="text-gray-900">Relevance</option>
+              <option value="price-low" className="text-gray-900">Price: Low to High</option>
+              <option value="price-high" className="text-gray-900">Price: High to Low</option>
+              <option value="year-new" className="text-gray-900">Year: Newest First</option>
+              <option value="mileage-low" className="text-gray-900">Mileage: Lowest First</option>
             </select>
           </div>
           
@@ -562,7 +564,7 @@ export default function AuctionsPage() {
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-          {manufacturers.filter(m => m.popular).map((manufacturer) => (
+          {manufacturers.slice(0, 16).map((manufacturer) => (
             <button
               key={manufacturer.id}
               onClick={() => toggleManufacturer(manufacturer.id)}
@@ -629,46 +631,73 @@ export default function AuctionsPage() {
 
       {/* Popular Categories */}
       <div className="mb-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Popular Categories</h2>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Popular Categories</h2>
+            <p className="text-sm text-gray-500 mt-1">Browse vehicles by type</p>
+          </div>
+          <button className="text-[#FA7921] hover:text-[#e86f1e] font-medium text-sm flex items-center gap-1">
+            <span>All Categories</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+        
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {['SUV', 'Sedan', 'Truck', 'Sports', 'Electric', 'Hybrid'].map((category) => (
+          {[
+            { name: 'SUV', image: '/images/popular/suv.svg', count: '1,234', color: 'from-blue-500 to-blue-600' },
+            { name: 'Sedan', image: '/images/popular/sedan.svg', count: '987', color: 'from-purple-500 to-purple-600' },
+            { name: 'Truck', image: '/images/popular/truck.svg', count: '456', color: 'from-green-500 to-green-600' },
+            { name: 'Sports', image: '/images/popular/sports.svg', count: '234', color: 'from-red-500 to-red-600' },
+            { name: 'Electric', image: '/images/popular/electric.svg', count: '567', color: 'from-yellow-500 to-yellow-600' },
+            { name: 'Hybrid', image: '/images/popular/hybrid.svg', count: '345', color: 'from-teal-500 to-teal-600' }
+          ].map((category) => (
             <button
-              key={category}
-              className="group bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-[#FA7921] transition-all hover:shadow-lg"
+              key={category.name}
+              className="group relative bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FA7921] transition-all hover:shadow-xl hover:-translate-y-1"
             >
-              <div className="mb-3 flex justify-center">
-                {category === 'SUV' && (
-                  <svg className="w-8 h-8 text-gray-600 group-hover:text-[#FA7921] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17h6l1 1v2a1 1 0 01-1 1h-1a1 1 0 01-1-1v-1h-2v1a1 1 0 01-1 1H9a1 1 0 01-1-1v-2l1-1zm-4-7h14l-1.5-4.5A1 1 0 0016.5 5h-9a1 1 0 00-.95.68L5 10zm0 0v5a1 1 0 001 1h12a1 1 0 001-1v-5m-14 0h14" />
-                  </svg>
-                )}
-                {category === 'Sedan' && (
-                  <svg className="w-8 h-8 text-gray-600 group-hover:text-[#FA7921] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 11h14l-1-3H6l-1 3zm0 0v4a1 1 0 001 1h1m-2-5v4a1 1 0 001 1h1m-2-5h14m0 0v4a1 1 0 01-1 1h-1m2-5v4a1 1 0 01-1 1h-1m0 0v2m-10-2v2m2-7h6" />
-                  </svg>
-                )}
-                {category === 'Truck' && (
-                  <svg className="w-8 h-8 text-gray-600 group-hover:text-[#FA7921] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10m10 0h6m-6 0v2a1 1 0 001 1h1m-2-3v2a1 1 0 001 1h1m4-3v2a1 1 0 001 1h1a1 1 0 001-1v-7.5L16.5 9m0 0H13m3.5 0L19 11.5M7 16a2 2 0 100 4 2 2 0 000-4z" />
-                  </svg>
-                )}
-                {category === 'Sports' && (
-                  <svg className="w-8 h-8 text-gray-600 group-hover:text-[#FA7921] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-2-4h-5l-2 4m9 0h2a1 1 0 011 1v3m-4-4l-2-4m0 0L9 9m5-4v4m-5 0H3a1 1 0 00-1 1v3m7-4l2-4M6 17a2 2 0 100 4 2 2 0 000-4zm0 0h12m0 0a2 2 0 100 4 2 2 0 000-4z" />
-                  </svg>
-                )}
-                {category === 'Electric' && (
-                  <svg className="w-8 h-8 text-gray-600 group-hover:text-[#FA7921] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                )}
-                {category === 'Hybrid' && (
-                  <svg className="w-8 h-8 text-gray-600 group-hover:text-[#FA7921] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 8h6m-6 4h6m-6 4h6M5 3v18l7-3 7 3V3l-7 3-7-3z" />
-                  </svg>
-                )}
+              {/* Gradient Background */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
+              
+              {/* Content */}
+              <div className="relative p-6">
+                {/* Icon Container */}
+                <div className="w-16 h-16 mx-auto mb-4 relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 rounded-2xl group-hover:from-[#FA7921]/10 group-hover:to-[#FF9A56]/10 transition-colors duration-300"></div>
+                  <div className="relative flex items-center justify-center h-full">
+                    <Image 
+                      src={category.image}
+                      alt={category.name}
+                      width={40}
+                      height={40}
+                      className="w-10 h-10 object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                    />
+                  </div>
+                </div>
+                
+                {/* Category Name */}
+                <h3 className="font-semibold text-gray-900 text-base mb-1 group-hover:text-[#FA7921] transition-colors">
+                  {category.name}
+                </h3>
+                
+                {/* Vehicle Count */}
+                <p className="text-xs text-gray-500 group-hover:text-gray-600">
+                  {category.count} vehicles
+                </p>
+                
+                {/* Hover Arrow */}
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="w-8 h-8 bg-[#FA7921] rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
-              <h3 className="font-semibold text-gray-900 group-hover:text-[#FA7921] transition-colors">{category}</h3>
+              
+              {/* Bottom Accent Bar */}
+              <div className="h-1 bg-gradient-to-r from-transparent via-gray-200 to-transparent group-hover:via-[#FA7921] transition-all duration-300"></div>
             </button>
           ))}
         </div>

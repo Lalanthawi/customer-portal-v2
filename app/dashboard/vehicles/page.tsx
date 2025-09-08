@@ -51,15 +51,15 @@ export default function MyVehiclesPage() {
   const [vehicles] = useState<Vehicle[]>([
     {
       id: '1',
-      title: '2018 Toyota Corolla Axio',
-      image: 'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800',
-      vin: 'JTDBR32E820123456',
-      chassisNumber: 'NZE161-3153697',
+      title: '2024 Toyota Land Cruiser 250 VX 4WD',
+      image: '/images/singlecar/0.jpeg',
+      vin: 'GDJ250W-001234',
+      chassisNumber: 'GDJ250W-9876543',
       source: 'auction',
       purchaseDate: new Date('2024-01-10'),
       status: 'in_transit',
       location: 'Pacific Ocean',
-      price: 7350000,
+      price: 5600000,
       documents: {
         invoice: true,
         exportCertificate: true,
@@ -74,8 +74,8 @@ export default function MyVehiclesPage() {
         arrivalPort: 'Los Angeles Port'
       },
       auctionDetails: {
-        auctionHouse: getRandomAuctionHouse(),
-        lotNumber: '42315',
+        auctionHouse: 'TAA Kinki',
+        lotNumber: '2024-0892',
         auctionDate: new Date('2024-01-10')
       }
     },
@@ -178,19 +178,6 @@ export default function MyVehiclesPage() {
     )
   }
 
-  const getSourceBadge = (source: VehicleSource) => {
-    const sourceConfig = {
-      auction: { color: 'bg-orange-100 text-orange-800', label: 'Auction' },
-      direct: { color: 'bg-blue-100 text-blue-800', label: 'Direct Purchase' },
-      export: { color: 'bg-green-100 text-green-800', label: 'Export Service' }
-    }
-    const config = sourceConfig[source]
-    return (
-      <span className={`px-3 py-1 rounded-full text-xs font-medium ${config.color}`}>
-        {config.label}
-      </span>
-    )
-  }
 
   const formatJPY = (amount: number) => {
     return new Intl.NumberFormat('ja-JP', {
@@ -471,9 +458,6 @@ export default function MyVehiclesPage() {
                       fill
                       className="object-cover rounded-lg"
                     />
-                    <div className="absolute top-2 left-2">
-                      {getSourceBadge(vehicle.source)}
-                    </div>
                   </div>
 
                   {/* Vehicle Details */}
@@ -538,7 +522,7 @@ export default function MyVehiclesPage() {
                     {vehicle.shipping && (
                       <div className="bg-blue-50 rounded-lg p-3 mb-4">
                         <div className="flex items-center gap-2 text-sm">
-                          <svg className="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                           <span className="text-blue-900">
@@ -583,14 +567,13 @@ export default function MyVehiclesPage() {
                       <div className="flex items-center gap-2">
                         <Link
                           href={`/dashboard/vehicles/${vehicle.id}`}
-                          className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors text-sm font-medium flex items-center gap-2"
+                          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
                         >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
-                          View Details & Documents
+                          View Details
                         </Link>
+                        <button className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors text-sm font-medium">
+                          Documents
+                        </button>
                       </div>
                     </div>
                   </div>

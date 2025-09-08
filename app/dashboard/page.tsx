@@ -713,8 +713,8 @@ export default function DashboardPage() {
                     <span className="relative z-10">Deposit</span>
                     <div className="absolute inset-0 bg-gradient-to-r from-[#FF9A56] to-[#FA7921] opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
                   </Link>
-                  <Link href="/dashboard/history" className="px-3 py-2.5 bg-white/50 backdrop-blur-sm text-gray-700 text-sm font-semibold rounded-xl hover:bg-white/70 transition-all text-center border border-gray-200/50">
-                    History
+                  <Link href="/dashboard/wallet" className="px-3 py-2.5 bg-white/50 backdrop-blur-sm text-gray-700 text-sm font-semibold rounded-xl hover:bg-white/70 transition-all text-center border border-gray-200/50">
+                    Wallet
                   </Link>
                 </div>
               </div>

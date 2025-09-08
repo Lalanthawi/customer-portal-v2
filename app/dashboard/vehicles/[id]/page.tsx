@@ -1,73 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import ShipmentTimeline from '../../components/ShipmentTimeline'
 import { TimelineStage } from '../../components/types'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
-
-interface Document {
-  id: string
-  name: string
-  type: 'invoice' | 'export_certificate' | 'bill_of_lading' | 'deregistration' | 'inspection_report' | 'insurance' | 'customs' | 'other'
-  uploadDate: Date
-  size: string
-  url?: string
-  status: 'available' | 'processing' | 'pending'
-  required: boolean
-}
-
-interface VehicleDetails {
-  id: string
-  title: string
-  images: string[]
-  vin?: string
-  chassisNumber?: string
-  engineNumber?: string
-  make: string
-  model: string
-  year: number
-  color: string
-  mileage: number
-  transmission: 'automatic' | 'manual'
-  fuelType: 'petrol' | 'diesel' | 'hybrid' | 'electric'
-  engineSize: string
-  source: 'auction' | 'direct' | 'export'
-  purchaseDate: Date
-  status: 'payment_pending' | 'preparing' | 'in_transit' | 'at_port' | 'delivered' | 'completed'
-  location?: string
-  price: number
-  documents: Document[]
-  shipping?: {
-    vessel?: string
-    eta?: Date
-    departurePort?: string
-    arrivalPort?: string
-    containerNumber?: string
-    bookingNumber?: string
-  }
-  auctionDetails?: {
-    auctionHouse: string
-    lotNumber: string
-    auctionDate: Date
-    grade?: string
-    sheetUrl?: string
-  }
-  specifications?: {
-    doors: number
-    seats: number
-    driveType: '2WD' | '4WD' | 'AWD'
-    bodyType: string
-    features: string[]
-  }
-  notes?: string
-}
+import { VehicleDetails, VehicleDocument, generateMockVehicle } from '../types'
 
 export default function VehicleDetailPage() {
   const params = useParams()
   const [activeTab, setActiveTab] = useState<'overview' | 'documents' | 'shipping' | 'history' | 'inspection' | 'translation'>('overview')
+  const [selectedImage, setSelectedImage] = useState(0)
   
   // Inspection and Translation states
   const [inspectionRequested, setInspectionRequested] = useState(false)
@@ -96,6 +40,10 @@ export default function VehicleDetailPage() {
     }, 3000)
   }
 
+  // In production, this would be fetched from API
+  // For now, using mock data generator
+  const vehicle: VehicleDetails = generateMockVehicle(params['id'] as string)
+
   // Timeline stages for the ShipmentTimeline component
   const shipmentStages: TimelineStage[] = [
     {
@@ -115,7 +63,7 @@ export default function VehicleDetailPage() {
           id: 'auction-1',
           title: 'Auction Details',
           status: 'completed',
-          description: `${getRandomAuctionHouse()} - Lot #42315`,
+          description: `${vehicle.auctionDetails?.auctionHouse || 'Auction House'} - Lot #${vehicle.auctionDetails?.lotNumber || '42315'}`,
           completedDate: new Date('2024-01-10')
         },
         { 
@@ -312,155 +260,12 @@ export default function VehicleDetailPage() {
     }
   ]
 
-  // Mock data - would come from API based on params.id
-  const vehicle: VehicleDetails = {
-    id: params['id'] as string,
-    title: '2018 Toyota Corolla Axio',
-    images: [
-      'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800',
-      'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800',
-      'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800'
-    ],
-    vin: 'JTDBR32E820123456',
-    chassisNumber: 'NZE161-3153697',
-    engineNumber: '1NZ-FE-2847293',
-    make: 'Toyota',
-    model: 'Corolla Axio',
-    year: 2018,
-    color: 'Pearl White',
-    mileage: 45000,
-    transmission: 'automatic',
-    fuelType: 'hybrid',
-    engineSize: '1.5L',
-    source: 'auction',
-    purchaseDate: new Date('2024-01-10'),
-    status: 'in_transit',
-    location: 'Pacific Ocean',
-    price: 7350000,
-    documents: [
-      {
-        id: '1',
-        name: 'Commercial Invoice',
-        type: 'invoice',
-        uploadDate: new Date('2024-01-12'),
-        size: '245 KB',
-        url: '#',
-        status: 'available',
-        required: true
-      },
-      {
-        id: '2',
-        name: 'Export Certificate',
-        type: 'export_certificate',
-        uploadDate: new Date('2024-01-15'),
-        size: '180 KB',
-        url: '#',
-        status: 'available',
-        required: true
-      },
-      {
-        id: '3',
-        name: 'Bill of Lading',
-        type: 'bill_of_lading',
-        uploadDate: new Date('2024-01-20'),
-        size: '320 KB',
-        url: '#',
-        status: 'available',
-        required: true
-      },
-      {
-        id: '4',
-        name: 'Deregistration Certificate',
-        type: 'deregistration',
-        uploadDate: new Date('2024-01-18'),
-        size: '150 KB',
-        status: 'processing',
-        required: true
-      },
-      {
-        id: '5',
-        name: 'JEVIC Inspection Report',
-        type: 'inspection_report',
-        uploadDate: new Date('2024-01-22'),
-        size: '450 KB',
-        url: '#',
-        status: 'available',
-        required: false
-      },
-      // Additional documents (non-required) - managed by admin
-      {
-        id: '6',
-        name: 'Vehicle Manual',
-        type: 'other',
-        uploadDate: new Date('2024-01-23'),
-        size: '2.3 MB',
-        url: '#',
-        status: 'available',
-        required: false
-      },
-      {
-        id: '7',
-        name: 'Service History',
-        type: 'other',
-        uploadDate: new Date('2024-01-23'),
-        size: '890 KB',
-        url: '#',
-        status: 'available',
-        required: false
-      },
-      {
-        id: '8',
-        name: 'Port Photos',
-        type: 'other',
-        uploadDate: new Date('2024-01-24'),
-        size: '5.6 MB',
-        url: '#',
-        status: 'available',
-        required: false
-      },
-      {
-        id: '9',
-        name: 'Insurance Policy',
-        type: 'insurance',
-        uploadDate: new Date('2024-01-25'),
-        size: '340 KB',
-        url: '#',
-        status: 'available',
-        required: false
-      }
-    ],
-    shipping: {
-      vessel: 'NYK Delphinus',
-      eta: new Date('2024-02-20'),
-      departurePort: 'Yokohama Port',
-      arrivalPort: 'Los Angeles Port',
-      containerNumber: 'NYKU1234567',
-      bookingNumber: 'BK20240110001'
-    },
-    auctionDetails: {
-      auctionHouse: getRandomAuctionHouse(),
-      lotNumber: '42315',
-      auctionDate: new Date('2024-01-10'),
-      grade: '4.5',
-      sheetUrl: '#'
-    },
-    specifications: {
-      doors: 4,
-      seats: 5,
-      driveType: '2WD',
-      bodyType: 'Sedan',
-      features: [
-        'Navigation System',
-        'Backup Camera',
-        'Cruise Control',
-        'Keyless Entry',
-        'Alloy Wheels',
-        'LED Headlights'
-      ]
-    }
-  }
+  // Set initial image to 0 on component mount
+  useEffect(() => {
+    setSelectedImage(0)
+  }, [params['id']])
 
-  const getDocumentIcon = (type: Document['type']) => {
+  const getDocumentIcon = (type: VehicleDocument['type']) => {
     const icons = {
       invoice: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -530,32 +335,63 @@ export default function VehicleDetailPage() {
       {/* Vehicle Header */}
       <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Image Gallery */}
-          <div className="lg:w-1/3">
-            <div className="relative h-64 lg:h-80 rounded-lg overflow-hidden mb-4">
+          {/* Enhanced Image Gallery */}
+          <div className="lg:w-1/2">
+            <div className="relative h-96 lg:h-[500px] rounded-lg overflow-hidden mb-4 bg-gray-100">
               <Image
-                src={vehicle.images[0] || '/placeholder.jpg'}
-                alt={vehicle.title}
+                src={vehicle.images[selectedImage] || '/placeholder.jpg'}
+                alt={`${vehicle.title} - Image ${selectedImage + 1}`}
                 fill
-                className="object-cover"
+                className="object-contain"
+                priority
               />
+              {/* Image Navigation Arrows */}
+              <button
+                onClick={() => setSelectedImage(prev => prev > 0 ? prev - 1 : vehicle.images.length - 1)}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setSelectedImage(prev => prev < vehicle.images.length - 1 ? prev + 1 : 0)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+              {/* Image Counter */}
+              <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                {selectedImage + 1} / {vehicle.images.length}
+              </div>
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              {vehicle.images.slice(1, 4).map((image, index) => (
-                <div key={index} className="relative h-20 rounded-lg overflow-hidden">
+            {/* Thumbnail Grid */}
+            <div className="grid grid-cols-6 gap-2 max-h-32 overflow-y-auto">
+              {vehicle.images.map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedImage(index)}
+                  className={`relative h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                    selectedImage === index
+                      ? 'border-[#FA7921] shadow-lg'
+                      : 'border-transparent hover:border-gray-300'
+                  }`}
+                >
                   <Image
                     src={image}
-                    alt={`${vehicle.title} ${index + 2}`}
+                    alt={`${vehicle.title} thumbnail ${index + 1}`}
                     fill
                     className="object-cover"
                   />
-                </div>
+                </button>
               ))}
             </div>
           </div>
 
           {/* Vehicle Info */}
-          <div className="lg:w-2/3">
+          <div className="lg:w-1/2">
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">{vehicle.title}</h1>
@@ -589,7 +425,7 @@ export default function VehicleDetailPage() {
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">Transmission</p>
-                <p className="text-lg font-semibold text-gray-900 capitalize">{vehicle.transmission}</p>
+                <p className="text-lg font-semibold text-gray-900">{vehicle.transmissionType || vehicle.transmission}</p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">Fuel Type</p>
@@ -599,12 +435,30 @@ export default function VehicleDetailPage() {
                 <p className="text-xs text-gray-500 mb-1">Engine</p>
                 <p className="text-lg font-semibold text-gray-900">{vehicle.engineSize}</p>
               </div>
+              {vehicle.type && (
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Type</p>
+                  <p className="text-lg font-semibold text-gray-900">{vehicle.type}</p>
+                </div>
+              )}
+              {vehicle.grade && (
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Grade</p>
+                  <p className="text-lg font-semibold text-gray-900">{vehicle.grade}</p>
+                </div>
+              )}
+              {vehicle.location && (
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Location</p>
+                  <p className="text-lg font-semibold text-gray-900">{vehicle.location}</p>
+                </div>
+              )}
             </div>
 
-            {/* Specifications */}
+            {/* Equipment */}
             {vehicle.specifications && (
               <div className="border-t pt-4">
-                <h3 className="text-sm font-semibold text-gray-900 mb-2">Features</h3>
+                <h3 className="text-sm font-semibold text-gray-900 mb-3">Equipment</h3>
                 <div className="flex flex-wrap gap-2">
                   {vehicle.specifications.features.map((feature, index) => (
                     <span key={index} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
@@ -655,7 +509,10 @@ export default function VehicleDetailPage() {
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Auction House</p>
-                        <p className="text-sm font-medium text-gray-900">{vehicle.auctionDetails.auctionHouse}</p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {vehicle.auctionDetails.auctionHouse}
+                          {vehicle.auctionDetails.location && ` (${vehicle.auctionDetails.location})`}
+                        </p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Lot Number</p>

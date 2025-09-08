@@ -107,8 +107,93 @@ export default function VehiclePageShadcn() {
   const [translationStatus, setTranslationStatus] = useState<'not available' | 'requested' | 'translating' | 'translated'>('not available')
   const [translationData, setTranslationData] = useState<{ translation?: string; original?: string; sharedBy?: string } | null>(null)
   
-  // Mock data
-  const vehicleData: AuctionCar = {
+  // Generate images array dynamically based on vehicle ID
+  const vehicleImages = params['id'] === '4' || params['id'] === 'land-cruiser' 
+    ? Array.from({ length: 12 }, (_, i) => `/images/singlecar/${i}.jpeg`)
+    : [
+      'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1200&q=80',
+      'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1200&q=80&fit=crop',
+      'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1000&q=80'
+    ]
+
+  // Mock data - different data based on vehicle ID
+  const isLandCruiser = params['id'] === '4' || params['id'] === 'land-cruiser'
+  
+  const vehicleData: AuctionCar = isLandCruiser ? {
+    id: params['id'] as string,
+    chassisNumber: 'GDJ250W-9876543',
+    make: 'Toyota',
+    model: 'Land Cruiser 250',
+    year: 2024,
+    mileage: 13000,
+    transmission: 'FAT (Full Automatic)',
+    displacement: 2800,
+    color: 'Brown',
+    scores: {
+      interior: 5.0,
+      exterior: 5.0,
+      overall: 5.0
+    },
+    pricing: {
+      startPrice: 5000000,
+      currentBid: 5600000,
+      averagePrice: 5800000
+    },
+    auction: {
+      deadline: new Date('2025-09-10T14:00:00'),
+      location: 'TAA Kinki [ Osaka ]',
+      result: 'not yet auction',
+      lotNumber: '2024-0892'
+    },
+    images: vehicleImages,
+    equipment: [
+      'Multi-Terrain Select',
+      'Crawl Control',
+      '360° Camera',
+      'JBL Premium Audio',
+      'Leather Seats',
+      'Power Tailgate',
+      'Adaptive Cruise Control',
+      'Lane Keeping Assist',
+      'Pre-Collision System',
+      'Blind Spot Monitor',
+      'Wireless Charging',
+      'Apple CarPlay/Android Auto',
+      'Heated & Ventilated Seats',
+      'Panoramic Sunroof',
+      '20-inch Alloy Wheels'
+    ],
+    condition: 'Excellent - Grade 5',
+    fuel: 'Diesel',
+    drive: '4WD',
+    doors: 5,
+    seats: 7,
+    bodyType: 'SUV',
+    engineNumber: '1GD-FTV-123456',
+    registrationDate: '2024-06-15',
+    inspectionDate: '2024-08-15',
+    additionalData: {
+      cooling: 'Auto Climate Control',
+      appraisalPoint: '5',
+      shift: 'FAT',
+      openingDay: '2025-09-10 14:00',
+      grade: 'VX',
+      holdingFrequency: '2024',
+      colorSubstitution: 'Original',
+      holdingHall: 'TAA Kinki [ Osaka ]',
+      yearH: '2024 year',
+      notes: [
+        'Premium VX Grade',
+        'Full Toyota Warranty',
+        'First Owner Vehicle',
+        'All Service Records Available',
+        'Non-Smoking Vehicle',
+        'Garage Kept',
+        'Premium Paint Protection',
+        'Ceramic Coating Applied'
+      ]
+    }
+  } : {
     id: params['id'] as string,
     chassisNumber: 'NZE161-3153697',
     make: 'Toyota',
@@ -134,16 +219,7 @@ export default function VehiclePageShadcn() {
       result: 'not yet auction',
       lotNumber: 'LOT-2024-0892'
     },
-    images: [
-      'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1200&q=80',
-      'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1200&q=80&fit=crop',
-      'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1000&q=80',
-      'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1400&q=80',
-      'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1200&q=90',
-      'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800&q=80',
-      'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1600&q=80',
-      'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1200&q=75'
-    ],
+    images: vehicleImages,
     equipment: ['P/S', 'P/W', 'ABS', 'leather', 'airbag'],
     condition: 'bidding is possible',
     fuel: 'GS',

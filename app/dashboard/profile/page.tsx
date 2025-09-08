@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import type { ProfileTab, UserProfileData, PasswordData, Device, NotificationSettings, PaymentMethod } from './types'
 import TwoFactorAuth from '../components/TwoFactorAuth'
+import AddAddressModal from '../components/AddAddressModal'
 
 // Tab definitions
 const tabs: ProfileTab[] = [
@@ -94,6 +95,7 @@ const paymentMethods: PaymentMethod[] = [
 function ProfileSettingsContent() {
   const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState('account')
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false)
   const [profileData, setProfileData] = useState<UserProfileData>({
     firstName: 'John',
     lastName: 'Doe',
@@ -1711,7 +1713,9 @@ function ProfileSettingsContent() {
 
                   {/* Add New Address Card - Amazon Style */}
                   <div className="border-2 border-dashed border-gray-300 rounded-lg overflow-hidden hover:border-[#FA7921] hover:bg-orange-50/30 transition-all cursor-pointer group">
-                    <button className="w-full h-full min-h-[200px] p-6 flex flex-col items-center justify-center">
+                    <button 
+                      onClick={() => setIsAddressModalOpen(true)}
+                      className="w-full h-full min-h-[200px] p-6 flex flex-col items-center justify-center">
                       <div className="w-12 h-12 rounded-full bg-gray-100 group-hover:bg-[#FA7921]/10 flex items-center justify-center mb-3 transition-colors">
                         <svg className="w-6 h-6 text-gray-400 group-hover:text-[#FA7921]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1820,6 +1824,17 @@ function ProfileSettingsContent() {
         purpose={twoFAPurpose}
         phoneNumber={profileData.phoneNumber}
         email={profileData.email}
+      />
+      
+      {/* Add Address Modal */}
+      <AddAddressModal
+        isOpen={isAddressModalOpen}
+        onClose={() => setIsAddressModalOpen(false)}
+        onSave={(addressData) => {
+          console.log('New address saved:', addressData)
+          // Here you would typically save to backend/state
+          setIsAddressModalOpen(false)
+        }}
       />
     </div>
   )

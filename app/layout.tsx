@@ -40,6 +40,9 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: "Zervtek - Online Vehicle Auctions",
   description: "Your trusted platform for online vehicle auctions. Buy and sell cars with confidence.",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
