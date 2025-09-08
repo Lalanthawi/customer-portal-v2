@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import TimelineStage from './TimelineStage'
 import { TimelineStage as TimelineStageType } from './types'
 
@@ -18,6 +18,10 @@ export default function ShipmentTimeline({
   onTaskUpdate 
 }: ShipmentTimelineProps) {
   const [expandedStages, setExpandedStages] = useState<string[]>([])
+  const [lineHeight, setLineHeight] = useState<string>('0px')
+  const [bgLineHeight, setBgLineHeight] = useState<string>('0px')
+  const stageRefs = useRef<(HTMLDivElement | null)[]>([])
+  const containerRef = useRef<HTMLDivElement>(null)
   
   const handleStageToggle = (stageId: string) => {
     setExpandedStages(prev => 
@@ -41,8 +45,70 @@ export default function ShipmentTimeline({
     if (inProgressIndex !== -1) return inProgressIndex
     
     const lastCompletedIndex = stages.findLastIndex(s => s.status === 'completed')
-    return lastCompletedIndex
+    return lastCompletedIndex !== -1 ? lastCompletedIndex : -1
   }
+  
+  // Calculate line heights based on actual DOM positions
+  useEffect(() => {
+    const updateLineHeights = () => {
+      if (!containerRef.current) return
+      
+      const containerTop = containerRef.current.getBoundingClientRect().top
+      const currentIndex = getCurrentStageIndex()
+      
+      // Calculate background line height (to last stage)
+      if (stages.length > 0 && stageRefs.current[stages.length - 1]) {
+        const lastStageEl = stageRefs.current[stages.length - 1]
+        if (lastStageEl) {
+          const lastStageTop = lastStageEl.getBoundingClientRect().top
+          const height = lastStageTop - containerTop + 24 // Add icon center offset
+          setBgLineHeight(`${height}px`)
+        }
+      }
+      
+      // Calculate active line height
+      if (currentIndex >= 0 && stageRefs.current[currentIndex]) {
+        const currentStageEl = stageRefs.current[currentIndex]
+        if (currentStageEl) {
+          const currentStageTop = currentStageEl.getBoundingClientRect().top
+          let height = currentStageTop - containerTop + 24 // Base height to icon center
+          
+          // Add progress-based extension for in-progress stages
+          const currentStage = stages[currentIndex]
+          if (currentStage?.status === 'in-progress' && currentStage.progress) {
+            // Try to get next stage position for accurate progress
+            if (currentIndex < stages.length - 1 && stageRefs.current[currentIndex + 1]) {
+              const nextStageEl = stageRefs.current[currentIndex + 1]
+              if (nextStageEl) {
+                const nextStageTop = nextStageEl.getBoundingClientRect().top
+                const stageDistance = nextStageTop - currentStageTop
+                height += (currentStage.progress / 100) * stageDistance
+              }
+            } else {
+              // Fallback if no next stage
+              height += (currentStage.progress / 100) * 100
+            }
+          }
+          
+          setLineHeight(`${height}px`)
+        }
+      } else {
+        setLineHeight('0px')
+      }
+    }
+    
+    // Update on mount and when stages change
+    updateLineHeights()
+    // Add a small delay to ensure DOM is fully rendered
+    const timer = setTimeout(updateLineHeights, 100)
+    
+    // Update on window resize
+    window.addEventListener('resize', updateLineHeights)
+    return () => {
+      window.removeEventListener('resize', updateLineHeights)
+      clearTimeout(timer)
+    }
+  }, [stages, expandedStages])
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -100,30 +166,41 @@ export default function ShipmentTimeline({
       </div>
 
       {/* Timeline */}
-      <div className="relative">
-        {/* Connecting Line */}
-        <div className="absolute left-6 top-12 bottom-0 w-0.5 bg-gray-200"></div>
-        
-        {/* Active Line */}
+      <div className="relative" ref={containerRef}>
+        {/* Connecting Line - Full height background line */}
         <div 
-          className="absolute left-6 top-12 w-0.5 bg-gradient-to-b from-green-500 to-blue-500 transition-all duration-500"
+          className="absolute left-6 top-12 w-0.5 bg-gray-200"
           style={{ 
-            height: `${getCurrentStageIndex() * 120 + 50}px`
+            height: bgLineHeight
+          }}
+        ></div>
+        
+        {/* Active Line - Progress indicator */}
+        <div 
+          className="absolute left-6 top-12 w-0.5 bg-gradient-to-b from-green-500 to-blue-500 transition-all duration-500 z-10"
+          style={{ 
+            height: lineHeight
           }}
         ></div>
         
         {/* Stages */}
         <div className="space-y-6">
           {stages.map((stage, index) => (
-            <TimelineStage
-              key={stage.id}
-              stage={stage}
-              index={index}
-              isExpanded={expandedStages.includes(stage.id)}
-              onToggle={() => handleStageToggle(stage.id)}
-              onTaskUpdate={(taskId) => onTaskUpdate?.(stage.id, taskId)}
-              isLast={index === stages.length - 1}
-            />
+            <div 
+              key={stage.id} 
+              ref={el => {
+                stageRefs.current[index] = el
+              }}
+            >
+              <TimelineStage
+                stage={stage}
+                index={index}
+                isExpanded={expandedStages.includes(stage.id)}
+                onToggle={() => handleStageToggle(stage.id)}
+                onTaskUpdate={(taskId) => onTaskUpdate?.(stage.id, taskId)}
+                isLast={index === stages.length - 1}
+              />
+            </div>
           ))}
         </div>
       </div>

@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { StatusBadge } from '@/components/ui/status-badge'
+import { StatCard } from '@/components/ui/stat-card'
 import type { AuctionBid, BidStatus, BidStatistics } from './types'
 
 // Mock data for demonstration
@@ -263,150 +264,45 @@ export default function MyBidsPage() {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {/* Total Bids Card */}
-        <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
-          {/* Glassmorphism background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
-          <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 via-transparent to-indigo-500/5"></div>
-          
-          {/* Border gradient */}
-          <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-blue-500/20 via-gray-200/30 to-indigo-500/20">
-            <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
-          </div>
-          
-          {/* Animated glow effect */}
-          <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl group-hover:bg-blue-500/30 transition-all duration-700"></div>
-          
-          <CardContent className="relative z-10 flex flex-col justify-center h-full p-4">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-2">
-              <div className="p-1.5 bg-gradient-to-br from-blue-500/20 to-indigo-500/10 rounded-lg backdrop-blur-sm border border-blue-500/10">
-                <svg className="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-              </div>
-            </div>
-            
-            {/* Content */}
-            <div>
-              <p className="text-xs font-semibold font-heading text-gray-600 uppercase tracking-wider mb-0.5">Total Bids</p>
-              <p className="text-2xl font-bold font-stats bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{statistics.totalBids}</p>
-              <p className="text-xs text-gray-500 mt-0.5">All time</p>
-            </div>
-          </CardContent>
-        </Card>
+        <StatCard
+          title="Total Bids"
+          value={statistics.totalBids.toString()}
+          subtitle="All time"
+          variant="blue"
+          className="min-h-[140px]"
+        />
 
         {/* Vehicles Won Card */}
-        <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
-          {/* Glassmorphism background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
-          <div className="absolute inset-0 bg-gradient-to-tr from-green-500/5 via-transparent to-emerald-500/5"></div>
-          
-          {/* Border gradient */}
-          <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-green-500/20 via-gray-200/30 to-emerald-500/20">
-            <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
-          </div>
-          
-          {/* Animated glow effect */}
-          <div className="absolute -top-20 -left-20 w-40 h-40 bg-green-500/20 rounded-full blur-3xl group-hover:bg-green-500/30 transition-all duration-700"></div>
-          
-          <CardContent className="relative z-10 flex flex-col justify-center h-full p-4">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-2">
-              <div className="p-1.5 bg-gradient-to-br from-green-500/20 to-emerald-500/10 rounded-lg backdrop-blur-sm border border-green-500/10">
-                <svg className="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <span className="px-2 py-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-full text-xs font-semibold text-green-700 flex items-center gap-1 border border-green-500/20">
-                {statistics.inTransitVehicles} Transit
-              </span>
-            </div>
-            
-            {/* Content */}
-            <div>
-              <p className="text-xs font-semibold font-heading text-gray-600 uppercase tracking-wider mb-0.5">Vehicles Won</p>
-              <p className="text-2xl font-bold font-stats bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{statistics.wonAuctions}</p>
-              <p className="text-xs text-gray-500 mt-0.5">Successfully won</p>
-            </div>
-          </CardContent>
-        </Card>
+        <StatCard
+          title="Vehicles Won"
+          value={statistics.wonAuctions.toString()}
+          subtitle="Successfully won"
+          badge={{ label: `${statistics.inTransitVehicles} Transit`, variant: 'secondary' }}
+          variant="green"
+          className="min-h-[140px]"
+        />
 
         {/* Active Auctions Card */}
-        <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
-          {/* Glassmorphism background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
-          <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/5 via-transparent to-yellow-500/5"></div>
-          
-          {/* Border gradient */}
-          <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-amber-500/20 via-gray-200/30 to-yellow-500/20">
-            <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
-          </div>
-          
-          {/* Animated glow effect */}
-          <div className="absolute -top-20 -right-20 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl group-hover:bg-amber-500/30 transition-all duration-700"></div>
-          
-          <CardContent className="relative z-10 flex flex-col justify-center h-full p-4">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-2">
-              <div className="p-1.5 bg-gradient-to-br from-amber-500/20 to-yellow-500/10 rounded-lg backdrop-blur-sm border border-amber-500/10">
-                <svg className="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <span className="px-2 py-1 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 backdrop-blur-sm rounded-full text-xs font-semibold text-amber-700 flex items-center gap-1 border border-amber-500/20">
-                <span className="w-2 h-2 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full animate-pulse shadow-lg shadow-amber-500/50"></span>
-                Live
-              </span>
-            </div>
-            
-            {/* Content */}
-            <div>
-              <p className="text-xs font-semibold font-heading text-gray-600 uppercase tracking-wider mb-0.5">Active Auctions</p>
-              <p className="text-2xl font-bold font-stats bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{statistics.activeBids + statistics.outbidCount}</p>
-              <p className="text-xs text-gray-500 mt-0.5">{statistics.activeBids} leading</p>
-            </div>
-          </CardContent>
-        </Card>
+        <StatCard
+          title="Active Auctions"
+          value={(statistics.activeBids + statistics.outbidCount).toString()}
+          subtitle={`${statistics.activeBids} leading`}
+          badge={{ label: 'Live', variant: 'warning' }}
+          variant="yellow"
+          className="min-h-[140px]"
+        />
 
         {/* Average Bid Card */}
-        <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
-          {/* Glassmorphism background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
-          <div className="absolute inset-0 bg-gradient-to-tr from-[#FA7921]/5 via-transparent to-[#FF9A56]/5"></div>
-          
-          {/* Border gradient */}
-          <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-[#FA7921]/20 via-gray-200/30 to-[#FF9A56]/20">
-            <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
-          </div>
-          
-          {/* Animated glow effect */}
-          <div className="absolute -top-20 -left-20 w-40 h-40 bg-[#FA7921]/20 rounded-full blur-3xl group-hover:bg-[#FA7921]/30 transition-all duration-700"></div>
-          
-          <CardContent className="relative z-10 flex flex-col justify-center h-full p-4">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-2">
-              <div className="p-1.5 bg-gradient-to-br from-[#FA7921]/20 to-[#FF9A56]/10 rounded-lg backdrop-blur-sm border border-[#FA7921]/10">
-                <svg className="w-3.5 h-3.5 text-[#FA7921]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                </svg>
-              </div>
-              {statistics.pendingPayments > 0 && (
-                <span className="px-2 py-1 bg-gradient-to-r from-[#FA7921]/20 to-[#FF9A56]/20 backdrop-blur-sm rounded-full text-xs font-semibold text-[#FA7921] border border-[#FA7921]/20">
-                  {statistics.pendingPayments} Pending
-                </span>
-              )}
-            </div>
-            
-            {/* Content */}
-            <div>
-              <p className="text-xs font-semibold font-heading text-gray-600 uppercase tracking-wider mb-0.5">Avg Bid Amount</p>
-              <p className="text-2xl font-bold font-stats bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">¥{(statistics.avgBidAmount / 1000000).toFixed(1)}M</p>
-              <p className="text-xs text-gray-500 mt-0.5">Per vehicle</p>
-            </div>
-          </CardContent>
-        </Card>
+        <StatCard
+          title="Avg Bid Amount"
+          value={`¥${(statistics.avgBidAmount / 1000000).toFixed(1)}M`}
+          subtitle="Per vehicle"
+          badge={statistics.pendingPayments > 0 ? { label: `${statistics.pendingPayments} Pending`, variant: 'secondary' } : undefined}
+          variant="orange"
+          className="min-h-[140px]"
+        />
       </div>
 
       {/* Filters and Search */}
@@ -415,20 +311,18 @@ export default function MyBidsPage() {
           {/* Tabs */}
           <div className="flex gap-2">
             {(['active', 'previous', 'won'] as const).map((tab) => (
-              <button
+              <Button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  activeTab === tab
-                    ? 'bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white shadow-md'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
+                variant={activeTab === tab ? 'primary' : 'secondary'}
+                size="sm"
+                className={activeTab === tab ? 'shadow-md' : ''}
               >
                 {tab === 'previous' ? 'Previous' : tab.charAt(0).toUpperCase() + tab.slice(1)}
                 {tab === 'active' && <span className="ml-1.5">({mockBids.filter(b => b.status === 'active' || b.status === 'outbid').length})</span>}
                 {tab === 'previous' && <span className="ml-1.5">({mockBids.filter(b => b.status === 'lost').length})</span>}
                 {tab === 'won' && <span className="ml-1.5">({mockBids.filter(b => b.status === 'won').length})</span>}
-              </button>
+              </Button>
             ))}
           </div>
 
@@ -607,9 +501,9 @@ export default function MyBidsPage() {
                             Payment Completed
                           </span>
                         ) : (
-                          <button className="px-4 py-2 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all">
+                          <Button variant="primary" size="sm">
                             Complete Payment
-                          </button>
+                          </Button>
                         )}
                         {bid.shippingStatus && (
                           <span className="inline-flex items-center px-3 py-1 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">
@@ -625,9 +519,9 @@ export default function MyBidsPage() {
                     )}
                       {(bid.status === 'active' || bid.status === 'outbid') && (
                       <>
-                        <button className="px-4 py-2 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all">
+                        <Button variant="primary" size="sm">
                           {bid.status === 'outbid' ? 'Increase Bid' : 'View Auction'}
-                        </button>
+                        </Button>
                         <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
                           Auction Details
                         </button>

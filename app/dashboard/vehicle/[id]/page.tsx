@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 
 // Icons
@@ -22,7 +23,8 @@ import {
   ArrowLeft, Clock, ZoomIn, Grid3x3, Eye,
   ChevronLeft, ChevronRight, Check, Share2,
   Mail, AlertCircle, CheckCircle, Loader2,
-  ExternalLink, Heart
+  ExternalLink, Heart,
+  ChevronDown, Plus
 } from 'lucide-react'
 
 // TypeScript interfaces (same as before)
@@ -97,7 +99,15 @@ export default function VehiclePageShadcn() {
   const [isSubmittingBid, setIsSubmittingBid] = useState(false)
   const [bidHistory, setBidHistory] = useState<BidData[]>([])
   const [timeRemaining, setTimeRemaining] = useState('')
-  const [isFavorite, setIsFavorite] = useState(false)
+  const [selectedList, setSelectedList] = useState<string>('')
+  const [favoritesList] = useState([
+    { id: 'all', name: 'All', count: 6, max: 100 },
+    { id: 'A', name: 'List A', count: 3, max: 20 },
+    { id: 'B', name: 'List B', count: 2, max: 20 },
+    { id: 'C', name: 'List C', count: 1, max: 20 },
+    { id: 'D', name: 'List D', count: 0, max: 20 },
+    { id: 'E', name: 'List E', count: 0, max: 20 },
+  ])
   
   // Tab state - only details tab now
   
@@ -424,24 +434,79 @@ export default function VehiclePageShadcn() {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              {/* Add to Favorites Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    size="default"
+                    className={`flex items-center gap-2 px-4 py-2 font-medium shadow-sm ${
+                      selectedList 
+                        ? "bg-[#FA7921] text-white border-2 border-[#FA7921] hover:bg-[#FA7921]/90" 
+                        : "bg-white text-gray-900 border-2 border-gray-300 hover:border-[#FA7921] hover:bg-[#FA7921]/5"
+                    }`}
+                  >
+                    <Heart className={`h-5 w-5 ${selectedList ? 'fill-white' : ''}`} />
+                    <span className="font-medium">{selectedList ? `In ${selectedList === 'all' ? 'All' : `List ${selectedList}`}` : 'Add to Favorites'}</span>
+                    <ChevronDown className="h-4 w-4 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="px-2 py-1.5 text-sm font-semibold text-gray-900">Select a List</div>
+                  <DropdownMenuSeparator />
+                  {favoritesList.map((list) => (
+                    <DropdownMenuItem
+                      key={list.id}
+                      onClick={() => {
+                        if (selectedList === list.id) {
+                          setSelectedList('')
+                          alert(`Removed from ${list.name}`)
+                        } else {
+                          setSelectedList(list.id)
+                          alert(`Added to ${list.name}`)
+                        }
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2">
+                          {selectedList === list.id && <Check className="h-4 w-4 text-[#FA7921]" />}
+                          <span className={selectedList === list.id ? 'font-semibold text-[#FA7921]' : ''}>
+                            {list.name}
+                          </span>
+                        </div>
+                        <span className="text-xs text-gray-500">
+                          {list.count}/{list.max}
+                        </span>
+                      </div>
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => window.location.href = '/dashboard/favorites'}>
+                    <div className="flex items-center gap-2 text-[#FA7921]">
+                      <Plus className="h-4 w-4" />
+                      <span>Manage Lists</span>
+                    </div>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Share Button - More Visible */}
               <Button 
-                variant="outline" 
-                className={`border-gray-300 ${isFavorite ? 'bg-red-50 border-red-300 text-red-600 hover:bg-red-100' : ''}`}
+                size="default"
+                className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-[#FA7921] text-[#FA7921] font-medium shadow-sm hover:bg-[#FA7921] hover:text-white transition-all duration-200"
                 onClick={() => {
-                  setIsFavorite(!isFavorite)
-                  if (!isFavorite) {
-                    alert('Added to favorites!')
-                  } else {
-                    alert('Removed from favorites!')
-                  }
+                  navigator.clipboard.writeText(window.location.href)
+                  
+                  // Show a better notification
+                  const notification = document.createElement('div')
+                  notification.className = 'fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-slide-in'
+                  notification.textContent = '✓ Link copied to clipboard!'
+                  document.body.appendChild(notification)
+                  setTimeout(() => notification.remove(), 3000)
                 }}
               >
-                <Heart className={`h-4 w-4 mr-2 ${isFavorite ? 'fill-current' : ''}`} />
-                {isFavorite ? 'Favorited' : 'Add to Favorites'}
-              </Button>
-              <Button variant="outline" className="border-gray-300">
-                <Share2 className="h-4 w-4 mr-2" />
-                Share
+                <Share2 className="h-5 w-5" />
+                <span className="font-medium">Share</span>
               </Button>
             </div>
           </div>
@@ -579,21 +644,6 @@ export default function VehiclePageShadcn() {
                   </div>
                 </ScrollArea>
 
-                {/* Image Categories */}
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Button variant="outline" size="sm">
-                    Exterior (4)
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    Interior (2)
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    Engine (1)
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    Details (1)
-                  </Button>
-                </div>
               </CardContent>
             </Card>
 
@@ -750,7 +800,6 @@ export default function VehiclePageShadcn() {
                 <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                   {[
                     { label: 'Chassis Number', value: vehicleData.chassisNumber },
-                    { label: 'Engine Number', value: vehicleData.engineNumber },
                     { label: 'Registration Date', value: vehicleData.registrationDate },
                     { label: 'Inspection Valid Until', value: vehicleData.inspectionDate },
                     { label: 'Model Year', value: vehicleData.year },
@@ -974,15 +1023,14 @@ export default function VehiclePageShadcn() {
 
             {/* Services Section - Combined Inspection & Translation */}
             <Card className="bg-white border border-gray-200">
-              <CardHeader>
-                <CardTitle>Vehicle Services</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-6 space-y-4">
                 {/* Inspection */}
-                <div className="pb-4 border-b border-gray-100">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-sm font-semibold text-gray-900">Vehicle Inspection</h4>
-                    <Badge variant="outline" className="text-xs">¥3,000</Badge>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-semibold text-gray-900">Vehicle Inspection</h4>
+                    <span className="px-3 py-1 bg-[#FA7921]/10 text-[#FA7921] rounded-full text-sm font-semibold">
+                      ¥3,000
+                    </span>
                   </div>
                   
                   {inspectionStatus === 'completed' && (
@@ -1075,10 +1123,12 @@ export default function VehiclePageShadcn() {
                 </div>
 
                 {/* Translation */}
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-sm font-semibold text-gray-900">Sheet Translation</h4>
-                    <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">FREE</Badge>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-semibold text-gray-900">Sheet Translation</h4>
+                    <span className="px-3 py-1 bg-green-500/10 text-green-600 rounded-full text-sm font-semibold">
+                      FREE
+                    </span>
                   </div>
                   
                   {translationStatus === 'translated' && (

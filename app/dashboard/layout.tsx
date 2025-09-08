@@ -508,9 +508,9 @@ function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
+              <li><Link href="/dashboard/auction-calendar" className="text-sm hover:text-[#FA7921] transition-colors">Auction Calendar</Link></li>
               <li><Link href="/dashboard/auctions" className="text-sm hover:text-[#FA7921] transition-colors">Browse Auctions</Link></li>
               <li><Link href="/dashboard/search" className="text-sm hover:text-[#FA7921] transition-colors">Search Vehicles</Link></li>
-              <li><Link href="/dashboard/bids" className="text-sm hover:text-[#FA7921] transition-colors">My Bids</Link></li>
               <li><Link href="/dashboard/vehicles" className="text-sm hover:text-[#FA7921] transition-colors">My Vehicles</Link></li>
               <li><Link href="/dashboard/support" className="text-sm hover:text-[#FA7921] transition-colors">Support & FAQ</Link></li>
             </ul>
@@ -535,9 +535,9 @@ function Footer() {
               © {new Date().getFullYear()} Zervtek. All rights reserved.
             </p>
             <div className="flex gap-6 mt-4 sm:mt-0">
-              <a href="#" className="text-sm text-gray-400 hover:text-[#FA7921] transition-colors">Terms</a>
-              <a href="#" className="text-sm text-gray-400 hover:text-[#FA7921] transition-colors">Privacy</a>
-              <a href="#" className="text-sm text-gray-400 hover:text-[#FA7921] transition-colors">Cookies</a>
+              <Link href="/dashboard/terms" className="text-sm text-gray-400 hover:text-[#FA7921] transition-colors">Terms</Link>
+              <Link href="/dashboard/privacy" className="text-sm text-gray-400 hover:text-[#FA7921] transition-colors">Privacy</Link>
+              <Link href="/dashboard/cookies" className="text-sm text-gray-400 hover:text-[#FA7921] transition-colors">Cookies</Link>
             </div>
           </div>
         </div>

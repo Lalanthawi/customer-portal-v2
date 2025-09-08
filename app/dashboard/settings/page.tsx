@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('general')
@@ -129,21 +130,15 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="flex gap-3 pt-4 border-t border-gray-100">
-                  <button
-                    type="submit"
-                    className="px-6 py-3 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02] flex items-center gap-2"
-                  >
+                  <Button type="submit" variant="primary">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     Save Changes
-                  </button>
-                  <button
-                    type="button"
-                    className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
-                  >
+                  </Button>
+                  <Button type="button" variant="secondary">
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>
@@ -225,12 +220,12 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="flex gap-3 pt-4 border-t border-gray-100">
-                  <button className="px-6 py-3 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02] flex items-center gap-2">
+                  <Button variant="primary">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     Save Privacy Settings
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -248,7 +243,11 @@ export default function SettingsPage() {
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">Data Management</h3>
                     <p className="text-sm text-gray-700 mb-4">Download or delete your personal data</p>
                     <div className="space-y-3">
-                      <button className="w-full text-left px-4 py-3 bg-white/70 backdrop-blur rounded-xl hover:bg-white transition-colors flex items-center justify-between group border border-blue-100">
+                      <Button 
+                        variant="glass" 
+                        fullWidth 
+                        className="justify-between text-left px-4 py-3 h-auto border-blue-100"
+                      >
                         <div className="flex items-center gap-3">
                           <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
@@ -258,10 +257,10 @@ export default function SettingsPage() {
                             <p className="text-xs text-gray-500">Get a copy of all your information</p>
                           </div>
                         </div>
-                        <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -368,21 +367,15 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="flex gap-3 pt-4 border-t border-gray-100">
-                  <button
-                    type="submit"
-                    className="px-6 py-3 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02] flex items-center gap-2"
-                  >
+                  <Button type="submit" variant="primary">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     Save Preferences
-                  </button>
-                  <button
-                    type="button"
-                    className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
-                  >
+                  </Button>
+                  <Button type="button" variant="secondary">
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>
@@ -430,21 +423,16 @@ export default function SettingsPage() {
               }
             }
             return (
-              <button
+              <Button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`
-                  flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all
-                  ${isActive
-                    ? 'bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white shadow-md'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }
-                `}
+                variant={isActive ? 'primary' : 'ghost'}
+                className={isActive ? 'shadow-md' : ''}
                 aria-current={isActive ? 'page' : undefined}
               >
                 {getIcon()}
                 <span>{tab.label}</span>
-              </button>
+              </Button>
             )
           })}
         </nav>

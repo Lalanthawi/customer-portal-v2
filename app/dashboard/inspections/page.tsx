@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Card, CardContent } from '@/components/ui/card'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
+import { StatCard } from '@/components/ui/stat-card'
 import { sharedDataStore, InspectionData, InspectionStatus } from '../utils/sharedData'
 
 // Types
@@ -250,146 +250,41 @@ export default function InspectionsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {/* Total Inspections Card */}
-          <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
-            {/* Glassmorphism background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
-            <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/5 via-transparent to-indigo-500/5"></div>
-            
-            {/* Border gradient */}
-            <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-purple-500/20 via-gray-200/30 to-indigo-500/20">
-              <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
-            </div>
-            
-            {/* Animated glow effect */}
-            <div className="absolute -top-20 -right-20 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl group-hover:bg-purple-500/30 transition-all duration-700"></div>
-            
-            <CardContent className="relative z-10 flex flex-col justify-center h-full p-4">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-1.5 bg-gradient-to-br from-purple-500/20 to-indigo-500/10 rounded-lg backdrop-blur-sm border border-purple-500/10">
-                  <svg className="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                  </svg>
-                </div>
-              </div>
-              
-              {/* Content */}
-              <div>
-                <p className="text-xs font-semibold font-heading text-gray-600 uppercase tracking-wider mb-0.5">Total Inspections</p>
-                <p className="text-2xl font-bold font-stats bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{mockInspections.length + inspections.length}</p>
-                <p className="text-xs text-gray-500 mt-0.5">All time</p>
-              </div>
-            </CardContent>
-          </Card>
+          <StatCard
+            title="Total Inspections"
+            value={(mockInspections.length + inspections.length).toString()}
+            subtitle="All time"
+            variant="purple"
+            className="min-h-[140px]"
+          />
 
           {/* Completed Card */}
-          <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
-            {/* Glassmorphism background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
-            <div className="absolute inset-0 bg-gradient-to-tr from-green-500/5 via-transparent to-emerald-500/5"></div>
-            
-            {/* Border gradient */}
-            <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-green-500/20 via-gray-200/30 to-emerald-500/20">
-              <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
-            </div>
-            
-            {/* Animated glow effect */}
-            <div className="absolute -top-20 -left-20 w-40 h-40 bg-green-500/20 rounded-full blur-3xl group-hover:bg-green-500/30 transition-all duration-700"></div>
-            
-            <CardContent className="relative z-10 flex flex-col justify-center h-full p-4">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-1.5 bg-gradient-to-br from-green-500/20 to-emerald-500/10 rounded-lg backdrop-blur-sm border border-green-500/10">
-                  <svg className="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
-              
-              {/* Content */}
-              <div>
-                <p className="text-xs font-semibold font-heading text-gray-600 uppercase tracking-wider mb-0.5">Completed</p>
-                <p className="text-2xl font-bold font-stats bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                  {mockInspections.filter(i => i.status === 'completed').length + inspections.filter(i => i.status === 'completed').length}
-                </p>
-                <p className="text-xs text-gray-500 mt-0.5">Ready to view</p>
-              </div>
-            </CardContent>
-          </Card>
+          <StatCard
+            title="Completed"
+            value={(mockInspections.filter(i => i.status === 'completed').length + inspections.filter(i => i.status === 'completed').length).toString()}
+            subtitle="Ready to view"
+            variant="green"
+            className="min-h-[140px]"
+          />
 
           {/* In Progress Card */}
-          <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
-            {/* Glassmorphism background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 via-transparent to-cyan-500/5"></div>
-            
-            {/* Border gradient */}
-            <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-blue-500/20 via-gray-200/30 to-cyan-500/20">
-              <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
-            </div>
-            
-            {/* Animated glow effect */}
-            <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl group-hover:bg-blue-500/30 transition-all duration-700"></div>
-            
-            <CardContent className="relative z-10 flex flex-col justify-center h-full p-4">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-1.5 bg-gradient-to-br from-blue-500/20 to-cyan-500/10 rounded-lg backdrop-blur-sm border border-blue-500/10">
-                  <svg className="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <span className="px-2 py-1 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 backdrop-blur-sm rounded-full text-xs font-semibold text-blue-700 flex items-center gap-1 border border-blue-500/20">
-                  <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full animate-pulse shadow-lg shadow-blue-500/50"></span>
-                  Active
-                </span>
-              </div>
-              
-              {/* Content */}
-              <div>
-                <p className="text-xs font-semibold font-heading text-gray-600 uppercase tracking-wider mb-0.5">In Progress</p>
-                <p className="text-2xl font-bold font-stats bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                  {mockInspections.filter(i => i.status === 'processing').length + inspections.filter(i => i.status === 'processing').length}
-                </p>
-                <p className="text-xs text-gray-500 mt-0.5">Being processed</p>
-              </div>
-            </CardContent>
-          </Card>
+          <StatCard
+            title="In Progress"
+            value={(mockInspections.filter(i => i.status === 'processing').length + inspections.filter(i => i.status === 'processing').length).toString()}
+            subtitle="Being processed"
+            badge={{ label: 'Active', variant: 'info' }}
+            variant="blue"
+            className="min-h-[140px]"
+          />
 
           {/* Pending Card */}
-          <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
-            {/* Glassmorphism background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
-            <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/5 via-transparent to-yellow-500/5"></div>
-            
-            {/* Border gradient */}
-            <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-amber-500/20 via-gray-200/30 to-yellow-500/20">
-              <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
-            </div>
-            
-            {/* Animated glow effect */}
-            <div className="absolute -top-20 -left-20 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl group-hover:bg-amber-500/30 transition-all duration-700"></div>
-            
-            <CardContent className="relative z-10 flex flex-col justify-center h-full p-4">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-1.5 bg-gradient-to-br from-amber-500/20 to-yellow-500/10 rounded-lg backdrop-blur-sm border border-amber-500/10">
-                  <svg className="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
-              
-              {/* Content */}
-              <div>
-                <p className="text-xs font-semibold font-heading text-gray-600 uppercase tracking-wider mb-0.5">Pending</p>
-                <p className="text-2xl font-bold font-stats bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                  {mockInspections.filter(i => i.status === 'requested').length + inspections.filter(i => i.status === 'requested').length}
-                </p>
-                <p className="text-xs text-gray-500 mt-0.5">Awaiting action</p>
-              </div>
-            </CardContent>
-          </Card>
+          <StatCard
+            title="Pending"
+            value={(mockInspections.filter(i => i.status === 'requested').length + inspections.filter(i => i.status === 'requested').length).toString()}
+            subtitle="Awaiting action"
+            variant="yellow"
+            className="min-h-[140px]"
+          />
         </div>
 
         {/* Filter Tabs */}

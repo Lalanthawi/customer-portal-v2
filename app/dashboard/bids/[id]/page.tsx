@@ -64,11 +64,6 @@ export default function BidDetailPage() {
   const [selectedPort, setSelectedPort] = useState('')
   const [vehicleStatus, setVehicleStatus] = useState<'normal' | 'repair'>('normal')
   const [repairRemarks, setRepairRemarks] = useState('')
-  const [billOfLadingUploaded, setBillOfLadingUploaded] = useState(false)
-  const [isShipped, setIsShipped] = useState(false)
-  const [deliveryPhotosUploaded, setDeliveryPhotosUploaded] = useState(false)
-  const [estimatedArrivalDate] = useState(new Date('2024-02-20T17:00:00'))
-  const [isDelivered, setIsDelivered] = useState(false)
   const [defaultAddress] = useState({
     name: 'John Doe',
     street: '1-2-3 Shibuya',
@@ -291,19 +286,9 @@ export default function BidDetailPage() {
           id: 'prep-4',
           title: 'Export Documents',
           status: 'pending',
-          description: billOfLadingUploaded ? 'Bill of Lading uploaded - Documents ready' : 'Awaiting document upload by staff',
+          description: 'Awaiting document upload by staff',
           dueDate: new Date('2024-01-22T16:00:00'),
-          note: billOfLadingUploaded ? 'Bill of Lading and other export documents are available' : 'Documents will be available once uploaded by staff',
-          actions: isShipped && billOfLadingUploaded ? [
-            {
-              label: 'Check Documents',
-              icon: 'document' as const,
-              onClick: () => {
-                // Navigate to documents page
-                router.push(`/dashboard/documents/${bidId}`)
-              }
-            }
-          ] : undefined
+          note: 'Documents will be available once uploaded by staff'
         }
       ]
     },
@@ -337,47 +322,43 @@ export default function BidDetailPage() {
     {
       id: 'delivered',
       title: 'Delivered',
-      description: deliveryPhotosUploaded 
-        ? 'Vehicle successfully delivered' 
-        : 'Final delivery to customer',
-      status: deliveryPhotosUploaded ? 'completed' : 'pending',
-      progress: deliveryPhotosUploaded ? 100 : 0,
-      tasksCompleted: deliveryPhotosUploaded ? 2 : 0,
+      description: 'Final delivery to customer',
+      status: 'pending',
+      progress: 0,
+      tasksCompleted: 0,
       totalTasks: 2,
       estimatedDate: new Date('2024-02-20T17:00:00'),
-      completedDate: deliveryPhotosUploaded ? new Date() : undefined,
+      completedDate: undefined,
       isExpandable: true,
       details: [
         {
           id: 'delivery-1',
           title: 'Port Entry',
-          status: deliveryPhotosUploaded ? 'completed' : 'pending',
+          status: 'pending',
           description: 'Vehicle arrived at destination port',
-          completedDate: deliveryPhotosUploaded ? new Date('2024-02-15T17:00:00') : undefined,
-          dueDate: !deliveryPhotosUploaded ? new Date('2024-02-15T17:00:00') : undefined
+          completedDate: undefined,
+          dueDate: new Date('2024-02-15T17:00:00')
         },
         {
           id: 'delivery-2',
           title: 'Final Delivery',
-          status: deliveryPhotosUploaded ? 'completed' : 'pending',
-          description: deliveryPhotosUploaded 
-            ? 'Delivery confirmed with photos' 
-            : 'Vehicle ready for customer pickup',
-          completedDate: deliveryPhotosUploaded ? new Date() : undefined,
-          dueDate: !deliveryPhotosUploaded ? new Date('2024-02-20T17:00:00') : undefined,
-          actions: !deliveryPhotosUploaded ? [
+          status: 'pending',
+          description: 'Vehicle ready for customer pickup',
+          completedDate: undefined,
+          dueDate: new Date('2024-02-20T17:00:00'),
+          actions: [
             {
               label: 'Confirm Received',
               icon: 'check' as const,
               onClick: () => {
                 const confirmed = confirm('Confirm that you have received the vehicle?')
                 if (confirmed) {
-                  setDeliveryPhotosUploaded(true)
+                  // Handle delivery confirmation
                   alert('Thank you for confirming delivery!')
                 }
               }
             }
-          ] : undefined
+          ]
         }
       ]
     }
@@ -713,51 +694,6 @@ export default function BidDetailPage() {
             )}
 
 
-            {/* Demo Controls for Testing */}
-            <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <p className="text-sm font-semibold text-yellow-800 mb-2">Demo Controls (Remove in Production)</p>
-              <div className="flex gap-3 flex-wrap">
-                <button
-                  onClick={() => setIsShipped(!isShipped)}
-                  className={`px-4 py-2 rounded text-sm font-medium ${
-                    isShipped ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700'
-                  }`}
-                >
-                  {isShipped ? '✓ Shipped' : 'Mark as Shipped'}
-                </button>
-                <button
-                  onClick={() => setBillOfLadingUploaded(!billOfLadingUploaded)}
-                  className={`px-4 py-2 rounded text-sm font-medium ${
-                    billOfLadingUploaded ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700'
-                  }`}
-                >
-                  {billOfLadingUploaded ? '✓ Bill of Lading Uploaded' : 'Upload Bill of Lading'}
-                </button>
-                <button
-                  onClick={() => setIsDelivered(!isDelivered)}
-                  className={`px-4 py-2 rounded text-sm font-medium ${
-                    isDelivered ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
-                  }`}
-                >
-                  {isDelivered ? '✓ Delivered' : 'Mark as Delivered'}
-                </button>
-                <button
-                  onClick={() => setDeliveryPhotosUploaded(!deliveryPhotosUploaded)}
-                  disabled={!isDelivered}
-                  className={`px-4 py-2 rounded text-sm font-medium ${
-                    deliveryPhotosUploaded ? 'bg-green-600 text-white' : 
-                    !isDelivered ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-700'
-                  }`}
-                >
-                  {deliveryPhotosUploaded ? '✓ Photos Uploaded' : 'Upload Delivery Photos'}
-                </button>
-              </div>
-              <p className="text-xs text-yellow-700 mt-2">
-                • &quot;Check Documents&quot; appears when shipped + bill of lading uploaded<br/>
-                • &quot;Upload Delivery Photos&quot; appears when vehicle is delivered<br/>
-                • Auto-completes 3 months after estimated arrival ({estimatedArrivalDate.toLocaleDateString()})
-              </p>
-            </div>
 
             {/* Print Label / QR Code Section */}
             <div className="mb-4 p-4 bg-white border border-gray-200 rounded-lg">

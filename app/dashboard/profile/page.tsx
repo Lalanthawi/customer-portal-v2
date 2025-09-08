@@ -3,6 +3,7 @@
 import { useState, useRef, ChangeEvent, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
+import { Button } from '@/components/ui/button'
 import type { ProfileTab, UserProfileData, PasswordData, Device, NotificationSettings, PaymentMethod } from './types'
 import TwoFactorAuth from '../components/TwoFactorAuth'
 import AddAddressModal from '../components/AddAddressModal'
@@ -270,23 +271,21 @@ function ProfileSettingsContent() {
                         onChange={handleImageUpload}
                         className="hidden"
                       />
-                      <button
+                      <Button
                         onClick={() => fileInputRef.current?.click()}
-                        className="px-5 py-2.5 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02]"
+                        variant="primary"
                       >
-                        <span className="flex items-center justify-center gap-2">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                          </svg>
-                          Upload Photo
-                        </span>
-                      </button>
-                      <button
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        Upload Photo
+                      </Button>
+                      <Button
                         onClick={() => setProfileImage(null)}
-                        className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+                        variant="secondary"
                       >
                         Remove
-                      </button>
+                      </Button>
                     </div>
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                       <p className="text-xs text-blue-700 flex items-start gap-2">
@@ -409,21 +408,15 @@ function ProfileSettingsContent() {
                 </div>
 
                 <div className="flex gap-3 pt-4 border-t border-gray-100">
-                  <button
-                    type="submit"
-                    className="px-6 py-3 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02] flex items-center gap-2"
-                  >
+                  <Button type="submit" variant="primary">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     Save Changes
-                  </button>
-                  <button
-                    type="button"
-                    className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
-                  >
+                  </Button>
+                  <Button type="button" variant="secondary">
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>
@@ -458,15 +451,15 @@ function ProfileSettingsContent() {
                           I understand that my account will be permanently deleted and cannot be recovered
                         </span>
                       </label>
-                      <button
+                      <Button
                         disabled={!deleteConfirmed}
-                        className="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none flex items-center gap-2"
+                        variant="destructive"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                         Delete Account Permanently
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -794,19 +787,19 @@ function ProfileSettingsContent() {
                       Verify your business to unlock instant bid approval, priority support, and exclusive dealer benefits.
                     </p>
                     <div className="flex gap-3">
-                      <button 
+                      <Button 
                         onClick={() => {
                           setTwoFAPurpose('upgrade')
                           setShow2FA(true)
                           setPendingUpgrade(true)
                         }}
-                        className="px-6 py-3 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02]"
+                        variant="primary"
                       >
                         Request Verification
-                      </button>
-                      <button className="px-6 py-3 bg-white text-gray-700 rounded-xl font-medium border border-gray-200 hover:bg-gray-50 transition-colors">
+                      </Button>
+                      <Button variant="outline">
                         Learn More
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -1127,22 +1120,19 @@ function ProfileSettingsContent() {
                   )}
 
                   <div className="flex gap-3 pt-4 border-t border-gray-100">
-                    <button
-                      type="submit"
-                      className="px-6 py-3 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02] flex items-center gap-2"
-                    >
+                    <Button type="submit" variant="primary">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                       Save Business Details
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
-                      className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+                      variant="secondary"
                       onClick={() => setCompanyData({ ...companyData, hasCompany: false })}
                     >
                       Cancel
-                    </button>
+                    </Button>
                   </div>
                 </form>
               )}
@@ -1159,12 +1149,12 @@ function ProfileSettingsContent() {
                     <p className="text-sm text-gray-600 mb-6 max-w-md mx-auto">
                       Enable business account to get instant bid approval, priority support, and access to exclusive features.
                     </p>
-                    <button
+                    <Button
                       onClick={() => setCompanyData({ ...companyData, hasCompany: true })}
-                      className="px-6 py-3 bg-[#FA7921] text-white rounded-xl font-medium hover:bg-[#FA7921]/90 transition-colors"
+                      variant="primary"
                     >
                       Add Business Details
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}
@@ -1296,22 +1286,19 @@ function ProfileSettingsContent() {
                 </div>
 
                 <div className="flex gap-3 pt-4 border-t border-gray-100">
-                  <button
-                    type="submit"
-                    className="px-6 py-3 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02] flex items-center gap-2"
-                  >
+                  <Button type="submit" variant="primary">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                     Update Password
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
                     onClick={() => setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' })}
-                    className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+                    variant="secondary"
                   >
                     Reset Form
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>
@@ -1354,26 +1341,27 @@ function ProfileSettingsContent() {
                 </div>
               </div>
               {!twoFAEnabled ? (
-                <button 
+                <Button 
                   onClick={() => {
                     setTwoFAPurpose('setup')
                     setShow2FA(true)
                   }}
-                  className="px-6 py-2.5 bg-[#FA7921] text-white rounded-lg font-medium hover:bg-[#FA7921]/90 transition-colors"
+                  variant="primary"
                 >
                   Enable Two-Factor Authentication
-                </button>
+                </Button>
               ) : (
                 <div className="flex gap-3">
-                  <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                  <Button variant="secondary" size="sm">
                     Manage Methods
-                  </button>
-                  <button 
+                  </Button>
+                  <Button 
                     onClick={() => setTwoFAEnabled(false)}
-                    className="px-4 py-2 bg-red-100 text-red-700 rounded-lg font-medium hover:bg-red-200 transition-colors"
+                    variant="destructive"
+                    size="sm"
                   >
                     Disable 2FA
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
@@ -1550,9 +1538,9 @@ function ProfileSettingsContent() {
             </div>
 
             <div className="flex gap-3">
-              <button className="px-6 py-2.5 bg-[#FA7921] text-white rounded-lg font-medium hover:bg-[#FA7921]/90 transition-colors">
+              <Button variant="primary">
                 Save Preferences
-              </button>
+              </Button>
             </div>
           </div>
         )
@@ -1564,9 +1552,9 @@ function ProfileSettingsContent() {
             <div className="bg-white rounded-xl border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-gray-900">Payment Methods</h3>
-                <button className="px-4 py-2 bg-[#FA7921] text-white rounded-lg font-medium hover:bg-[#FA7921]/90 transition-colors text-sm">
+                <Button variant="primary" size="sm">
                   Add Payment Method
-                </button>
+                </Button>
               </div>
               <div className="space-y-3">
                 {paymentMethods.map((method) => (
@@ -1644,13 +1632,13 @@ function ProfileSettingsContent() {
                         Phone: +1 (555) 123-4567
                       </p>
                       <div className="mt-4 pt-3 border-t border-gray-100 flex gap-3 text-sm">
-                        <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
+                        <Button variant="link" size="sm">
                           Edit
-                        </button>
+                        </Button>
                         <span className="text-gray-300">|</span>
-                        <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
+                        <Button variant="link" size="sm">
                           Remove
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -1667,13 +1655,13 @@ function ProfileSettingsContent() {
                       </p>
                       <div className="mt-4 pt-3 border-t border-gray-100">
                         <div className="flex gap-3 text-sm mb-2">
-                          <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
+                          <Button variant="link" size="sm">
                             Edit
-                          </button>
+                          </Button>
                           <span className="text-gray-300">|</span>
-                          <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
+                          <Button variant="link" size="sm">
                             Remove
-                          </button>
+                          </Button>
                           <span className="text-gray-300">|</span>
                           <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
                             Set as Default
@@ -1695,13 +1683,13 @@ function ProfileSettingsContent() {
                       </p>
                       <div className="mt-4 pt-3 border-t border-gray-100">
                         <div className="flex gap-3 text-sm mb-2">
-                          <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
+                          <Button variant="link" size="sm">
                             Edit
-                          </button>
+                          </Button>
                           <span className="text-gray-300">|</span>
-                          <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
+                          <Button variant="link" size="sm">
                             Remove
-                          </button>
+                          </Button>
                           <span className="text-gray-300">|</span>
                           <button className="text-[#FA7921] hover:text-[#FA7921]/80 hover:underline font-medium">
                             Set as Default

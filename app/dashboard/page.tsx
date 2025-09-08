@@ -177,41 +177,41 @@ function ActivityItem({ activity }: { activity: ActivityItem }) {
     switch (activity.type) {
       case 'bid':
         return (
-          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-            <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
         )
       case 'win':
         return (
-          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-            <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <div className="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-7.5m-9 7.5v-7.5m-3-4.125a2.25 2.25 0 113.18 0 2.25 2.25 0 01-3.18 0zm9 0a2.25 2.25 0 113.18 0 2.25 2.25 0 01-3.18 0zM12 5.25c-1.24 0-2.25 1.01-2.25 2.25v.57l2.25 2.25 2.25-2.25v-.57c0-1.24-1.01-2.25-2.25-2.25z" />
             </svg>
           </div>
         )
       case 'outbid':
         return (
-          <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-            <svg className="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          <div className="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c0 1.621 1.484 3.5 3.5 3.5 1.358 0 2.516-.84 3.115-2.077a6 6 0 01.388-6.307 6 6 0 01.388 6.307c.599 1.238 1.757 2.077 3.115 2.077 2.016 0 3.5-1.879 3.5-3.5 0-1.665-3.157-4.534-6.813-6.093a1.5 1.5 0 00-1.09 0C8.843 7.466 5.697 10.335 5.697 12.001zm6.303 8.374h.008v.008H12v-.008z" />
             </svg>
           </div>
         )
       case 'listing':
         return (
-          <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-            <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
             </svg>
           </div>
         )
       case 'payment':
         return (
-          <div className="w-8 h-8 bg-[#FA7921]/10 rounded-full flex items-center justify-center flex-shrink-0">
-            <svg className="w-4 h-4 text-[#FA7921]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+          <div className="w-8 h-8 bg-orange-50 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-[#FA7921]" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
             </svg>
           </div>
         )
@@ -421,28 +421,25 @@ export default function DashboardPage() {
 
   return (
     <div className="w-full">
-      {/* Welcome Header */}
-      <div className="mb-10">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-          Welcome back, {username}!
-        </h1>
-        <p className="text-gray-600 mt-2">
-          Here&apos;s what&apos;s happening with your auctions today.
-        </p>
-      </div>
+      {/* Combined Welcome Section with Stats */}
+      <div className="mb-8">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-[32px] font-semibold text-gray-900 tracking-[-0.02em] mb-2">
+            Welcome back, {username}
+          </h1>
+          <p className="text-[16px] text-gray-600">
+            Here's what's happening with your auctions today
+          </p>
+        </div>
 
-      {/* Stats Cards Row - Using Reusable Component */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {/* Stats Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Link href="/dashboard/bids">
           <StatCard
             title="Active Bids"
             value="12"
             subtitle="from last week"
-            icon={
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            }
             status={{ label: 'Active', type: 'active' }}
             trend={{ value: 25, label: '', isPositive: true }}
             progress={{ value: 12, max: 20, label: 'Limit usage', showPercentage: false }}
@@ -455,15 +452,6 @@ export default function DashboardPage() {
             title="Account Status"
             value={isClaimedBySales ? "Premium" : "Verify Now"}
             subtitle={isClaimedBySales ? "Full access enabled" : "Limited access"}
-            icon={
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isClaimedBySales ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                )}
-              </svg>
-            }
             status={{ label: isClaimedBySales ? 'Verified' : 'Action needed', type: isClaimedBySales ? 'active' : 'error' }}
             variant={isClaimedBySales ? "purple" : "red"}
             valueClassName={!isClaimedBySales ? "text-2xl text-red-600" : "text-2xl"}
@@ -481,11 +469,6 @@ export default function DashboardPage() {
             title="Requires Action"
             value="5"
             subtitle="Pending tasks"
-            icon={
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            }
             badge={{ label: 'Urgent', variant: 'warning' }}
             variant="amber"
           >
@@ -498,23 +481,19 @@ export default function DashboardPage() {
           </StatCard>
         </Link>
 
-        <Link href="/dashboard/wallet">
-          <StatCard
-            title="Total Balance"
-            value="¥1.25M"
-            subtitle="≈ $8,333 USD"
-            icon={
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-              </svg>
-            }
-            status={{ label: 'Available', type: 'active' }}
-            trend={{ value: 8.5, label: '', isPositive: true }}
-            progress={{ value: 75, max: 100, label: 'Utilization', showPercentage: true }}
-            action={{ label: 'View Wallet', onClick: () => {} }}
-            variant="green"
-          />
-        </Link>
+        <StatCard
+          title="Total Balance"
+          value="¥1.25M"
+          subtitle="≈ $8,333 USD"
+          status={{ label: 'Available', type: 'active' }}
+          trend={{ value: 8.5, label: 'from last month', isPositive: true }}
+          action={{ 
+            label: 'Open Wallet', 
+            onClick: () => window.location.href = '/dashboard/wallet'
+          }}
+          variant="green"
+        />
+        </div>
       </div>
 
       {/* Main Content Section with Consistent Containers */}
