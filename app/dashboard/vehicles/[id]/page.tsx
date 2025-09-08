@@ -21,6 +21,12 @@ export default function VehicleDetailPage() {
   const [showInspectionModal, setShowInspectionModal] = useState(false)
   const [showTranslationModal, setShowTranslationModal] = useState(false)
   
+  // Delivery confirmation state
+  const [showDeliveryModal, setShowDeliveryModal] = useState(false)
+  const [deliveryConfirmed, setDeliveryConfirmed] = useState(false)
+  const [deliveryNotes, setDeliveryNotes] = useState('')
+  const [deliveryRating, setDeliveryRating] = useState(5)
+  
   // Handlers for inspection and translation requests
   const handleRequestInspection = () => {
     setShowInspectionModal(false)
@@ -212,49 +218,38 @@ export default function VehicleDetailPage() {
       ]
     },
     {
-      id: 'arrival',
-      title: 'Port Arrival',
-      description: 'Arrival at destination port',
-      status: 'pending',
-      progress: 0,
-      tasksCompleted: 0,
-      totalTasks: 2,
-      estimatedDate: new Date('2024-02-15'),
-      isExpandable: true,
-      details: [
-        { 
-          id: 'arrival-1',
-          title: 'Port Entry',
-          status: 'pending',
-          description: 'Los Angeles Port',
-          dueDate: new Date('2024-02-15')
-        },
-        { 
-          id: 'arrival-2',
-          title: 'Container Unloading',
-          status: 'pending',
-          description: 'Terminal assignment pending',
-          dueDate: new Date('2024-02-16')
-        }
-      ]
-    },
-    {
       id: 'delivered',
       title: 'Delivered',
       description: 'Vehicle successfully delivered',
       status: 'pending',
       progress: 0,
       tasksCompleted: 0,
-      totalTasks: 1,
+      totalTasks: 2,
       estimatedDate: new Date('2024-02-20'),
       isExpandable: true,
       details: [
         { 
           id: 'delivery-1',
-          title: 'Vehicle Delivered',
+          title: 'Port Entry',
           status: 'pending',
-          description: 'Final delivery completed',
-          dueDate: new Date('2024-02-20')
+          description: 'Los Angeles Port',
+          dueDate: new Date('2024-02-15')
+        },
+        { 
+          id: 'delivery-2',
+          title: 'Final Delivery',
+          status: 'pending',
+          description: 'Vehicle delivered to customer',
+          dueDate: new Date('2024-02-20'),
+          actions: !deliveryConfirmed ? [
+            {
+              label: 'Confirm Received',
+              icon: 'check' as const,
+              onClick: () => {
+                setShowDeliveryModal(true)
+              }
+            }
+          ] : undefined
         }
       ]
     }
@@ -400,13 +395,15 @@ export default function VehicleDetailPage() {
                   {vehicle.chassisNumber && <span><strong>Chassis:</strong> {vehicle.chassisNumber}</span>}
                 </div>
               </div>
-              <span className={`px-4 py-2 rounded-full text-sm font-medium ${
-                vehicle.status === 'in_transit' ? 'bg-purple-100 text-purple-800' :
-                vehicle.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                'bg-gray-100 text-gray-800'
-              }`}>
-                {vehicle.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className={`px-4 py-2 rounded-full text-sm font-medium ${
+                  vehicle.status === 'in_transit' ? 'bg-purple-100 text-purple-800' :
+                  vehicle.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                  'bg-gray-100 text-gray-800'
+                }`}>
+                  {vehicle.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                </span>
+              </div>
             </div>
 
             {/* Key Details Grid */}
@@ -430,10 +427,6 @@ export default function VehicleDetailPage() {
               <div>
                 <p className="text-xs text-gray-500 mb-1">Fuel Type</p>
                 <p className="text-lg font-semibold text-gray-900 capitalize">{vehicle.fuelType}</p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 mb-1">Engine</p>
-                <p className="text-lg font-semibold text-gray-900">{vehicle.engineSize}</p>
               </div>
               {vehicle.type && (
                 <div>
@@ -778,8 +771,8 @@ export default function VehicleDetailPage() {
                 <ShipmentTimeline
                   orderId={vehicle.id}
                   stages={shipmentStages}
-                  onStageToggle={(stageId) => console.log('Stage toggled:', stageId)}
-                  onTaskUpdate={(stageId, taskId) => console.log('Task updated:', stageId, taskId)}
+                  onStageToggle={() => {/* Stage toggled */}}
+                  onTaskUpdate={() => {/* Task updated */}}
                 />
               </div>
             </div>
@@ -1072,6 +1065,76 @@ export default function VehicleDetailPage() {
                 className="flex-1 px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
               >
                 Request Translation
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delivery Confirmation Modal */}
+      {showDeliveryModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <h2 className="text-xl font-semibold mb-4">Confirm Vehicle Delivery</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-gray-600 mb-2">Please confirm that you have received your vehicle in good condition.</p>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-sm font-medium">{vehicle.title}</p>
+                  <p className="text-xs text-gray-500">VIN: {vehicle.vin}</p>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Rate your experience</label>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      onClick={() => setDeliveryRating(star)}
+                      className={`text-2xl ${star <= deliveryRating ? 'text-yellow-500' : 'text-gray-300'}`}
+                    >
+                      ★
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Additional notes (optional)</label>
+                <textarea
+                  value={deliveryNotes}
+                  onChange={(e) => setDeliveryNotes(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg text-sm resize-none"
+                  rows={3}
+                  placeholder="Any comments about the delivery?"
+                />
+              </div>
+
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <p className="text-sm text-amber-800">
+                  By confirming, you acknowledge that you have received the vehicle and found it in acceptable condition.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowDeliveryModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setDeliveryConfirmed(true)
+                  setShowDeliveryModal(false)
+                  alert('Thank you for confirming delivery! Your feedback has been recorded.')
+                }}
+                className="flex-1 px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors"
+              >
+                Confirm Delivery
               </button>
             </div>
           </div>

@@ -7,6 +7,7 @@ import ShipmentTimeline from '../components/ShipmentTimeline'
 import { TimelineStage as LocalTimelineStage } from '../components/types'
 import { TimelineStage } from '@/types/api.types'
 import { ArrowLeft, AlertCircle, RefreshCw } from 'lucide-react'
+import { PageHeader } from '@/components/ui/page-header'
 
 // Convert API timeline stage to local component format
 function convertToLocalStage(stage: TimelineStage): LocalTimelineStage {
@@ -67,12 +68,12 @@ function ShipmentContent() {
   // Calculate overall progress (can be used for progress indicators if needed)
   // const overallProgress = useTimelineProgress(timeline)
 
-  const handleStageToggle = (stageId: string) => {
-    console.log('Stage toggled:', stageId)
+  const handleStageToggle = () => {
+    // Stage toggled
   }
 
-  const handleTaskUpdate = (stageId: string, taskId: string) => {
-    console.log('Task updated:', stageId, taskId)
+  const handleTaskUpdate = () => {
+    // Task updated
   }
 
   // Loading state
@@ -169,25 +170,29 @@ function ShipmentContent() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <button 
-              onClick={() => router.back()}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <h1 className="text-3xl font-bold text-gray-900">Shipment Tracking</h1>
-            {isUpdating && (
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                <span>Updating...</span>
-              </div>
-            )}
-          </div>
-          
-          {/* Vehicle Info Card */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <PageHeader
+          title="Shipment Tracking"
+          description="Track your vehicle's journey from auction to delivery"
+          actions={
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => router.back()}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+              {isUpdating && (
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Updating...</span>
+                </div>
+              )}
+            </div>
+          }
+        />
+        
+        {/* Vehicle Info Card */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">
@@ -265,7 +270,6 @@ function ShipmentContent() {
               </div>
             </div>
           )}
-        </div>
 
         {/* Timeline Component */}
         <ShipmentTimeline

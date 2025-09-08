@@ -36,7 +36,7 @@ class WebSocketManager {
 
   connect(): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
-      console.log('WebSocket already connected')
+      // WebSocket already connected
       return
     }
 
@@ -63,7 +63,7 @@ class WebSocketManager {
   }
 
   private handleOpen(): void {
-    console.log('WebSocket connected')
+    // WebSocket connected
     this.reconnectAttempts = 0
     
     // Send any queued messages
@@ -119,8 +119,8 @@ class WebSocketManager {
     console.error('WebSocket error:', error)
   }
 
-  private handleClose(event: CloseEvent): void {
-    console.log('WebSocket closed:', event.code, event.reason)
+  private handleClose(): void {
+    // WebSocket closed
     
     this.stopPingInterval()
     this.ws = null
@@ -135,7 +135,7 @@ class WebSocketManager {
     this.reconnectAttempts++
     const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1) // Exponential backoff
     
-    console.log(`Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts})`)
+    // Reconnecting WebSocket connection
     
     setTimeout(() => {
       this.connect()

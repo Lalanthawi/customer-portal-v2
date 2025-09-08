@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import { SearchBar } from '@/components/ui/search-bar'
 
 interface Vehicle {
   id: number
@@ -970,17 +971,13 @@ function SearchResults() {
         </div>
 
         {/* Search Bar */}
-        <div className="relative">
-          <input
-            type="text"
-            defaultValue={searchQuery}
-            placeholder="Refine your search..."
-            className="w-full px-4 py-3 pl-12 bg-white/10 backdrop-blur-md rounded-xl text-white placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FA7921]"
-          />
-          <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
+        <SearchBar
+          value={searchQuery}
+          onChange={(value) => router.push(`/dashboard/search?q=${encodeURIComponent(value)}`)}
+          placeholder="Refine your search..."
+          className="w-full px-4 py-3 pl-12 bg-white/10 backdrop-blur-md rounded-xl text-white placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FA7921]"
+          size="lg"
+        />
       </div>
 
       {/* Quick Filter Bar */}

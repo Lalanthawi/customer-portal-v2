@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import { manufacturerLogos } from './ManufacturerLogos'
 import AdvancedSearchStatic from '../components/search/AdvancedSearchStatic'
 import { TermsOfServiceModal, useTOSAcceptance } from '../components/TermsOfService'
@@ -712,81 +711,6 @@ export default function AuctionsPage() {
         </div>
       </details>
 
-      {/* Popular Categories */}
-      <div className="mb-12">
-        <div className="flex items-center justify-between mb-6 px-4 sm:px-0">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Popular Categories</h2>
-            <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">Browse vehicles by type</p>
-          </div>
-          <button className="text-[#FA7921] hover:text-[#e86f1e] font-medium text-xs sm:text-sm flex items-center gap-1">
-            <span className="hidden sm:inline">All Categories</span>
-            <span className="sm:hidden">View All</span>
-            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 px-4 sm:px-0">
-          {[
-            { name: 'SUV', image: '/images/popular/suv.svg', count: '1,234', color: 'from-blue-500 to-blue-600' },
-            { name: 'Sedan', image: '/images/popular/sedan.svg', count: '987', color: 'from-purple-500 to-purple-600' },
-            { name: 'Truck', image: '/images/popular/truck.svg', count: '456', color: 'from-green-500 to-green-600' },
-            { name: 'Sports', image: '/images/popular/sports.svg', count: '234', color: 'from-red-500 to-red-600' },
-            { name: 'Electric', image: '/images/popular/electric.svg', count: '567', color: 'from-yellow-500 to-yellow-600' },
-            { name: 'Hybrid', image: '/images/popular/hybrid.svg', count: '345', color: 'from-teal-500 to-teal-600' }
-          ].map((category) => (
-            <button
-              key={category.name}
-              className="group relative bg-white rounded-xl sm:rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FA7921] transition-all hover:shadow-xl sm:hover:-translate-y-1"
-            >
-              {/* Gradient Background */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
-              
-              {/* Content */}
-              <div className="relative p-4 sm:p-6">
-                {/* Icon Container */}
-                <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 rounded-xl sm:rounded-2xl group-hover:from-[#FA7921]/10 group-hover:to-[#FF9A56]/10 transition-colors duration-300"></div>
-                  <div className="relative flex items-center justify-center h-full">
-                    <Image 
-                      src={category.image}
-                      alt={category.name}
-                      width={40}
-                      height={40}
-                      className="w-8 h-8 sm:w-10 sm:h-10 object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300"
-                    />
-                  </div>
-                </div>
-                
-                {/* Category Name */}
-                <h3 className="font-semibold text-gray-900 text-sm sm:text-base mb-0.5 sm:mb-1 group-hover:text-[#FA7921] transition-colors">
-                  {category.name}
-                </h3>
-                
-                {/* Vehicle Count */}
-                <p className="text-xs text-gray-500 group-hover:text-gray-600">
-                  <span className="hidden sm:inline">{category.count} vehicles</span>
-                  <span className="sm:hidden">{category.count}</span>
-                </p>
-                
-                {/* Hover Arrow - Desktop Only */}
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:block">
-                  <div className="w-8 h-8 bg-[#FA7921] rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Bottom Accent Bar */}
-              <div className="h-1 bg-gradient-to-r from-transparent via-gray-200 to-transparent group-hover:via-[#FA7921] transition-all duration-300"></div>
-            </button>
-          ))}
-        </div>
-      </div>
     </div>
   )
 }

@@ -22,7 +22,7 @@ import {
   ArrowLeft, Clock, ZoomIn, Grid3x3, Eye,
   ChevronLeft, ChevronRight, Check, Share2,
   Mail, AlertCircle, CheckCircle, Loader2,
-  ExternalLink
+  ExternalLink, Heart
 } from 'lucide-react'
 
 // TypeScript interfaces (same as before)
@@ -97,7 +97,7 @@ export default function VehiclePageShadcn() {
   const [isSubmittingBid, setIsSubmittingBid] = useState(false)
   const [bidHistory, setBidHistory] = useState<BidData[]>([])
   const [timeRemaining, setTimeRemaining] = useState('')
-  const [favoritesList, setFavoritesList] = useState<string[]>([])
+  const [isFavorite, setIsFavorite] = useState(false)
   
   // Tab state - only details tab now
   
@@ -311,14 +311,6 @@ export default function VehiclePageShadcn() {
     setIsSubmittingBid(false)
   }
 
-  // Handle favorites
-  const toggleFavorite = (list: string) => {
-    setFavoritesList(prev => 
-      prev.includes(list) 
-        ? prev.filter(l => l !== list)
-        : [...prev, list]
-    )
-  }
   
   
   // Check if inspection/translation already exists and subscribe to updates
@@ -432,12 +424,24 @@ export default function VehiclePageShadcn() {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              <Button 
+                variant="outline" 
+                className={`border-gray-300 ${isFavorite ? 'bg-red-50 border-red-300 text-red-600 hover:bg-red-100' : ''}`}
+                onClick={() => {
+                  setIsFavorite(!isFavorite)
+                  if (!isFavorite) {
+                    alert('Added to favorites!')
+                  } else {
+                    alert('Removed from favorites!')
+                  }
+                }}
+              >
+                <Heart className={`h-4 w-4 mr-2 ${isFavorite ? 'fill-current' : ''}`} />
+                {isFavorite ? 'Favorited' : 'Add to Favorites'}
+              </Button>
               <Button variant="outline" className="border-gray-300">
                 <Share2 className="h-4 w-4 mr-2" />
                 Share
-              </Button>
-              <Button className="bg-[#FA7921] hover:bg-[#FA7921]/90 text-white">
-                Watch Auction
               </Button>
             </div>
           </div>
@@ -592,6 +596,24 @@ export default function VehiclePageShadcn() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Auction Timer - Mobile Only */}
+            <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200 p-4 lg:hidden">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                  <span className="text-xs font-medium text-orange-800">LIVE AUCTION</span>
+                </div>
+                <Clock className="h-4 w-4 text-orange-600" />
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-xs text-gray-600">Ends in:</span>
+                <span className="text-sm font-bold text-gray-900">{timeRemaining}</span>
+              </div>
+              <div className="mt-2 pt-2 border-t border-orange-200/50">
+                <p className="text-xs text-gray-600 truncate">Lot #{vehicleData.auction.lotNumber}</p>
+              </div>
+            </div>
 
             {/* Bidding Panel - Mobile Only (shows after images) */}
             <Card className="bg-white border border-gray-200 lg:hidden">
@@ -798,6 +820,24 @@ export default function VehiclePageShadcn() {
 
           {/* Right Column - Bidding and Actions */}
           <div className="space-y-6">
+            {/* Auction Timer */}
+            <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200 p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                  <span className="text-xs font-medium text-orange-800">LIVE AUCTION</span>
+                </div>
+                <Clock className="h-4 w-4 text-orange-600" />
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-xs text-gray-600">Ends in:</span>
+                <span className="text-sm font-bold text-gray-900">{timeRemaining}</span>
+              </div>
+              <div className="mt-2 pt-2 border-t border-orange-200/50">
+                <p className="text-xs text-gray-600 truncate">Lot #{vehicleData.auction.lotNumber}</p>
+              </div>
+            </div>
+
             {/* Bidding Panel - Desktop Only (shows in right column) */}
             <Card className="bg-white border border-gray-200 hidden lg:block">
               <CardHeader>
@@ -859,24 +899,6 @@ export default function VehiclePageShadcn() {
               </CardContent>
             </Card>
 
-            {/* Auction Timer */}
-            <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200 p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-                  <span className="text-xs font-medium text-orange-800">LIVE AUCTION</span>
-                </div>
-                <Clock className="h-4 w-4 text-orange-600" />
-              </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-xs text-gray-600">Ends in:</span>
-                <span className="text-sm font-bold text-gray-900">{timeRemaining}</span>
-              </div>
-              <div className="mt-2 pt-2 border-t border-orange-200/50">
-                <p className="text-xs text-gray-600 truncate">Lot #{vehicleData.auction.lotNumber}</p>
-              </div>
-            </div>
-
 
             {/* Average Price */}
             <Card className="bg-white border border-gray-200">
@@ -906,10 +928,10 @@ export default function VehiclePageShadcn() {
               </CardContent>
             </Card>
 
-            {/* Contact & Favorites */}
+            {/* Contact */}
             <Card className="bg-white border border-gray-200">
               <CardHeader>
-                <CardTitle>Contact & Save</CardTitle>
+                <CardTitle>Contact</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -947,138 +969,70 @@ export default function VehiclePageShadcn() {
                   </div>
                 </div>
 
-                <div className="mt-6 pt-6 border-t">
-                  <p className="text-sm font-medium mb-3">Add to Favorites List</p>
-                  <div className="space-y-2 mb-4">
-                    {['A', 'B', 'C', 'D', 'E'].map((list) => (
-                      <label key={list} className="flex items-center gap-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={favoritesList.includes(list)}
-                          onChange={() => toggleFavorite(list)}
-                          className="w-4 h-4 text-[#FA7921] border-gray-300 rounded focus:ring-[#FA7921]"
-                        />
-                        <span className="text-sm">List {list}</span>
-                      </label>
-                    ))}
-                  </div>
-                  <Button 
-                    onClick={() => {
-                      if (favoritesList.length > 0) {
-                        alert(`Added to favorites: List ${favoritesList.join(', List ')}`)
-                      }
-                    }}
-                    disabled={favoritesList.length === 0}
-                    className="w-full bg-[#FA7921] hover:bg-[#FA7921]/90"
-                  >
-                    Add to Selected Lists
-                  </Button>
-                </div>
               </CardContent>
             </Card>
 
-            {/* Inspection Section */}
+            {/* Services Section - Combined Inspection & Translation */}
             <Card className="bg-white border border-gray-200">
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base">Vehicle Inspection</CardTitle>
+              <CardHeader>
+                <CardTitle>Vehicle Services</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Inspection */}
+                <div className="pb-4 border-b border-gray-100">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-sm font-semibold text-gray-900">Vehicle Inspection</h4>
+                    <Badge variant="outline" className="text-xs">¥3,000</Badge>
+                  </div>
+                  
+                  {inspectionStatus === 'completed' && (
+                    <div className="space-y-3">
+                      <Alert className="bg-green-50 border-green-200">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <AlertTitle className="text-green-800">Completed</AlertTitle>
+                        <AlertDescription className="text-green-600">
+                          {inspectionData?.sharedBy && inspectionData.sharedBy !== 'Current User' && (
+                            <span>Free (shared by {inspectionData.sharedBy})<br/></span>
+                          )}
+                          {inspectionData?.date && (
+                            <span>Completed: {new Date(inspectionData.date).toLocaleDateString()}</span>
+                          )}
+                        </AlertDescription>
+                      </Alert>
+                      <Button 
+                        size="sm" 
+                        className="w-full" 
+                        onClick={() => router.push('/dashboard/inspections')}
+                      >
+                        View Report
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {inspectionStatus === 'processing' && (
+                    <Alert>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <AlertTitle>Processing</AlertTitle>
+                      <AlertDescription>
+                        Inspector is examining the vehicle
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                  
+                  {inspectionStatus === 'requested' && (
+                    <Alert className="bg-amber-50 border-amber-200">
+                      <Clock className="h-4 w-4 text-amber-600 animate-pulse" />
+                      <AlertTitle className="text-amber-700">Requested</AlertTitle>
+                      <AlertDescription className="text-amber-600">
+                        Waiting for inspector (24-48h)
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                  
                   {inspectionStatus === 'not available' && (
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button variant="ghost" size="sm" className="text-[#FA7921]">
-                          Request
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="bg-white dark:bg-white [&>*]:text-gray-900 dark:[&>*]:text-gray-900">
-                        <DialogHeader>
-                          <DialogTitle>Request Vehicle Inspection</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <Alert className="bg-amber-50 dark:bg-amber-50 border-amber-200 dark:border-amber-200">
-                            <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-600" />
-                            <AlertTitle className="text-amber-800 dark:text-amber-800">Inspection Fee: ¥3,000</AlertTitle>
-                            <AlertDescription className="text-amber-700 dark:text-amber-700">
-                              Will be added to your final invoice if you win this auction
-                            </AlertDescription>
-                          </Alert>
-                          
-                          <div>
-                            <p className="text-sm font-medium mb-2 text-gray-900 dark:text-gray-900">Professional inspection includes:</p>
-                            <ul className="text-sm text-gray-600 dark:text-gray-600 space-y-1 list-disc list-inside">
-                              <li>Detailed condition assessment with high-resolution photos</li>
-                              <li>Undercarriage and engine inspection</li>
-                              <li>Paint thickness measurements</li>
-                              <li>Accident history verification</li>
-                              <li>Full mechanical inspection</li>
-                            </ul>
-                          </div>
-                          
-                          <p className="text-sm text-gray-600 dark:text-gray-600">
-                            Estimated completion: 24-48 hours before auction ends
-                          </p>
-                        </div>
-                        <DialogFooter>
-                          <Button onClick={handleRequestInspection}>
-                            Request Inspection
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                {/* Status displays */}
-                {inspectionStatus === 'completed' && (
-                  <div className="space-y-3">
-                    <Alert className="bg-green-50 border-green-200">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
-                      <AlertTitle className="text-green-800">Completed</AlertTitle>
-                      <AlertDescription className="text-green-600">
-                        {inspectionData?.sharedBy && inspectionData.sharedBy !== 'Current User' && (
-                          <span>Free (shared by {inspectionData.sharedBy})<br/></span>
-                        )}
-                        {inspectionData?.date && (
-                          <span>Completed: {new Date(inspectionData.date).toLocaleDateString()}</span>
-                        )}
-                      </AlertDescription>
-                    </Alert>
-                    <Button 
-                      size="sm" 
-                      className="w-full" 
-                      onClick={() => router.push('/dashboard/inspections')}
-                    >
-                      View Report
-                    </Button>
-                  </div>
-                )}
-                
-                {inspectionStatus === 'processing' && (
-                  <Alert>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <AlertTitle>Processing</AlertTitle>
-                    <AlertDescription>
-                      Inspector is examining the vehicle
-                    </AlertDescription>
-                  </Alert>
-                )}
-                
-                {inspectionStatus === 'requested' && (
-                  <Alert className="bg-amber-50 border-amber-200">
-                    <Clock className="h-4 w-4 text-amber-600 animate-pulse" />
-                    <AlertTitle className="text-amber-700">Requested</AlertTitle>
-                    <AlertDescription className="text-amber-600">
-                      Waiting for inspector (24-48h)
-                    </AlertDescription>
-                  </Alert>
-                )}
-                
-                {inspectionStatus === 'not available' && (
-                  <div className="text-center py-2">
-                    <p className="text-sm text-muted-foreground mb-2">No inspection available</p>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button size="sm">
+                        <Button size="sm" className="w-full">
                           Request Inspection
                         </Button>
                       </DialogTrigger>
@@ -1117,21 +1071,63 @@ export default function VehiclePageShadcn() {
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  )}
+                </div>
 
-            {/* Translation Section */}
-            <Card className="bg-white border border-gray-200">
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base">Sheet Translation</CardTitle>
+                {/* Translation */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-sm font-semibold text-gray-900">Sheet Translation</h4>
+                    <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">FREE</Badge>
+                  </div>
+                  
+                  {translationStatus === 'translated' && (
+                    <div className="space-y-3">
+                      <Alert className="bg-green-50 border-green-200">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <AlertTitle className="text-green-800">Translated</AlertTitle>
+                        <AlertDescription className="text-green-600">
+                          {translationData?.sharedBy && translationData.sharedBy !== 'Current User' && (
+                            <span>Free (shared by {translationData.sharedBy})<br/></span>
+                          )}
+                          Ready to view
+                        </AlertDescription>
+                      </Alert>
+                      <Button 
+                        size="sm" 
+                        className="w-full" 
+                        onClick={() => router.push('/dashboard/translations')}
+                      >
+                        View Translation
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {translationStatus === 'translating' && (
+                    <Alert>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <AlertTitle>Translating</AlertTitle>
+                      <AlertDescription>
+                        Processing auction sheet
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                  
+                  {translationStatus === 'requested' && (
+                    <Alert className="bg-amber-50 border-amber-200">
+                      <Clock className="h-4 w-4 text-amber-600 animate-pulse" />
+                      <AlertTitle className="text-amber-700">Requested</AlertTitle>
+                      <AlertDescription className="text-amber-600">
+                        In queue (2-4 hours)
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                  
                   {translationStatus === 'not available' && (
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button variant="ghost" size="sm" className="text-[#FA7921]">
-                          Request
+                        <Button size="sm" className="w-full">
+                          Request Translation
                         </Button>
                       </DialogTrigger>
                       <DialogContent className="bg-white dark:bg-white [&>*]:text-gray-900 dark:[&>*]:text-gray-900">
@@ -1171,97 +1167,6 @@ export default function VehiclePageShadcn() {
                     </Dialog>
                   )}
                 </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                {/* Status displays */}
-                {translationStatus === 'translated' && (
-                  <div className="space-y-3">
-                    <Alert className="bg-green-50 border-green-200">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
-                      <AlertTitle className="text-green-800">Translated</AlertTitle>
-                      <AlertDescription className="text-green-600">
-                        {translationData?.sharedBy && translationData.sharedBy !== 'Current User' && (
-                          <span>Free (shared by {translationData.sharedBy})<br/></span>
-                        )}
-                        Ready to view
-                      </AlertDescription>
-                    </Alert>
-                    <Button 
-                      size="sm" 
-                      className="w-full" 
-                      onClick={() => router.push('/dashboard/translations')}
-                    >
-                      View Translation
-                    </Button>
-                  </div>
-                )}
-                
-                {translationStatus === 'translating' && (
-                  <Alert>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <AlertTitle>Translating</AlertTitle>
-                    <AlertDescription>
-                      Processing auction sheet
-                    </AlertDescription>
-                  </Alert>
-                )}
-                
-                {translationStatus === 'requested' && (
-                  <Alert className="bg-amber-50 border-amber-200">
-                    <Clock className="h-4 w-4 text-amber-600 animate-pulse" />
-                    <AlertTitle className="text-amber-700">Requested</AlertTitle>
-                    <AlertDescription className="text-amber-600">
-                      In queue (2-4 hours)
-                    </AlertDescription>
-                  </Alert>
-                )}
-                
-                {translationStatus === 'not available' && (
-                  <div className="text-center py-2">
-                    <p className="text-sm text-muted-foreground mb-2">No translation available</p>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button size="sm">
-                          Request Translation
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="bg-white dark:bg-white [&>*]:text-gray-900 dark:[&>*]:text-gray-900">
-                        <DialogHeader>
-                          <DialogTitle>Request Auction Sheet Translation</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <Alert className="bg-amber-50 dark:bg-amber-50 border-amber-200 dark:border-amber-200">
-                            <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-600" />
-                            <AlertTitle className="text-amber-800 dark:text-amber-800">Translation Fee: FREE</AlertTitle>
-                            <AlertDescription className="text-amber-700 dark:text-amber-700">
-                              No charge for auction sheet translation service
-                            </AlertDescription>
-                          </Alert>
-                          
-                          <div>
-                            <p className="text-sm font-medium mb-2 text-gray-900 dark:text-gray-900">Professional translation includes:</p>
-                            <ul className="text-sm text-gray-600 dark:text-gray-600 space-y-1 list-disc list-inside">
-                              <li>Complete auction grade explanation</li>
-                              <li>All condition notes and remarks</li>
-                              <li>Equipment and features list</li>
-                              <li>Inspector comments and observations</li>
-                              <li>Repair history if noted</li>
-                            </ul>
-                          </div>
-                          
-                          <p className="text-sm text-gray-600 dark:text-gray-600">
-                            Estimated completion: 2-4 hours
-                          </p>
-                        </div>
-                        <DialogFooter>
-                          <Button onClick={handleRequestTranslation}>
-                            Request Translation
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                )}
               </CardContent>
             </Card>
 

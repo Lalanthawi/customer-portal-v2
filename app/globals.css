@@ -44,6 +44,28 @@
   }
 }
 
+/* Custom animations for stat cards */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes float-delayed {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* Utility classes for font families */
 @layer utilities {
   .font-heading {
@@ -67,6 +89,24 @@
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.01em;
+  }
+  
+  /* Animation utility classes */
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-float-delayed {
+    animation: float-delayed 3s ease-in-out infinite;
+    animation-delay: 1.5s;
+  }
+  
+  .animate-shake {
+    animation: shake 0.5s ease-in-out;
+  }
+  
+  .animate-spin-slow {
+    animation: spin-slow 20s linear infinite;
   }
 }
 
@@ -349,4 +389,481 @@ select option:hover {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Modern Background Animations */
+@keyframes float-slow {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) rotate(120deg) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) rotate(240deg) scale(0.95);
+  }
+}
+
+@keyframes float-medium {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(-40px, 20px) rotate(90deg);
+  }
+  50% {
+    transform: translate(20px, -40px) rotate(180deg);
+  }
+  75% {
+    transform: translate(40px, 10px) rotate(270deg);
+  }
+}
+
+@keyframes float-fast {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.05;
+  }
+  50% {
+    transform: translate(-30px, -30px) scale(1.2);
+    opacity: 0.08;
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.03;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.06;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes morph {
+  0%, 100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+  50% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* Animated Background Container */
+.animated-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Floating Gradient Orbs */
+.gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  mix-blend-mode: multiply;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.gradient-orb-1 {
+  width: 600px;
+  height: 600px;
+  background: linear-gradient(135deg, #FA7921 0%, #FF9A56 50%, #FFC107 100%);
+  top: -300px;
+  left: -300px;
+  animation: float-slow 30s ease-in-out infinite;
+}
+
+.gradient-orb-2 {
+  width: 500px;
+  height: 500px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  bottom: -250px;
+  right: -250px;
+  animation: float-medium 25s ease-in-out infinite reverse;
+}
+
+.gradient-orb-3 {
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 50%, #a8edea 100%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: float-fast 20s ease-in-out infinite;
+}
+
+/* Mesh Gradient Background */
+.mesh-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(250, 121, 33, 0.03) 0%,
+    rgba(255, 154, 86, 0.03) 25%,
+    rgba(147, 51, 234, 0.03) 50%,
+    rgba(79, 172, 254, 0.03) 75%,
+    rgba(250, 121, 33, 0.03) 100%
+  );
+  background-size: 400% 400%;
+  animation: gradient-shift 30s ease infinite;
+  opacity: 0.5;
+}
+
+/* Morphing Blobs */
+.morph-blob {
+  position: absolute;
+  background: linear-gradient(135deg, #FA7921 0%, #FF9A56 100%);
+  opacity: 0.03;
+  filter: blur(60px);
+  animation: morph 15s ease-in-out infinite;
+}
+
+.morph-blob-1 {
+  width: 300px;
+  height: 300px;
+  top: 10%;
+  right: 10%;
+  animation-delay: 0s;
+}
+
+.morph-blob-2 {
+  width: 250px;
+  height: 250px;
+  bottom: 20%;
+  left: 15%;
+  animation-delay: 5s;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Shimmer Effect for CTAs */
+.shimmer-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  animation: shimmer 3s infinite;
+  pointer-events: none;
+}
+
+/* Interactive Glow */
+.glow-container {
+  position: relative;
+}
+
+.glow-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(250, 121, 33, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.glow-container:hover .glow-effect {
+  opacity: 1;
+}
+
+/* Particle Network (using pseudo-elements for performance) */
+.particle-network {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(250, 121, 33, 0.3);
+  border-radius: 50%;
+  animation: float-slow 40s linear infinite;
+}
+
+/* Performance Optimizations */
+@media (prefers-reduced-motion: reduce) {
+  .gradient-orb,
+  .mesh-gradient,
+  .morph-blob,
+  .particle,
+  .shimmer-effect::before {
+    animation: none !important;
+  }
+  
+  .glow-effect {
+    transition: none !important;
+  }
+}
+
+/* GPU Acceleration */
+.gradient-orb,
+.morph-blob,
+.particle {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Dark mode adjustments */
+.dark .gradient-orb,
+.dark .morph-blob {
+  mix-blend-mode: screen;
+  opacity: 0.02;
+}
+
+.dark .mesh-gradient {
+  opacity: 0.3;
+}
+
+/* Stat Card Animations */
+@keyframes gradient-xy {
+  0%, 100% {
+    background-position: 0% 0%;
+    transform: rotate(0deg);
+  }
+  25% {
+    background-position: 50% 50%;
+  }
+  50% {
+    background-position: 100% 100%;
+    transform: rotate(1deg);
+  }
+  75% {
+    background-position: 50% 50%;
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-20px, 30px) scale(1.05);
+  }
+  66% {
+    transform: translate(30px, -20px) scale(0.95);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes particle-1 {
+  0% {
+    transform: translate(0, 100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(100vw, -100vh) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes particle-2 {
+  0% {
+    transform: translate(100vw, 100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate(-100vw, -100vh) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes particle-3 {
+  0% {
+    transform: translate(50vw, 100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(50vw, -100vh) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes value-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes ping-slow {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Animation utility classes */
+.animate-gradient-xy {
+  animation: gradient-xy 20s ease infinite;
+  background-size: 200% 200%;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 25s ease-in-out infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 4s ease-in-out infinite;
+}
+
+.animate-particle-1 {
+  animation: particle-1 15s linear infinite;
+}
+
+.animate-particle-2 {
+  animation: particle-2 20s linear infinite;
+  animation-delay: 5s;
+}
+
+.animate-particle-3 {
+  animation: particle-3 18s linear infinite;
+  animation-delay: 10s;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+.animate-value-pulse {
+  animation: value-pulse 3s ease-in-out infinite;
+}
+
+.animate-ping-slow {
+  animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.animation-delay-100 {
+  animation-delay: 100ms;
+}
+
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+
+/* Stat card specific hover effects */
+.stat-card-animated {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.stat-card-animated:hover {
+  transform: rotateY(2deg) rotateX(-2deg) scale(1.02) translateY(-4px);
+}
+
+/* Progress bar animation */
+@keyframes progress-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.progress-animated {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-animated::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: shimmer 2s infinite;
 }

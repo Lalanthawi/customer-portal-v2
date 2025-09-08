@@ -96,12 +96,12 @@ class ApiClient {
     // Log requests in development
     if (process.env.NODE_ENV === 'development') {
       this.addRequestInterceptor((config) => {
-        console.log('API Request:', config)
+        // API request logging removed
         return config
       })
 
       this.addResponseInterceptor((response) => {
-        console.log('API Response:', response)
+        // API response logging removed
         return response
       })
     }

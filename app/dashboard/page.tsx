@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ClaimRequiredModal, useClaimStatus } from './components/ClaimRequired'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
+import { StatCard } from '@/components/ui/stat-card'
 
 // Skeleton component for loading states
 function Skeleton({ className }: { className?: string }) {
@@ -153,7 +154,7 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
               setShowClaimModal(true)
             } else {
               // Proceed with normal bid placement
-              console.log('Placing bid on', auction.title)
+              // Placing bid on vehicle
             }
           }}
           className="w-full bg-[#FA7921] text-white py-2.5 rounded-lg font-medium hover:bg-[#FA7921]/90 transition-colors mt-auto"
@@ -430,297 +431,90 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* Stats Cards and Balance Row - Minimal Glass Morphism */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mb-8">
-        {/* Stats Cards Container - Same width as Upcoming Auctions */}
-        <div className="xl:col-span-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
-            {/* Active Bids Card */}
-            <Link href="/dashboard/bids">
-              <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
-              {/* Glassmorphism background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#FA7921]/5 via-transparent to-[#FF9A56]/5"></div>
-              
-              {/* Border gradient */}
-              <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-[#FA7921]/20 via-gray-200/30 to-[#FF9A56]/20">
-                <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
+      {/* Stats Cards Row - Using Reusable Component */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <Link href="/dashboard/bids">
+          <StatCard
+            title="Active Bids"
+            value="12"
+            subtitle="from last week"
+            icon={
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            }
+            status={{ label: 'Active', type: 'active' }}
+            trend={{ value: 25, label: '', isPositive: true }}
+            progress={{ value: 12, max: 20, label: 'Limit usage', showPercentage: false }}
+            variant="orange"
+          />
+        </Link>
+
+        <Link href="/dashboard/profile?tab=status">
+          <StatCard
+            title="Account Status"
+            value={isClaimedBySales ? "Premium" : "Verify Now"}
+            subtitle={isClaimedBySales ? "Full access enabled" : "Limited access"}
+            icon={
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isClaimedBySales ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                )}
+              </svg>
+            }
+            status={{ label: isClaimedBySales ? 'Verified' : 'Action needed', type: isClaimedBySales ? 'active' : 'error' }}
+            variant={isClaimedBySales ? "purple" : "red"}
+            valueClassName={!isClaimedBySales ? "text-2xl text-red-600" : "text-2xl"}
+          >
+            {!isClaimedBySales && (
+              <div className="mt-6 pt-4 border-t border-gray-50">
+                <p className="text-xs text-red-600 font-medium">Cannot place bids until verified</p>
               </div>
-              
-              {/* Animated glow effect */}
-              <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#FA7921]/20 rounded-full blur-3xl group-hover:bg-[#FA7921]/30 transition-all duration-700"></div>
-              
-              <CardContent className="relative z-10 flex flex-col h-full p-5">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-2.5 bg-gradient-to-br from-[#FA7921]/20 to-[#FF9A56]/10 rounded-xl backdrop-blur-sm border border-[#FA7921]/10">
-                    <svg className="w-4 h-4 text-[#FA7921]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <span className="px-2 py-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-full text-xs font-semibold text-green-700 flex items-center gap-1 border border-green-500/20">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                    +3
-                  </span>
-                </div>
-                
-                {/* Content */}
-                <div className="flex-1">
-                  <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Active Bids</p>
-                  <p className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">12</p>
-                  <p className="text-xs text-gray-600 mt-1.5 font-medium">From yesterday</p>
-                </div>
-                
-                {/* Footer */}
-                <div className="mt-auto pt-3 border-t border-gray-200/30">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-600 flex items-center gap-1.5 font-medium">
-                      <span className="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></span>
-                      Active Now
-                    </span>
-                    <svg className="w-4 h-4 text-gray-400 group-hover:text-[#FA7921] group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </div>
-              </CardContent>
-              </Card>
-            </Link>
+            )}
+          </StatCard>
+        </Link>
 
-            {/* Watchlist Card */}
-            <Link href="/dashboard/watchlist">
-              <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
-              {/* Glassmorphism background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#002233]/5 via-transparent to-[#003344]/5"></div>
-              
-              {/* Border gradient */}
-              <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-[#002233]/20 via-gray-200/30 to-blue-500/20">
-                <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
+        <Link href="/dashboard/notifications">
+          <StatCard
+            title="Requires Action"
+            value="5"
+            subtitle="Pending tasks"
+            icon={
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            }
+            badge={{ label: 'Urgent', variant: 'warning' }}
+            variant="amber"
+          >
+            <div className="mt-6 pt-4 border-t border-gray-50">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-amber-600 font-medium">2 urgent</span>
+                <span className="text-xs text-gray-400">3 regular</span>
               </div>
-              
-              {/* Animated glow effect */}
-              <div className="absolute -top-20 -left-20 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl group-hover:bg-blue-500/30 transition-all duration-700"></div>
-              
-              <CardContent className="relative z-10 flex flex-col h-full p-5">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-2.5 bg-gradient-to-br from-[#002233]/20 to-blue-500/10 rounded-xl backdrop-blur-sm border border-[#002233]/10">
-                    <svg className="w-4 h-4 text-[#002233]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                  </div>
-                  <span className="px-2 py-1 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-full text-xs font-semibold text-blue-700 flex items-center gap-1 border border-blue-500/20">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                    +5
-                  </span>
-                </div>
-                
-                {/* Content */}
-                <div className="flex-1">
-                  <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Watchlist</p>
-                  <p className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">24</p>
-                  <p className="text-xs text-gray-600 mt-1.5 font-medium">This week</p>
-                </div>
-                
-                {/* Footer */}
-                <div className="mt-auto pt-3 border-t border-gray-200/30">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-600 flex items-center gap-1.5 font-medium">
-                      <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full animate-pulse shadow-lg shadow-blue-500/50"></span>
-                      Monitoring
-                    </span>
-                    <svg className="w-4 h-4 text-gray-400 group-hover:text-[#002233] group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </div>
-              </CardContent>
-              </Card>
-            </Link>
-
-
-            {/* Account Status Card */}
-            <Link href="/dashboard/profile?tab=status">
-              <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
-              {/* Glassmorphism background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
-              <div className={`absolute inset-0 bg-gradient-to-tr ${isClaimedBySales ? 'from-purple-500/5 via-transparent to-indigo-500/5' : 'from-red-500/5 via-transparent to-orange-500/5'}`}></div>
-              
-              {/* Border gradient */}
-              <div className={`absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br ${isClaimedBySales ? 'from-purple-500/20 via-gray-200/30 to-indigo-500/20' : 'from-red-500/20 via-gray-200/30 to-orange-500/20'}`}>
-                <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
-              </div>
-              
-              {/* Animated glow effect */}
-              <div className={`absolute -top-20 -left-20 w-40 h-40 ${isClaimedBySales ? 'bg-purple-500/20' : 'bg-red-500/20'} rounded-full blur-3xl ${isClaimedBySales ? 'group-hover:bg-purple-500/30' : 'group-hover:bg-red-500/30'} transition-all duration-700`}></div>
-              
-              <CardContent className="relative z-10 flex flex-col h-full p-5">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`p-2.5 bg-gradient-to-br ${isClaimedBySales ? 'from-purple-500/20 to-indigo-500/10' : 'from-red-500/20 to-orange-500/10'} rounded-xl backdrop-blur-sm border ${isClaimedBySales ? 'border-purple-500/10' : 'border-red-500/10'}`}>
-                    <svg className={`w-4 h-4 ${isClaimedBySales ? 'text-purple-600' : 'text-red-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      {isClaimedBySales ? (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                      ) : (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                      )}
-                    </svg>
-                  </div>
-                  <span className={`px-2 py-1 bg-gradient-to-r ${isClaimedBySales ? 'from-green-500/20 to-emerald-500/20' : 'from-red-500/20 to-rose-500/20'} backdrop-blur-sm rounded-full text-xs font-semibold ${isClaimedBySales ? 'text-green-700' : 'text-red-700'} border ${isClaimedBySales ? 'border-green-500/20' : 'border-red-500/20'}`}>
-                    {isClaimedBySales ? 'Verified' : 'Unverified'}
-                  </span>
-                </div>
-                
-                {/* Content */}
-                <div className="flex-1">
-                  <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Account Status</p>
-                  {isClaimedBySales ? (
-                    <>
-                      <p className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Premium</p>
-                      <p className="text-xs text-gray-600 mt-1.5 font-medium">Level 3 access</p>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-xl font-bold text-red-600">Verification Required</p>
-                      <p className="text-xs text-gray-600 mt-1.5 font-medium">Cannot place bids until verified</p>
-                    </>
-                  )}
-                </div>
-                
-                {/* Footer */}
-                <div className="mt-auto pt-3 border-t border-gray-200/30">
-                  <div className="flex items-center justify-between">
-                    <span className={`text-xs ${isClaimedBySales ? 'text-gray-600' : 'text-red-600'} flex items-center gap-1.5 font-medium`}>
-                      <span className={`w-2 h-2 bg-gradient-to-r ${isClaimedBySales ? 'from-green-400 to-emerald-500' : 'from-red-400 to-rose-500'} rounded-full ${!isClaimedBySales && 'animate-pulse'} shadow-lg ${isClaimedBySales ? 'shadow-green-500/50' : 'shadow-red-500/50'}`}></span>
-                      {isClaimedBySales ? 'Full access' : 'Action required'}
-                    </span>
-                    <svg className={`w-4 h-4 text-gray-400 ${isClaimedBySales ? 'group-hover:text-purple-600' : 'group-hover:text-red-600'} group-hover:translate-x-1 transition-all`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </div>
-              </CardContent>
-              </Card>
-            </Link>
-
-            {/* Requires Action Card */}
-            <Link href="/dashboard/notifications">
-              <Card className="group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
-              {/* Glassmorphism background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
-              <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/5 via-transparent to-yellow-500/5"></div>
-              
-              {/* Border gradient */}
-              <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-amber-500/20 via-gray-200/30 to-yellow-500/20">
-                <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
-              </div>
-              
-              {/* Animated glow effect */}
-              <div className="absolute -top-20 -right-20 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl group-hover:bg-amber-500/30 transition-all duration-700"></div>
-              
-              <CardContent className="relative z-10 flex flex-col h-full p-5">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-2.5 bg-gradient-to-br from-amber-500/20 to-yellow-500/10 rounded-xl backdrop-blur-sm border border-amber-500/10">
-                    <svg className="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                  </div>
-                  <span className="px-2 py-1 bg-gradient-to-r from-red-500/20 to-orange-500/20 backdrop-blur-sm rounded-full text-xs font-semibold text-red-700 flex items-center gap-1 border border-red-500/20">
-                    Urgent
-                  </span>
-                </div>
-                
-                {/* Content */}
-                <div className="flex-1">
-                  <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Requires Action</p>
-                  <p className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">5</p>
-                  <p className="text-xs text-gray-600 mt-1.5 font-medium">Pending tasks</p>
-                </div>
-                
-                {/* Footer */}
-                <div className="mt-auto pt-3 border-t border-gray-200/30">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-amber-600 flex items-center gap-1.5 font-medium">
-                      <span className="w-2 h-2 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full animate-pulse shadow-lg shadow-amber-500/50"></span>
-                      Needs attention
-                    </span>
-                    <svg className="w-4 h-4 text-gray-400 group-hover:text-amber-600 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </div>
-              </CardContent>
-              </Card>
-            </Link>
-          </div>
-        </div>
-
-        {/* Balance Card - Same width as Recent Activity */}
-        <div className="xl:col-span-1">
-          <Card className="relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1">
-            {/* Glassmorphism background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#FA7921]/5 via-transparent to-amber-500/5"></div>
-            
-            {/* Border gradient */}
-            <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-[#FA7921]/30 via-amber-200/30 to-orange-500/30">
-              <div className="h-full w-full rounded-2xl bg-white/60 backdrop-blur-xl"></div>
             </div>
-            
-            {/* Animated glow effects */}
-            <div className="absolute -top-20 -right-20 w-48 h-48 bg-[#FA7921]/15 rounded-full blur-3xl"></div>
-            <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-amber-500/15 rounded-full blur-3xl"></div>
-            
-            <CardContent className="relative z-10 flex flex-col h-full p-6">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-gradient-to-br from-[#FA7921]/25 to-[#FF9A56]/15 rounded-xl backdrop-blur-sm border border-[#FA7921]/20">
-                  <svg className="w-5 h-5 text-[#FA7921]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                  </svg>
-                </div>
-                <span className="px-2.5 py-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-full text-xs font-bold text-green-700 border border-green-500/20">
-                  Available
-                </span>
-              </div>
-              
-              {/* Content */}
-              <div className="flex-1">
-                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Total Balance</p>
-                <p className="text-3xl font-black bg-gradient-to-r from-[#FA7921] to-[#FF9A56] bg-clip-text text-transparent mb-1">¥1,250,000</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <p className="text-sm text-gray-700 font-medium">≈ $8,333 USD</p>
-                  <span className="text-xs text-gray-500 font-medium">• 1 USD = ¥150</span>
-                </div>
-                
-                {/* Mini progress bar */}
-                <div className="mt-3 h-1.5 bg-gray-200/50 rounded-full overflow-hidden backdrop-blur-sm">
-                  <div className="h-full w-3/4 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] rounded-full shadow-lg shadow-[#FA7921]/30"></div>
-                </div>
-              </div>
-              
-              {/* Action Buttons */}
-              <div className="mt-auto pt-4 border-t border-gray-200/30">
-                <div className="grid grid-cols-2 gap-2">
-                  <Link href="/dashboard/deposit" className="group/btn relative overflow-hidden px-3 py-2.5 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white text-sm font-semibold rounded-xl transition-all text-center shadow-lg shadow-[#FA7921]/20 hover:shadow-xl hover:shadow-[#FA7921]/30">
-                    <span className="relative z-10">Deposit</span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#FF9A56] to-[#FA7921] opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
-                  </Link>
-                  <Link href="/dashboard/wallet" className="px-3 py-2.5 bg-white/50 backdrop-blur-sm text-gray-700 text-sm font-semibold rounded-xl hover:bg-white/70 transition-all text-center border border-gray-200/50">
-                    Wallet
-                  </Link>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+          </StatCard>
+        </Link>
+
+        <Link href="/dashboard/wallet">
+          <StatCard
+            title="Total Balance"
+            value="¥1.25M"
+            subtitle="≈ $8,333 USD"
+            icon={
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              </svg>
+            }
+            status={{ label: 'Available', type: 'active' }}
+            trend={{ value: 8.5, label: '', isPositive: true }}
+            progress={{ value: 75, max: 100, label: 'Utilization', showPercentage: true }}
+            action={{ label: 'View Wallet', onClick: () => {} }}
+            variant="green"
+          />
+        </Link>
       </div>
 
       {/* Main Content Section with Consistent Containers */}

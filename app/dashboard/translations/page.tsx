@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { getRandomAuctionHouse, allAuctionHouses } from '@/src/data/auctionHouses'
 import { sharedDataStore, TranslationData, TranslationStatus } from '../utils/sharedData'
 import Link from 'next/link'
+import { EmptyState } from '@/components/ui/empty-state'
 
 // Types
 interface AuctionSheetTranslation {
@@ -402,9 +403,11 @@ export default function TranslationsPage() {
         </div>
 
         {(filteredMockTranslations.length === 0 && filteredSharedTranslations.length === 0) && (
-          <div className="mt-8 text-center py-12 bg-white rounded-xl border border-gray-200">
-            <p className="text-gray-500">No translations found with the selected filter</p>
-          </div>
+          <EmptyState
+            title="No translations found"
+            description="No translations found with the selected filter"
+            className="mt-8"
+          />
         )}
       </div>
 

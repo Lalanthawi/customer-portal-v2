@@ -36,12 +36,7 @@ apiClient.interceptors.request.use(
     
     // Log request in development
     if (process.env.NODE_ENV === 'development') {
-      console.log('API Request:', {
-        method: config.method?.toUpperCase(),
-        url: config.url,
-        params: config.params,
-        data: config.data,
-      })
+      // API request logging removed
     }
     
     return config
@@ -57,11 +52,7 @@ apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
     // Log response in development
     if (process.env.NODE_ENV === 'development') {
-      console.log('API Response:', {
-        url: response.config.url,
-        status: response.status,
-        data: response.data,
-      })
+      // API response logging removed
     }
     
     // Transform response to standard format if needed
@@ -178,7 +169,7 @@ function handleLogout() {
   setAuthToken(null)
   
   // Don't redirect - just log the logout
-  console.log('User logged out')
+  // User logout logged
 }
 
 // Retry logic for failed requests

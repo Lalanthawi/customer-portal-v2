@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import type { NavigationItem, UserProfile } from './types'
 import JapanTime from './components/JapanTime'
+import { BackgroundAnimation } from '@/components/ui/background-animation'
 
 const navigation: NavigationItem[] = [
   {
@@ -54,16 +55,7 @@ const navigation: NavigationItem[] = [
     ),
   },
   {
-    name: 'My Watchlist',
-    href: '/dashboard/watchlist',
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-      </svg>
-    ),
-  },
-  {
-    name: 'My Favorites',
+    name: 'Favorites',
     href: '/dashboard/favorites',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,14 +114,6 @@ function NavigationBar() {
     },
     {
       id: 4,
-      type: 'watchlist',
-      title: 'Price Drop Alert',
-      message: 'BMW X3 on your watchlist reduced by ¥500,000',
-      time: '5 hours ago',
-      read: true
-    },
-    {
-      id: 5,
       type: 'system',
       title: 'Verification Complete',
       message: 'Your dealer account has been verified',
@@ -306,10 +290,6 @@ function NavigationBar() {
                                 ) : notification.type === 'ending' ? (
                                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                  </svg>
-                                ) : notification.type === 'watchlist' ? (
-                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
                                   </svg>
                                 ) : (
                                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -572,15 +552,21 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-[#FAFAFA] flex flex-col">
-      <JapanTime />
-      <NavigationBar />
-      <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
-        <div className="max-w-[1400px] mx-auto">
-          {children}
-        </div>
-      </main>
-      <Footer />
+    <div className="min-h-screen bg-[#FAFAFA] flex flex-col relative">
+      {/* Subtle Background Animation */}
+      <BackgroundAnimation variant="all" intensity="subtle" />
+      
+      {/* Main Content */}
+      <div className="relative z-10">
+        <JapanTime />
+        <NavigationBar />
+        <main className="flex-1">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+            {children}
+          </div>
+        </main>
+        <Footer />
+      </div>
     </div>
   )
 }

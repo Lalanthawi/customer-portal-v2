@@ -211,8 +211,8 @@ function ProfileSettingsContent() {
     { met: /[\d\W\s]/.test(passwordData.newPassword), text: 'At least one number, symbol, or whitespace character' },
   ]
 
-  const handle2FAVerification = (code: string) => {
-    console.log('2FA verification successful with code:', code)
+  const handle2FAVerification = () => {
+    // 2FA verification successful
     setShow2FA(false)
     
     if (pendingUpgrade) {
@@ -443,7 +443,7 @@ function ProfileSettingsContent() {
                     <div className="bg-white/70 backdrop-blur rounded-xl p-4 mb-4 border border-red-100">
                       <p className="text-sm text-gray-600 leading-relaxed">
                         <strong className="text-red-600">Warning:</strong> This action cannot be undone. This will permanently delete your account, 
-                        including all your bids, watchlist items, transaction history, and personal information.
+                        including all your bids, favorites, transaction history, and personal information.
                       </p>
                     </div>
                     <div className="space-y-4">
@@ -831,7 +831,7 @@ function ProfileSettingsContent() {
                   </div>
                   <div className="text-center">
                     <p className="text-3xl font-bold text-blue-600">23</p>
-                    <p className="text-sm text-gray-600 mt-1">Watchlist Items</p>
+                    <p className="text-sm text-gray-600 mt-1">Favorite Items</p>
                   </div>
                   <div className="text-center">
                     <p className="text-3xl font-bold text-purple-600">15</p>
@@ -1830,8 +1830,8 @@ function ProfileSettingsContent() {
       <AddAddressModal
         isOpen={isAddressModalOpen}
         onClose={() => setIsAddressModalOpen(false)}
-        onSave={(addressData) => {
-          console.log('New address saved:', addressData)
+        onSave={() => {
+          // New address saved
           // Here you would typically save to backend/state
           setIsAddressModalOpen(false)
         }}

@@ -28,7 +28,7 @@ export interface StageDetail {
 
 export interface ActionButton {
   label: string
-  icon: 'document' | 'credit-card' | 'location' | 'download'
+  icon: 'document' | 'credit-card' | 'location' | 'download' | 'check'
   onClick: () => void
   variant?: 'primary' | 'secondary'
 }

@@ -167,7 +167,7 @@ export default function BidDetailPage() {
           description: 'View invoice and make payment',
           completedDate: new Date('2024-01-11T10:15:00'),
           actions: [
-            { label: 'View Invoice', icon: 'document', onClick: () => console.log('View invoice') },
+            { label: 'View Invoice', icon: 'document', onClick: () => {/* View invoice */} },
             { label: 'Make Payment', icon: 'credit-card', onClick: () => setShowPaymentModal(true) }
           ]
         },
@@ -335,33 +335,6 @@ export default function BidDetailPage() {
       ]
     },
     {
-      id: 'port-arrival',
-      title: 'Port Arrival',
-      description: 'Vehicle arrival at destination port',
-      status: 'pending',
-      progress: 0,
-      tasksCompleted: 0,
-      totalTasks: 2,
-      estimatedDate: new Date('2024-02-16T17:00:00'),
-      isExpandable: true,
-      details: [
-        {
-          id: 'arrival-1',
-          title: 'Port Entry',
-          status: 'pending',
-          description: 'Vehicle arrived at destination port',
-          dueDate: new Date('2024-02-15T17:00:00')
-        },
-        {
-          id: 'arrival-2',
-          title: 'Container Unloading',
-          status: 'pending',
-          description: 'Vehicle unloaded from container',
-          dueDate: new Date('2024-02-16T17:00:00')
-        }
-      ]
-    },
-    {
       id: 'delivered',
       title: 'Delivered',
       description: deliveryPhotosUploaded 
@@ -369,15 +342,23 @@ export default function BidDetailPage() {
         : 'Final delivery to customer',
       status: deliveryPhotosUploaded ? 'completed' : 'pending',
       progress: deliveryPhotosUploaded ? 100 : 0,
-      tasksCompleted: deliveryPhotosUploaded ? 1 : 0,
-      totalTasks: 1,
+      tasksCompleted: deliveryPhotosUploaded ? 2 : 0,
+      totalTasks: 2,
       estimatedDate: new Date('2024-02-20T17:00:00'),
       completedDate: deliveryPhotosUploaded ? new Date() : undefined,
       isExpandable: true,
       details: [
         {
           id: 'delivery-1',
-          title: 'Vehicle Delivered',
+          title: 'Port Entry',
+          status: deliveryPhotosUploaded ? 'completed' : 'pending',
+          description: 'Vehicle arrived at destination port',
+          completedDate: deliveryPhotosUploaded ? new Date('2024-02-15T17:00:00') : undefined,
+          dueDate: !deliveryPhotosUploaded ? new Date('2024-02-15T17:00:00') : undefined
+        },
+        {
+          id: 'delivery-2',
+          title: 'Final Delivery',
           status: deliveryPhotosUploaded ? 'completed' : 'pending',
           description: deliveryPhotosUploaded 
             ? 'Delivery confirmed with photos' 
@@ -386,12 +367,13 @@ export default function BidDetailPage() {
           dueDate: !deliveryPhotosUploaded ? new Date('2024-02-20T17:00:00') : undefined,
           actions: !deliveryPhotosUploaded ? [
             {
-              label: 'Confirm Delivery',
-              icon: 'document' as const,
+              label: 'Confirm Received',
+              icon: 'check' as const,
               onClick: () => {
-                const confirmed = confirm('Confirm vehicle delivery?')
+                const confirmed = confirm('Confirm that you have received the vehicle?')
                 if (confirmed) {
                   setDeliveryPhotosUploaded(true)
+                  alert('Thank you for confirming delivery!')
                 }
               }
             }
@@ -920,8 +902,8 @@ export default function BidDetailPage() {
             <ShipmentTimeline
               orderId={bidDetail.auctionId}
               stages={shipmentStages}
-              onStageToggle={(stageId) => console.log('Stage toggled:', stageId)}
-              onTaskUpdate={(stageId, taskId) => console.log('Task updated:', stageId, taskId)}
+              onStageToggle={() => {/* Stage toggled */}}
+              onTaskUpdate={() => {/* Task updated */}}
             />
           </>
         )}
@@ -1195,7 +1177,7 @@ export default function BidDetailPage() {
               <button 
                 onClick={() => {
                   // Submit bid change
-                  console.log('Submitting bid change:', newBidAmount)
+                  // Submitting bid change
                   setShowChangeBidModal(false)
                   setShowUrgentWarning(false)
                   setNewBidAmount('')
@@ -1306,7 +1288,7 @@ export default function BidDetailPage() {
               <button 
                 onClick={() => {
                   // Submit cancellation request
-                  console.log('Submitting cancellation:', cancellationReason)
+                  // Submitting cancellation
                   setShowCancelBidModal(false)
                   setShowUrgentWarning(false)
                   setCancellationReason('')
