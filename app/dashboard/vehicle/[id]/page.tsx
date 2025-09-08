@@ -593,6 +593,67 @@ export default function VehiclePageShadcn() {
               </CardContent>
             </Card>
 
+            {/* Bidding Panel - Mobile Only (shows after images) */}
+            <Card className="bg-white border border-gray-200 lg:hidden">
+              <CardHeader>
+                <CardTitle>Place Your Bid</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4 mb-6">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Start Price</p>
+                    <p className="text-2xl font-bold">{formatJPY(vehicleData.pricing.startPrice)}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Current Bid</p>
+                    <p className="text-2xl font-bold text-[#FA7921]">{formatJPY(vehicleData.pricing.currentBid)}</p>
+                  </div>
+                </div>
+
+                <form onSubmit={handleBidSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Bid Amount (JPY)
+                    </label>
+                    <Input
+                      type="text"
+                      value={bidAmount}
+                      onChange={(e) => setBidAmount(e.target.value)}
+                      placeholder="Enter your bid..."
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Message (Optional)
+                    </label>
+                    <Textarea
+                      value={bidMessage}
+                      onChange={(e) => setBidMessage(e.target.value)}
+                      placeholder="Add a message with your bid..."
+                      rows={3}
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={isSubmittingBid}
+                    className="w-full"
+                  >
+                    {isSubmittingBid ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      'Place Bid'
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+
             {/* Car Specifications */}
             <Card className="bg-white border border-gray-200">
               <CardHeader>
@@ -737,26 +798,8 @@ export default function VehiclePageShadcn() {
 
           {/* Right Column - Bidding and Actions */}
           <div className="space-y-6">
-            {/* Auction Timer */}
-            <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200 p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-                  <span className="text-xs font-medium text-orange-800">LIVE AUCTION</span>
-                </div>
-                <Clock className="h-4 w-4 text-orange-600" />
-              </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-xs text-gray-600">Ends in:</span>
-                <span className="text-sm font-bold text-gray-900">{timeRemaining}</span>
-              </div>
-              <div className="mt-2 pt-2 border-t border-orange-200/50">
-                <p className="text-xs text-gray-600 truncate">Lot #{vehicleData.auction.lotNumber}</p>
-              </div>
-            </div>
-
-            {/* Bidding Panel */}
-            <Card className="bg-white border border-gray-200">
+            {/* Bidding Panel - Desktop Only (shows in right column) */}
+            <Card className="bg-white border border-gray-200 hidden lg:block">
               <CardHeader>
                 <CardTitle>Place Your Bid</CardTitle>
               </CardHeader>
@@ -815,6 +858,25 @@ export default function VehiclePageShadcn() {
                 </form>
               </CardContent>
             </Card>
+
+            {/* Auction Timer */}
+            <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200 p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                  <span className="text-xs font-medium text-orange-800">LIVE AUCTION</span>
+                </div>
+                <Clock className="h-4 w-4 text-orange-600" />
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-xs text-gray-600">Ends in:</span>
+                <span className="text-sm font-bold text-gray-900">{timeRemaining}</span>
+              </div>
+              <div className="mt-2 pt-2 border-t border-orange-200/50">
+                <p className="text-xs text-gray-600 truncate">Lot #{vehicleData.auction.lotNumber}</p>
+              </div>
+            </div>
+
 
             {/* Average Price */}
             <Card className="bg-white border border-gray-200">
@@ -876,10 +938,10 @@ export default function VehiclePageShadcn() {
                   </Dialog>
                   
                   <div className="flex gap-2">
-                    <Button variant="outline" className="flex-1">
+                    <Button variant="outline" className="flex-1 text-white bg-green-500 hover:bg-green-600 border-green-500">
                       WhatsApp
                     </Button>
-                    <Button variant="outline" className="flex-1">
+                    <Button variant="outline" className="flex-1 text-white bg-green-600 hover:bg-green-700 border-green-600">
                       WeChat
                     </Button>
                   </div>
@@ -887,7 +949,7 @@ export default function VehiclePageShadcn() {
 
                 <div className="mt-6 pt-6 border-t">
                   <p className="text-sm font-medium mb-3">Add to Favorites List</p>
-                  <div className="space-y-2">
+                  <div className="space-y-2 mb-4">
                     {['A', 'B', 'C', 'D', 'E'].map((list) => (
                       <label key={list} className="flex items-center gap-3 cursor-pointer">
                         <input
@@ -900,6 +962,17 @@ export default function VehiclePageShadcn() {
                       </label>
                     ))}
                   </div>
+                  <Button 
+                    onClick={() => {
+                      if (favoritesList.length > 0) {
+                        alert(`Added to favorites: List ${favoritesList.join(', List ')}`)
+                      }
+                    }}
+                    disabled={favoritesList.length === 0}
+                    className="w-full bg-[#FA7921] hover:bg-[#FA7921]/90"
+                  >
+                    Add to Selected Lists
+                  </Button>
                 </div>
               </CardContent>
             </Card>

@@ -348,20 +348,20 @@ export default function AuctionsPage() {
         <div className="absolute inset-0 bg-gradient-to-br from-[#002233] via-[#003344] to-[#FA7921]/20"></div>
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
         
-        <div className="relative px-8 py-16 md:py-20">
+        <div className="relative px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
           <div className="max-w-5xl mx-auto">
             {/* Animated Badge */}
-            <div className="flex justify-center mb-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+            <div className="flex justify-center mb-4 sm:mb-6">
+              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FA7921] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FA7921]"></span>
                 </span>
-                <span className="text-sm text-white/90">2,456 Active Auctions</span>
+                <span className="text-xs sm:text-sm text-white/90">2,456 Active Auctions</span>
               </div>
             </div>
 
-            <h1 className="text-5xl md:text-6xl font-bold text-white text-center mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white text-center mb-3 sm:mb-4">
               Find Your Perfect{' '}
               <span className="relative">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FA7921] to-[#FFB956]">
@@ -375,80 +375,130 @@ export default function AuctionsPage() {
               </span>
             </h1>
             
-            <p className="text-gray-200 text-lg md:text-xl text-center mb-10 max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-200 text-center mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto px-4">
               Browse thousands of premium vehicles from Japan&apos;s most trusted dealers
             </p>
 
             {/* Enhanced Search Bar */}
             <form onSubmit={handleSearch} className="max-w-3xl mx-auto">
               <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-[#FA7921] to-[#FFB956] rounded-2xl opacity-20 group-hover:opacity-30 blur transition duration-200"></div>
-                <div className="relative flex gap-2 bg-white/95 backdrop-blur-xl rounded-2xl p-2">
-                  <div className="flex-1 flex items-center px-4">
-                    <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search make, model, or keyword..."
-                      className="flex-1 py-3 text-gray-900 placeholder-black/70 focus:outline-none bg-transparent"
-                    />
+                <div className="absolute -inset-1 bg-gradient-to-r from-[#FA7921] to-[#FFB956] rounded-2xl opacity-20 group-hover:opacity-30 blur transition duration-200 hidden sm:block"></div>
+                
+                {/* Mobile Layout */}
+                <div className="sm:hidden">
+                  <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-3 space-y-3">
+                    <div className="flex items-center px-3 py-2 bg-gray-50 rounded-xl">
+                      <svg className="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search vehicles..."
+                        className="flex-1 text-sm text-gray-900 placeholder-gray-600 focus:outline-none bg-transparent"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowFilters(!showFilters)}
+                        className={`flex-1 px-3 py-2 rounded-xl transition-all flex items-center justify-center gap-2 text-sm ${
+                          activeFiltersCount > 0 
+                            ? 'bg-[#FA7921]/10 text-[#FA7921] border border-[#FA7921]/30' 
+                            : 'bg-gray-100 text-gray-700'
+                        }`}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                        <span className="font-medium">
+                          Filters{activeFiltersCount > 0 && ` (${activeFiltersCount})`}
+                        </span>
+                      </button>
+                      <button
+                        type="submit"
+                        className="flex-1 px-3 py-2 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium text-sm"
+                      >
+                        Search
+                      </button>
+                    </div>
                   </div>
-                  
-                  <button
-                    type="button"
-                    onClick={() => setShowFilters(!showFilters)}
-                    className={`relative px-5 py-3 rounded-xl transition-all flex items-center gap-2 ${
-                      activeFiltersCount > 0 
-                        ? 'bg-[#FA7921]/10 text-[#FA7921] hover:bg-[#FA7921]/20 border-2 border-[#FA7921]/30' 
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    <svg className={`w-5 h-5 ${activeFiltersCount > 0 ? 'text-[#FA7921]' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                    </svg>
-                    <span className="font-medium">
-                      {activeFiltersCount > 0 ? `Filters (${activeFiltersCount})` : 'Filters'}
-                    </span>
-                    {activeFiltersCount > 0 && (
-                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#FA7921] text-white text-xs rounded-full flex items-center justify-center font-bold animate-pulse">
-                        {activeFiltersCount}
+                </div>
+
+                {/* Desktop Layout */}
+                <div className="hidden sm:block">
+                  <div className="relative flex gap-2 bg-white/95 backdrop-blur-xl rounded-2xl p-2">
+                    <div className="flex-1 flex items-center px-4">
+                      <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search make, model, or keyword..."
+                        className="flex-1 py-3 text-gray-900 placeholder-black/70 focus:outline-none bg-transparent"
+                      />
+                    </div>
+                    
+                    <button
+                      type="button"
+                      onClick={() => setShowFilters(!showFilters)}
+                      className={`relative px-3 lg:px-5 py-3 rounded-xl transition-all flex items-center gap-2 ${
+                        activeFiltersCount > 0 
+                          ? 'bg-[#FA7921]/10 text-[#FA7921] hover:bg-[#FA7921]/20 border-2 border-[#FA7921]/30' 
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      <svg className={`w-5 h-5 ${activeFiltersCount > 0 ? 'text-[#FA7921]' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                      </svg>
+                      <span className="font-medium hidden md:inline">
+                        {activeFiltersCount > 0 ? `Filters (${activeFiltersCount})` : 'Filters'}
                       </span>
-                    )}
-                  </button>
-                  
-                  <button
-                    type="submit"
-                    className="px-8 py-3 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02] flex items-center gap-2"
-                  >
-                    <span>Search</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </button>
+                      {activeFiltersCount > 0 && (
+                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#FA7921] text-white text-xs rounded-full flex items-center justify-center font-bold animate-pulse">
+                          {activeFiltersCount}
+                        </span>
+                      )}
+                    </button>
+                    
+                    <button
+                      type="submit"
+                      className="px-4 lg:px-8 py-3 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02] flex items-center gap-2"
+                    >
+                      <span className="hidden sm:inline">Search</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
             </form>
 
             {/* Recent Searches - Modern Pills */}
-            <div className="flex flex-wrap items-center gap-2 justify-center mt-8">
-              <span className="text-white/60 text-sm font-medium mr-1">
-                Trending {userCountry !== 'default' && `in ${userCountry}`}:
-              </span>
-              {trendingSearches.map((search, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSearchQuery(search)}
-                  className="group px-4 py-2 bg-white/10 backdrop-blur-md text-white/90 text-sm rounded-full hover:bg-white/20 transition-all border border-white/10 hover:border-white/30 flex items-center gap-2"
-                >
-                  <svg className="w-3 h-3 text-white/60 group-hover:text-[#FA7921] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                  {search}
-                </button>
-              ))}
+            <div className="mt-6 sm:mt-8">
+              <div className="text-center mb-3">
+                <span className="text-white/60 text-xs sm:text-sm font-medium">
+                  Trending {userCountry !== 'default' && `in ${userCountry}`}:
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {trendingSearches.slice(0, 4).map((search, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSearchQuery(search)}
+                    className="group px-3 sm:px-4 py-1.5 sm:py-2 bg-white/10 backdrop-blur-md text-white/90 text-xs sm:text-sm rounded-full hover:bg-white/20 transition-all border border-white/10 hover:border-white/30 flex items-center gap-1 sm:gap-2"
+                  >
+                    <svg className="w-3 h-3 text-white/60 group-hover:text-[#FA7921] transition-colors hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    <span className="truncate max-w-[120px] sm:max-w-none">{search}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -524,9 +574,39 @@ export default function AuctionsPage() {
           </div>
       </>
 
-      {/* Quick Actions Bar - Sticky when scrolling */}
-      <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md border-y border-gray-100 px-6 py-3 mb-8">
-        <div className="flex items-center justify-between">
+      {/* Quick Actions Bar - Mobile Responsive */}
+      <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md border-y border-gray-100 px-4 sm:px-6 py-3 mb-8">
+        {/* Mobile Layout */}
+        <div className="sm:hidden">
+          <div className="flex flex-col gap-3">
+            {/* Sort Dropdown */}
+            <select
+              value={filters.sortBy}
+              onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
+              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-900 font-medium focus:ring-2 focus:ring-[#FA7921] focus:border-transparent [&>option]:text-gray-900"
+              style={{ color: '#111827', opacity: 1 }}
+            >
+              <option value="relevance" className="text-gray-900">Sort by: Relevance</option>
+              <option value="price-low" className="text-gray-900">Price: Low to High</option>
+              <option value="price-high" className="text-gray-900">Price: High to Low</option>
+              <option value="year-new" className="text-gray-900">Year: Newest First</option>
+              <option value="mileage-low" className="text-gray-900">Mileage: Lowest First</option>
+            </select>
+            
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-2">
+              <button className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium">
+                Save Search
+              </button>
+              <button className="px-3 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#e86f1e] transition-colors text-sm font-medium">
+                Create Alert
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Desktop Layout */}
+        <div className="hidden sm:flex items-center justify-between">
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-500">Sort by:</span>
             <select
@@ -556,44 +636,47 @@ export default function AuctionsPage() {
 
       {/* Manufacturers Grid */}
       <div className="mb-12">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Browse by Manufacturer</h2>
-          <button className="text-[#FA7921] hover:text-[#e86f1e] font-medium text-sm">
+        <div className="flex items-center justify-between mb-6 px-4 sm:px-0">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Browse by Manufacturer</h2>
+          <button className="text-[#FA7921] hover:text-[#e86f1e] font-medium text-xs sm:text-sm">
             View All →
           </button>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4 px-4 sm:px-0">
           {manufacturers.slice(0, 16).map((manufacturer) => (
             <button
               key={manufacturer.id}
               onClick={() => toggleManufacturer(manufacturer.id)}
-              className={`group relative bg-white rounded-xl p-4 border-2 transition-all ${
+              className={`group relative bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 border-2 transition-all ${
                 filters.manufacturers.includes(manufacturer.id)
                   ? 'border-[#FA7921] shadow-lg'
                   : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
               }`}
             >
               {filters.manufacturers.includes(manufacturer.id) && (
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-[#FA7921] rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-5 h-5 sm:w-6 sm:h-6 bg-[#FA7921] rounded-full flex items-center justify-center">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 </div>
               )}
               
               <div className="flex flex-col items-center">
-                <div className="w-12 h-12 mb-2 flex items-center justify-center">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 mb-1 sm:mb-2 flex items-center justify-center">
                   {manufacturerLogos[manufacturer.id] || (
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <span className="text-lg font-bold text-gray-400">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <span className="text-sm sm:text-lg font-bold text-gray-400">
                         {manufacturer.name.slice(0, 2).toUpperCase()}
                       </span>
                     </div>
                   )}
                 </div>
-                <h3 className="font-medium text-gray-900 text-sm">{manufacturer.name}</h3>
-                <p className="text-xs text-gray-500 mt-1">{manufacturer.vehicleCount} cars</p>
+                <h3 className="font-medium text-gray-900 text-xs sm:text-sm truncate max-w-full">{manufacturer.name}</h3>
+                <p className="text-xs text-gray-500 mt-0.5 sm:mt-1">
+                  <span className="hidden sm:inline">{manufacturer.vehicleCount} cars</span>
+                  <span className="sm:hidden">{manufacturer.vehicleCount}</span>
+                </p>
               </div>
             </button>
           ))}
@@ -631,20 +714,21 @@ export default function AuctionsPage() {
 
       {/* Popular Categories */}
       <div className="mb-12">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6 px-4 sm:px-0">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Popular Categories</h2>
-            <p className="text-sm text-gray-500 mt-1">Browse vehicles by type</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Popular Categories</h2>
+            <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">Browse vehicles by type</p>
           </div>
-          <button className="text-[#FA7921] hover:text-[#e86f1e] font-medium text-sm flex items-center gap-1">
-            <span>All Categories</span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button className="text-[#FA7921] hover:text-[#e86f1e] font-medium text-xs sm:text-sm flex items-center gap-1">
+            <span className="hidden sm:inline">All Categories</span>
+            <span className="sm:hidden">View All</span>
+            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 px-4 sm:px-0">
           {[
             { name: 'SUV', image: '/images/popular/suv.svg', count: '1,234', color: 'from-blue-500 to-blue-600' },
             { name: 'Sedan', image: '/images/popular/sedan.svg', count: '987', color: 'from-purple-500 to-purple-600' },
@@ -655,39 +739,40 @@ export default function AuctionsPage() {
           ].map((category) => (
             <button
               key={category.name}
-              className="group relative bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FA7921] transition-all hover:shadow-xl hover:-translate-y-1"
+              className="group relative bg-white rounded-xl sm:rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FA7921] transition-all hover:shadow-xl sm:hover:-translate-y-1"
             >
               {/* Gradient Background */}
               <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
               
               {/* Content */}
-              <div className="relative p-6">
+              <div className="relative p-4 sm:p-6">
                 {/* Icon Container */}
-                <div className="w-16 h-16 mx-auto mb-4 relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 rounded-2xl group-hover:from-[#FA7921]/10 group-hover:to-[#FF9A56]/10 transition-colors duration-300"></div>
+                <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 rounded-xl sm:rounded-2xl group-hover:from-[#FA7921]/10 group-hover:to-[#FF9A56]/10 transition-colors duration-300"></div>
                   <div className="relative flex items-center justify-center h-full">
                     <Image 
                       src={category.image}
                       alt={category.name}
                       width={40}
                       height={40}
-                      className="w-10 h-10 object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                      className="w-8 h-8 sm:w-10 sm:h-10 object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300"
                     />
                   </div>
                 </div>
                 
                 {/* Category Name */}
-                <h3 className="font-semibold text-gray-900 text-base mb-1 group-hover:text-[#FA7921] transition-colors">
+                <h3 className="font-semibold text-gray-900 text-sm sm:text-base mb-0.5 sm:mb-1 group-hover:text-[#FA7921] transition-colors">
                   {category.name}
                 </h3>
                 
                 {/* Vehicle Count */}
                 <p className="text-xs text-gray-500 group-hover:text-gray-600">
-                  {category.count} vehicles
+                  <span className="hidden sm:inline">{category.count} vehicles</span>
+                  <span className="sm:hidden">{category.count}</span>
                 </p>
                 
-                {/* Hover Arrow */}
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {/* Hover Arrow - Desktop Only */}
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:block">
                   <div className="w-8 h-8 bg-[#FA7921] rounded-full flex items-center justify-center">
                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

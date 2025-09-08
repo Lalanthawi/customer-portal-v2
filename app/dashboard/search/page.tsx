@@ -948,8 +948,8 @@ function SearchResults() {
   return (
     <div className="w-full -mt-6">
       {/* Search Header */}
-      <div className="bg-gradient-to-r from-[#002233] to-[#003344] text-white rounded-2xl p-6 mb-6">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-gradient-to-r from-[#002233] to-[#003344] text-white rounded-2xl p-4 sm:p-6 mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
           <div>
             <h1 className="text-2xl font-bold mb-2">
               {searchQuery ? `Search Results for "${searchQuery}"` : 'All Vehicles'}
@@ -960,7 +960,7 @@ function SearchResults() {
           </div>
           <button
             onClick={() => router.push('/dashboard/explore')}
-            className="px-4 py-2 bg-white/10 backdrop-blur-md rounded-lg hover:bg-white/20 transition-all flex items-center gap-2"
+            className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white/10 backdrop-blur-md rounded-lg hover:bg-white/20 transition-all flex items-center gap-2 text-sm sm:text-base"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -985,7 +985,7 @@ function SearchResults() {
 
       {/* Quick Filter Bar */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4">
-        <div className="flex items-center gap-3 overflow-x-auto pb-2">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 sm:overflow-x-auto sm:flex-nowrap pb-2">
           <span className="text-sm font-medium text-gray-700 flex-shrink-0">Quick Filters:</span>
           
           {/* Price Range */}
@@ -1170,7 +1170,7 @@ function SearchResults() {
 
       {/* Controls Bar */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-4">
             {/* View Mode Toggle */}
             <div className="flex items-center bg-gray-100 rounded-lg p-1">
@@ -1228,10 +1228,10 @@ function SearchResults() {
         </div>
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* Sidebar Filters - Expanded */}
         {showFilters && (
-          <div className="w-80 bg-white rounded-xl shadow-sm border border-gray-100 h-fit sticky top-6">
+          <div className="w-full lg:w-80 bg-white rounded-xl shadow-sm border border-gray-100 h-fit lg:sticky lg:top-6">
             <div className="p-6 border-b border-gray-100">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
@@ -1649,7 +1649,7 @@ function SearchResults() {
         {/* Results Grid/List */}
         <div className="flex-1">
           {viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {filteredVehicles.map(vehicle => (
                 <div key={vehicle.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group">
                   {/* Image */}
@@ -1741,10 +1741,10 @@ function SearchResults() {
           ) : (
             <div className="space-y-4">
               {filteredVehicles.map(vehicle => (
-                <div key={vehicle.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-lg transition-all duration-300">
-                  <div className="flex gap-6">
+                <div key={vehicle.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
                     {/* Image */}
-                    <div className="relative w-64 h-48 rounded-lg overflow-hidden flex-shrink-0">
+                    <div className="relative w-full sm:w-64 h-48 rounded-lg overflow-hidden flex-shrink-0">
                       <Image
                         src={vehicle.imageUrl}
                         alt={`${vehicle.make} ${vehicle.model}`}
@@ -1770,14 +1770,14 @@ function SearchResults() {
                             <span>{vehicle.mileage.toLocaleString()} km</span>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <p className="text-2xl font-bold text-[#FA7921]">{formatPrice(vehicle.price)}</p>
-                          <p className="text-sm text-gray-500">{vehicle.bids} bids • <span className="text-red-600 font-semibold">{getTimeRemaining(vehicle.auctionEndTime)} left</span></p>
+                        <div className="text-right mt-3 sm:mt-0">
+                          <p className="text-xl sm:text-2xl font-bold text-[#FA7921]">{formatPrice(vehicle.price)}</p>
+                          <p className="text-xs sm:text-sm text-gray-500">{vehicle.bids} bids • <span className="text-red-600 font-semibold">{getTimeRemaining(vehicle.auctionEndTime)} left</span></p>
                         </div>
                       </div>
 
                       {/* Specs Grid */}
-                      <div className="grid grid-cols-6 gap-4 mb-4">
+                      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4 mb-4">
                         <div>
                           <p className="text-xs text-gray-500">Transmission</p>
                           <p className="text-sm font-medium text-gray-900">{vehicle.transmission}</p>
@@ -1819,8 +1819,8 @@ function SearchResults() {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center justify-end">
-                        <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-between sm:justify-end">
+                        <div className="flex items-center gap-3 w-full sm:w-auto">
                           <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                             <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -1828,7 +1828,7 @@ function SearchResults() {
                           </button>
                           <Link
                             href={`/dashboard/vehicle/${vehicle.id}`}
-                            className="px-6 py-2 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white font-medium rounded-lg hover:shadow-lg transition-all"
+                            className="flex-1 sm:flex-none text-center px-4 sm:px-6 py-2 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white font-medium rounded-lg hover:shadow-lg transition-all"
                           >
                             View Details
                           </Link>
