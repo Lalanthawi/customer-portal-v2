@@ -441,10 +441,26 @@ export default function DashboardPage() {
             value="12"
             subtitle="from last week"
             status={{ label: 'Active', type: 'active' }}
-            trend={{ value: 25, label: '', isPositive: true }}
-            progress={{ value: 12, max: 20, label: 'Limit usage', showPercentage: false }}
+            trend={{ value: 25, label: 'from last month', isPositive: true }}
             variant="orange"
-          />
+          >
+            <div className="mt-6 pt-4 border-t border-gray-50">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600">Winning</span>
+                  <span className="font-semibold text-green-600">7</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600">Outbid</span>
+                  <span className="font-semibold text-amber-600">3</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600">Watching</span>
+                  <span className="font-semibold text-gray-900">2</span>
+                </div>
+              </div>
+            </div>
+          </StatCard>
         </Link>
 
         <Link href="/dashboard/profile?tab=status">
@@ -456,11 +472,42 @@ export default function DashboardPage() {
             variant={isClaimedBySales ? "purple" : "red"}
             valueClassName={!isClaimedBySales ? "text-2xl text-red-600" : "text-2xl"}
           >
-            {!isClaimedBySales && (
-              <div className="mt-6 pt-4 border-t border-gray-50">
-                <p className="text-xs text-red-600 font-medium">Cannot place bids until verified</p>
-              </div>
-            )}
+            <div className="mt-6 pt-4 border-t border-gray-50">
+              {isClaimedBySales ? (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600">Bid Limit</span>
+                    <span className="font-semibold text-gray-900">¥10M</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600">Member Since</span>
+                    <span className="font-semibold text-gray-900">2023</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600">Trust Score</span>
+                    <span className="font-semibold text-purple-600">95/100</span>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="mb-5"></div>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-600">Status</span>
+                      <span className="font-semibold text-red-600">Unverified</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-600">Access Level</span>
+                      <span className="font-semibold text-amber-600">Limited</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-600">Required</span>
+                      <span className="font-semibold text-gray-900">Verify</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </StatCard>
         </Link>
 
@@ -469,13 +516,24 @@ export default function DashboardPage() {
             title="Requires Action"
             value="5"
             subtitle="Pending tasks"
-            badge={{ label: 'Urgent', variant: 'warning' }}
+            status={{ label: 'Urgent', type: 'warning' }}
+            trend={{ value: 2, label: 'new today', isPositive: false }}
             variant="amber"
           >
             <div className="mt-6 pt-4 border-t border-gray-50">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-amber-600 font-medium">2 urgent</span>
-                <span className="text-xs text-gray-400">3 regular</span>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600">Payment Due</span>
+                  <span className="font-semibold text-amber-600">2</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600">Documents</span>
+                  <span className="font-semibold text-gray-900">1</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600">Expiring Bids</span>
+                  <span className="font-semibold text-gray-900">2</span>
+                </div>
               </div>
             </div>
           </StatCard>
@@ -487,12 +545,33 @@ export default function DashboardPage() {
           subtitle="≈ $8,333 USD"
           status={{ label: 'Available', type: 'active' }}
           trend={{ value: 8.5, label: 'from last month', isPositive: true }}
-          action={{ 
-            label: 'Open Wallet', 
-            onClick: () => window.location.href = '/dashboard/wallet'
-          }}
           variant="green"
-        />
+        >
+          <div className="mt-6 pt-4 border-t border-gray-50">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-600">Available</span>
+                <span className="font-semibold text-gray-900">¥950K</span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-600">Pending</span>
+                <span className="font-semibold text-gray-900">¥300K</span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-600">Quick Action</span>
+                <span 
+                  onClick={() => window.location.href = '/dashboard/wallet?action=deposit'}
+                  className="font-semibold text-green-600 hover:text-green-700 cursor-pointer transition-colors flex items-center gap-1"
+                >
+                  Add funds
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m6-6H6" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </StatCard>
         </div>
       </div>
 
