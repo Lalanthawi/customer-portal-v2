@@ -1,7 +1,7 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
 import { Card, CardContent } from '@/components/ui/card'
-import { TrendingUp, TrendingDown, ChevronRight } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 
 interface StatCardProps {
   title: string
@@ -84,150 +84,154 @@ export function StatCard({
 
   return (
     <Card className={cn(
-      'relative h-full min-h-[140px] overflow-hidden',
-      'bg-white',
-      'border-0 shadow-[0_2px_8px_rgba(0,0,0,0.04)]',
-      'hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-500 ease-out',
-      'hover:-translate-y-1 transform',
-      'group',
+      'group relative overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1',
       className
     )}>
-      <CardContent className="p-6 relative">
-        {/* Icon */}
-        {icon && (
-          <div 
-            className="absolute top-6 right-6 p-2.5 rounded-xl transition-all duration-500 ease-out group-hover:scale-110 group-hover:rotate-3"
-            style={{ 
-              backgroundColor: `${color}12`,
-              color: color
-            }}
-          >
-            {icon}
-          </div>
-        )}
-        
-        {/* Title and Badge */}
+      {/* Glassmorphism background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl"></div>
+      <div 
+        className="absolute inset-0 bg-gradient-to-tr via-transparent"
+        style={{
+          background: `linear-gradient(to top right, ${color}08, transparent, ${color}08)`
+        }}
+      ></div>
+      
+      {/* Border gradient */}
+      <div 
+        className="absolute inset-0 rounded-2xl p-[1px]"
+        style={{
+          background: `linear-gradient(to bottom right, ${color}33, rgba(229, 231, 235, 0.3), ${color}33)`
+        }}
+      >
+        <div className="h-full w-full rounded-2xl bg-white/50 backdrop-blur-xl"></div>
+      </div>
+      
+      {/* Animated glow effect */}
+      <div 
+        className="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl transition-all duration-700"
+        style={{
+          backgroundColor: `${color}33`,
+        }}
+      ></div>
+      
+      <CardContent className="relative z-10 flex flex-col h-full p-5">
+        {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <h3 className="text-[12px] font-medium text-gray-600 uppercase tracking-wider animate-in fade-in slide-in-from-left-2 duration-500">
-              {title}
-            </h3>
-            {badge && (
-              <span 
-                className="text-[10px] font-semibold px-2 py-0.5 rounded-full animate-in fade-in zoom-in-95 duration-700 delay-150"
-                style={{ 
-                  color: color,
-                  backgroundColor: `${color}12`
-                }}
-              >
-                {badge.label}
-              </span>
-            )}
-          </div>
-          
-          {status && !icon && (
-            <div className="flex items-center gap-1.5 animate-in fade-in slide-in-from-right-2 duration-500">
-              <div 
-                className={cn(
-                  "w-1.5 h-1.5 rounded-full animate-pulse",
-                  status.type === 'active' && "bg-green-500",
-                  status.type === 'warning' && "bg-yellow-500",
-                  status.type === 'error' && "bg-red-500"
-                )}
-              />
-              <span className="text-[11px] text-gray-600 font-medium">{status.label}</span>
+          {icon && (
+            <div 
+              className="p-2.5 rounded-xl backdrop-blur-sm border"
+              style={{
+                backgroundColor: `${color}14`,
+                borderColor: `${color}1A`,
+                color: color
+              }}
+            >
+              {icon}
             </div>
           )}
-        </div>
-
-        {/* Value Section */}
-        <div className="mb-5">
-          <div className="flex items-end justify-between">
-            <div>
-              <p className={cn(
-                "text-[32px] font-semibold leading-none tracking-[-0.02em] animate-in fade-in slide-in-from-bottom-3 duration-700 transition-all group-hover:scale-105 origin-left",
-                valueClassName || "text-gray-900"
-              )}>
-                {value}
-              </p>
-              {subtitle && (
-                <div className="text-[13px] text-gray-600 mt-1 font-medium animate-in fade-in slide-in-from-bottom-2 duration-700 delay-100">{subtitle}</div>
+          {badge && (
+            <span 
+              className="px-2 py-1 backdrop-blur-sm rounded-full text-xs font-semibold flex items-center gap-1 border"
+              style={{
+                backgroundColor: trend?.isPositive ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                borderColor: trend?.isPositive ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                color: trend?.isPositive ? '#16a34a' : '#dc2626'
+              }}
+            >
+              {trend && (
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
               )}
-            </div>
-            
-            {trend && (
-              <div className="flex items-center gap-1 pb-1 animate-in fade-in zoom-in-90 duration-700 delay-200">
-                <span 
-                  className="text-[13px] font-semibold transition-all duration-300 group-hover:scale-110"
-                  style={{ 
-                    color: trend.customColor || (trend.isPositive ? '#22c55e' : '#ef4444')
-                  }}
-                >
-                  {trend.isPositive ? '+' : '-'}{Math.abs(trend.value)}%
-                </span>
-                {trend.isPositive ? (
-                  <TrendingUp 
-                    className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-y-[-2px]" 
-                    strokeWidth={2}
-                    style={{ color: trend.customColor || '#22c55e' }}
-                  />
-                ) : (
-                  <TrendingDown 
-                    className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-y-[2px]" 
-                    strokeWidth={2}
-                    style={{ color: trend.customColor || '#ef4444' }}
-                  />
-                )}
-              </div>
-            )}
-          </div>
-          
-          {trend?.label && (
-            <p className="text-[11px] text-gray-500 mt-1 font-medium">{trend.label}</p>
+              {badge.label}
+            </span>
+          )}
+        </div>
+        
+        {/* Content */}
+        <div className="flex-1">
+          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">{title}</p>
+          <p className={cn(
+            "text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent",
+            valueClassName
+          )}>
+            {value}
+          </p>
+          {subtitle && (
+            <p className="text-xs text-gray-600 mt-1.5 font-medium">{subtitle}</p>
           )}
         </div>
 
-        {/* Progress Bar - Apple Style */}
+        {/* Progress Bar */}
         {progress && (
-          <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-300">
+          <div className="mt-3 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] text-gray-600 font-medium">
+              <span className="text-xs text-gray-600 font-medium">
                 {progress.label || 'Progress'}
               </span>
-              <span className="text-[11px] text-gray-900 font-semibold transition-all duration-300 group-hover:scale-105">
+              <span className="text-xs text-gray-900 font-semibold">
                 {progress.showPercentage ? `${percentage}%` : `${progress.value} of ${progress.max || 100}`}
               </span>
             </div>
-            <div className="relative h-1.5 bg-gray-200 rounded-full overflow-hidden">
+            <div className="relative h-1.5 bg-gray-200/50 rounded-full overflow-hidden">
               <div 
-                className="absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ease-out group-hover:opacity-90"
+                className="absolute inset-y-0 left-0 rounded-full transition-all duration-700 ease-out"
                 style={{ 
                   width: `${percentage}%`,
-                  backgroundColor: color,
-                  animation: 'progressFill 1.5s ease-out'
+                  backgroundColor: color
                 }}
               />
             </div>
           </div>
         )}
-
-        {/* Action Link - Apple Style */}
-        {action && (
-          <button
-            onClick={action.onClick}
-            className="mt-4 flex items-center gap-1 group/action animate-in fade-in slide-in-from-left-2 duration-700 delay-400"
-          >
-            <span 
-              className="text-[13px] font-medium transition-all duration-200 group-hover/action:tracking-wide"
-              style={{ color }}
-            >
-              {action.label}
-            </span>
-            <ChevronRight 
-              className="w-3.5 h-3.5 transition-all duration-200 group-hover/action:translate-x-1 group-hover/action:scale-110"
-              style={{ color }}
-            />
-          </button>
+        
+        {/* Footer */}
+        {(status || action) && (
+          <div className="mt-auto pt-3 border-t border-gray-200/30">
+            <div className="flex items-center justify-between">
+              {status && (
+                <span className="text-xs text-gray-600 flex items-center gap-1.5 font-medium">
+                  <span 
+                    className={cn(
+                      "w-2 h-2 rounded-full animate-pulse shadow-lg",
+                      status.type === 'active' && "bg-gradient-to-r from-green-400 to-emerald-500 shadow-green-500/50",
+                      status.type === 'warning' && "bg-gradient-to-r from-yellow-400 to-amber-500 shadow-yellow-500/50",
+                      status.type === 'error' && "bg-gradient-to-r from-red-400 to-rose-500 shadow-red-500/50"
+                    )}
+                  />
+                  {status.label}
+                </span>
+              )}
+              {action && (
+                <button
+                  onClick={action.onClick}
+                  className="flex items-center gap-1 group/action"
+                >
+                  <span 
+                    className="text-xs font-medium transition-colors duration-200"
+                    style={{ color }}
+                  >
+                    {action.label}
+                  </span>
+                  <ChevronRight 
+                    className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-all"
+                    style={{ color: color }}
+                  />
+                </button>
+              )}
+              {!action && (
+                <svg 
+                  className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-all" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                  style={{ color: status ? undefined : color }}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+              )}
+            </div>
+          </div>
         )}
 
         {children}
