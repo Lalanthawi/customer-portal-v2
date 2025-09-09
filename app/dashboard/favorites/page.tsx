@@ -273,7 +273,7 @@ export default function FavoritesPage() {
                   : 'border-gray-200 hover:border-gray-300 bg-white'
               }`}
             >
-              <div className="text-2xl font-bold text-gray-900 mb-1">{list.id}</div>
+              <div className="text-2xl font-bold text-gray-900 mb-1">{list.id === 'all' ? 'All' : list.id}</div>
               <div className="text-sm text-gray-600">{list.name}</div>
               <div className="mt-2 flex items-center justify-between">
                 <span className="text-xs text-gray-500">Vehicles</span>

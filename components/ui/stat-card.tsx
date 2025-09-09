@@ -6,7 +6,8 @@ import { TrendingUp, TrendingDown, ChevronRight } from 'lucide-react'
 interface StatCardProps {
   title: string
   value: string | number
-  subtitle?: string
+  subtitle?: string | React.ReactNode
+  icon?: React.ReactNode
   variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'orange' | 'purple' | 'amber' | 'green' | 'red' | 'blue' | 'yellow'
   badge?: {
     label: string
@@ -20,6 +21,7 @@ interface StatCardProps {
     value: number
     label: string
     isPositive: boolean
+    customColor?: string
   }
   action?: {
     label: string
@@ -40,6 +42,7 @@ export function StatCard({
   title,
   value,
   subtitle,
+  icon,
   variant = 'default',
   badge,
   status,
@@ -56,14 +59,14 @@ export function StatCard({
     switch(variant) {
       case 'primary':
       case 'orange':
-        return '#FF6900'
+        return '#FA7921'
       case 'success':
       case 'green':
         return '#34C759'
       case 'warning':
       case 'amber':
       case 'yellow':
-        return '#FF9500'
+        return '#6B5010'
       case 'danger':
       case 'red':
         return '#FF3B30'
@@ -85,19 +88,33 @@ export function StatCard({
       'bg-white',
       'border-0 shadow-[0_2px_8px_rgba(0,0,0,0.04)]',
       'hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-500 ease-out',
+      'hover:-translate-y-1 transform',
       'group',
       className
     )}>
       <CardContent className="p-6 relative">
+        {/* Icon */}
+        {icon && (
+          <div 
+            className="absolute top-6 right-6 p-2.5 rounded-xl transition-all duration-500 ease-out group-hover:scale-110 group-hover:rotate-3"
+            style={{ 
+              backgroundColor: `${color}12`,
+              color: color
+            }}
+          >
+            {icon}
+          </div>
+        )}
+        
         {/* Title and Badge */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <h3 className="text-[12px] font-medium text-gray-600 uppercase tracking-wider">
+            <h3 className="text-[12px] font-medium text-gray-600 uppercase tracking-wider animate-in fade-in slide-in-from-left-2 duration-500">
               {title}
             </h3>
             {badge && (
               <span 
-                className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                className="text-[10px] font-semibold px-2 py-0.5 rounded-full animate-in fade-in zoom-in-95 duration-700 delay-150"
                 style={{ 
                   color: color,
                   backgroundColor: `${color}12`
@@ -108,11 +125,11 @@ export function StatCard({
             )}
           </div>
           
-          {status && (
-            <div className="flex items-center gap-1.5">
+          {status && !icon && (
+            <div className="flex items-center gap-1.5 animate-in fade-in slide-in-from-right-2 duration-500">
               <div 
                 className={cn(
-                  "w-1.5 h-1.5 rounded-full",
+                  "w-1.5 h-1.5 rounded-full animate-pulse",
                   status.type === 'active' && "bg-green-500",
                   status.type === 'warning' && "bg-yellow-500",
                   status.type === 'error' && "bg-red-500"
@@ -128,28 +145,38 @@ export function StatCard({
           <div className="flex items-end justify-between">
             <div>
               <p className={cn(
-                "text-[32px] font-semibold leading-none tracking-[-0.02em]",
+                "text-[32px] font-semibold leading-none tracking-[-0.02em] animate-in fade-in slide-in-from-bottom-3 duration-700 transition-all group-hover:scale-105 origin-left",
                 valueClassName || "text-gray-900"
               )}>
                 {value}
               </p>
               {subtitle && (
-                <p className="text-[13px] text-gray-600 mt-1 font-medium">{subtitle}</p>
+                <div className="text-[13px] text-gray-600 mt-1 font-medium animate-in fade-in slide-in-from-bottom-2 duration-700 delay-100">{subtitle}</div>
               )}
             </div>
             
             {trend && (
-              <div className="flex items-center gap-1 pb-1">
-                <span className={cn(
-                  "text-[13px] font-semibold",
-                  trend.isPositive ? "text-green-600" : "text-red-600"
-                )}>
+              <div className="flex items-center gap-1 pb-1 animate-in fade-in zoom-in-90 duration-700 delay-200">
+                <span 
+                  className="text-[13px] font-semibold transition-all duration-300 group-hover:scale-110"
+                  style={{ 
+                    color: trend.customColor || (trend.isPositive ? '#22c55e' : '#ef4444')
+                  }}
+                >
                   {trend.isPositive ? '+' : '-'}{Math.abs(trend.value)}%
                 </span>
                 {trend.isPositive ? (
-                  <TrendingUp className="w-3.5 h-3.5 text-green-600" strokeWidth={2} />
+                  <TrendingUp 
+                    className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-y-[-2px]" 
+                    strokeWidth={2}
+                    style={{ color: trend.customColor || '#22c55e' }}
+                  />
                 ) : (
-                  <TrendingDown className="w-3.5 h-3.5 text-red-600" strokeWidth={2} />
+                  <TrendingDown 
+                    className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-y-[2px]" 
+                    strokeWidth={2}
+                    style={{ color: trend.customColor || '#ef4444' }}
+                  />
                 )}
               </div>
             )}
@@ -162,21 +189,22 @@ export function StatCard({
 
         {/* Progress Bar - Apple Style */}
         {progress && (
-          <div className="space-y-2">
+          <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-300">
             <div className="flex items-center justify-between">
               <span className="text-[11px] text-gray-600 font-medium">
                 {progress.label || 'Progress'}
               </span>
-              <span className="text-[11px] text-gray-900 font-semibold">
+              <span className="text-[11px] text-gray-900 font-semibold transition-all duration-300 group-hover:scale-105">
                 {progress.showPercentage ? `${percentage}%` : `${progress.value} of ${progress.max || 100}`}
               </span>
             </div>
             <div className="relative h-1.5 bg-gray-200 rounded-full overflow-hidden">
               <div 
-                className="absolute inset-y-0 left-0 rounded-full transition-all duration-700 ease-out"
+                className="absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ease-out group-hover:opacity-90"
                 style={{ 
                   width: `${percentage}%`,
-                  backgroundColor: color
+                  backgroundColor: color,
+                  animation: 'progressFill 1.5s ease-out'
                 }}
               />
             </div>
@@ -187,16 +215,16 @@ export function StatCard({
         {action && (
           <button
             onClick={action.onClick}
-            className="mt-4 flex items-center gap-1 group/action"
+            className="mt-4 flex items-center gap-1 group/action animate-in fade-in slide-in-from-left-2 duration-700 delay-400"
           >
             <span 
-              className="text-[13px] font-medium transition-colors duration-200"
+              className="text-[13px] font-medium transition-all duration-200 group-hover/action:tracking-wide"
               style={{ color }}
             >
               {action.label}
             </span>
             <ChevronRight 
-              className="w-3.5 h-3.5 transition-transform duration-200 group-hover/action:translate-x-0.5"
+              className="w-3.5 h-3.5 transition-all duration-200 group-hover/action:translate-x-1 group-hover/action:scale-110"
               style={{ color }}
             />
           </button>

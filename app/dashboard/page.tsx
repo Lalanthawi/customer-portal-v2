@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { ClaimRequiredModal, useClaimStatus } from './components/ClaimRequired'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
 import { StatCard } from '@/components/ui/stat-card'
+import { Gavel, Shield, AlertCircle, Wallet } from 'lucide-react'
 
 // Skeleton component for loading states
 function Skeleton({ className }: { className?: string }) {
@@ -440,15 +441,17 @@ export default function DashboardPage() {
             title="Active Bids"
             value="12"
             subtitle="from last week"
+            icon={<Gavel className="w-5 h-5" />}
             status={{ label: 'Active', type: 'active' }}
-            trend={{ value: 25, label: 'from last month', isPositive: true }}
+            trend={{ value: 25, label: 'from last month', isPositive: true, customColor: '#FA7921' }}
             variant="orange"
+            valueClassName="text-[#FA7921]"
           >
             <div className="mt-6 pt-4 border-t border-gray-50">
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-gray-600">Winning</span>
-                  <span className="font-semibold text-green-600">7</span>
+                  <span className="font-semibold text-[#FA7921]">7</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-gray-600">Outbid</span>
@@ -468,6 +471,7 @@ export default function DashboardPage() {
             title="Account Status"
             value={isClaimedBySales ? "Premium" : "Verify Now"}
             subtitle={isClaimedBySales ? "Full access enabled" : "Limited access"}
+            icon={<Shield className="w-5 h-5" />}
             status={{ label: isClaimedBySales ? 'Verified' : 'Action needed', type: isClaimedBySales ? 'active' : 'error' }}
             variant={isClaimedBySales ? "purple" : "red"}
             valueClassName={!isClaimedBySales ? "text-2xl text-red-600" : "text-2xl"}
@@ -498,7 +502,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-gray-600">Access Level</span>
-                      <span className="font-semibold text-amber-600">Limited</span>
+                      <span className="font-semibold text-red-600">Limited</span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-gray-600">Required</span>
@@ -516,15 +520,17 @@ export default function DashboardPage() {
             title="Requires Action"
             value="5"
             subtitle="Pending tasks"
+            icon={<AlertCircle className="w-5 h-5" />}
             status={{ label: 'Urgent', type: 'warning' }}
-            trend={{ value: 2, label: 'new today', isPositive: false }}
+            trend={{ value: 2, label: 'new today', isPositive: false, customColor: '#FFD700' }}
             variant="amber"
+            valueClassName="text-[#FFD700]"
           >
             <div className="mt-6 pt-4 border-t border-gray-50">
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-gray-600">Payment Due</span>
-                  <span className="font-semibold text-amber-600">2</span>
+                  <span className="font-semibold text-[#FFD700]">2</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-gray-600">Documents</span>
@@ -543,6 +549,7 @@ export default function DashboardPage() {
           title="Total Balance"
           value="¥1.25M"
           subtitle="≈ $8,333 USD"
+          icon={<Wallet className="w-5 h-5" />}
           status={{ label: 'Available', type: 'active' }}
           trend={{ value: 8.5, label: 'from last month', isPositive: true }}
           variant="green"
