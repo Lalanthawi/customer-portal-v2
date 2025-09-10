@@ -11,6 +11,7 @@ import { ClaimRequiredModal, useClaimStatus } from './components/ClaimRequired'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
 import { StatCard } from '@/components/ui/stat-card'
 import { Gavel, Shield, AlertCircle, Wallet } from 'lucide-react'
+import { VehicleCard } from '@/components/ui/vehicle-card-new'
 
 // Skeleton component for loading states
 function Skeleton({ className }: { className?: string }) {
@@ -55,7 +56,6 @@ function useCountdown(targetDate: Date) {
 
 // Auction Card Component  
 function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boolean }) {
-  const timeLeft = useCountdown(auction.endDate)
   const { isClaimedBySales } = useClaimStatus()
   const [showClaimModal, setShowClaimModal] = useState(false)
 
@@ -73,102 +73,51 @@ function AuctionCard({ auction, loading }: { auction: AuctionItem; loading?: boo
     )
   }
 
+  // Transform AuctionItem to VehicleCardData format
+  const vehicleData = {
+    id: auction.id,
+    lotNumber: auction.lotNumber,
+    title: auction.title,
+    make: auction.title.split(' ')[0] || '',
+    model: auction.title.split(' ').slice(1).join(' ') || '',
+    year: auction.specs.year,
+    price: auction.currentBid,
+    currentBid: auction.currentBid,
+    startingPrice: auction.startingPrice,
+    yourBid: auction.yourBid,
+    mileage: auction.specs.mileage,
+    transmission: auction.specs.transmission,
+    engineSize: 'N/A', // Not available in AuctionItem
+    imageUrl: auction.image,
+    auctionEndTime: auction.endDate,
+    bids: auction.bidsCount || 0,
+    verified: false,
+    auctionHouse: auction.auctionHouse
+  }
+
+  const handlePlaceBid = () => {
+    if (!isClaimedBySales) {
+      setShowClaimModal(true)
+    } else {
+      // Proceed with normal bid placement
+      window.location.href = `/dashboard/vehicle/${auction.id}`
+    }
+  }
+
   return (
-    <Card className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-200 group h-full flex flex-col"> {/* spacing fix */}
-      <div className="relative h-48 bg-gray-100">
-        <Image
-          src={auction.image}
-          alt={auction.title}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
-        />
-        <Badge className="absolute top-3 right-3 bg-gray-900 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
-          {auction.auctionHouse}
-        </Badge>
-      </div>
-      
-      <CardContent className="p-5 md:p-6 flex-1 flex flex-col"> {/* spacing fix */}
-        <div className="flex items-start justify-between gap-3 mb-3"> {/* spacing fix */}
-          <CardTitle className="font-semibold text-lg text-gray-900">{auction.title}</CardTitle>
-          <span className="text-xs text-gray-500 font-medium flex-shrink-0">Lot #{auction.lotNumber}</span>
-        </div>
-        
-        <div className="flex flex-wrap gap-3 text-sm text-gray-600 mb-4 space-y-2"> {/* spacing fix */}
-          <span className="flex items-center gap-1.5">
-            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            {auction.specs.year}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            {auction.specs.mileage}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-            </svg>
-            {auction.specs.transmission}
-          </span>
-        </div>
-        
-        <div className="grid grid-cols-2 gap-3 mb-4 mt-3"> {/* spacing fix */}
-          <div>
-            <p className="text-xs text-gray-500 mb-1">Starting Price</p>
-            <p className="text-sm font-semibold text-gray-900">¥{auction.startingPrice.toLocaleString()}</p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 mb-1">Your Bid</p>
-            <p className="text-sm font-semibold text-green-600">
-              {auction.yourBid ? `¥${auction.yourBid.toLocaleString()}` : 'No bid yet'}
-            </p>
-          </div>
-        </div>
-
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4"> {/* spacing fix */}
-          <p className="text-xs text-gray-700 mb-2 font-medium leading-tight">Bidding Closes In</p> {/* spacing fix */}
-          <div className="grid grid-cols-4 gap-3 text-center"> {/* spacing fix */}
-            <div>
-              <p className="text-lg font-bold text-red-600">{String(timeLeft.days).padStart(2, '0')}</p>
-              <p className="text-xs text-gray-500">Days</p>
-            </div>
-            <div>
-              <p className="text-lg font-bold text-red-600">{String(timeLeft.hours).padStart(2, '0')}</p>
-              <p className="text-xs text-gray-500">Hours</p>
-            </div>
-            <div>
-              <p className="text-lg font-bold text-red-600">{String(timeLeft.minutes).padStart(2, '0')}</p>
-              <p className="text-xs text-gray-500">Min</p>
-            </div>
-            <div>
-              <p className="text-lg font-bold text-red-600">{String(timeLeft.seconds).padStart(2, '0')}</p>
-              <p className="text-xs text-gray-500">Sec</p>
-            </div>
-          </div>
-        </div>
-
-        <Button 
-          onClick={() => {
-            if (!isClaimedBySales) {
-              setShowClaimModal(true)
-            } else {
-              // Proceed with normal bid placement
-              // Placing bid on vehicle
-            }
-          }}
-          className="w-full bg-[#FA7921] text-white py-2.5 rounded-lg font-medium hover:bg-[#FA7921]/90 transition-colors mt-auto"
-        >
-          Place Bid
-        </Button>
-        <ClaimRequiredModal 
-          isOpen={showClaimModal} 
-          onClose={() => setShowClaimModal(false)}
-          vehicleTitle={auction.title}
-        />
-      </CardContent>
-    </Card>
+    <>
+      <VehicleCard
+        vehicle={vehicleData}
+        viewMode="grid"
+        onPlaceBid={handlePlaceBid}
+        showBidButton={true}
+      />
+      <ClaimRequiredModal 
+        isOpen={showClaimModal} 
+        onClose={() => setShowClaimModal(false)}
+        vehicleTitle={auction.title}
+      />
+    </>
   )
 }
 

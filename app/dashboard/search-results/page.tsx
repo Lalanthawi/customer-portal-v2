@@ -12,18 +12,16 @@ interface Vehicle {
   title: string
   maker: string
   model: string
+  modelCode?: string
   year: number
   price: number
   mileage: number
   transmission: string
+  grade?: string
   fuel: string
   location: string
   image: string
   lotNumber: string
-  score?: string
-  equipment?: string[]
-  color?: string
-  chassisNumber?: string
   engine?: number
   auctionDate?: Date
   status: 'available' | 'sold' | 'negotiating'
@@ -37,18 +35,16 @@ const allVehicles: Vehicle[] = [
     title: '2022 Toyota Camry Hybrid',
     maker: 'Toyota',
     model: 'Camry',
+    modelCode: 'AXVH70',
     year: 2022,
     price: 3500000,
     mileage: 15000,
     transmission: 'Automatic',
+    grade: 'G Package',
     fuel: 'Hybrid',
     location: 'Tokyo',
     image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800',
     lotNumber: 'LOT-2024-001',
-    score: '4.5',
-    equipment: ['AC', 'PW', 'PS'],
-    color: 'Silver',
-    chassisNumber: 'JT2BG22K0Y0123456',
     engine: 2500,
     auctionDate: new Date('2024-01-25'),
     status: 'available',
@@ -59,18 +55,16 @@ const allVehicles: Vehicle[] = [
     title: '2021 Honda Civic Type R',
     maker: 'Honda',
     model: 'Civic',
+    modelCode: 'FK8',
     year: 2021,
     price: 4200000,
     mileage: 8000,
     transmission: 'Manual',
+    grade: 'Type R',
     fuel: 'Petrol',
     location: 'Osaka',
     image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800',
     lotNumber: 'LOT-2024-002',
-    score: '5',
-    equipment: ['AC', 'AW', 'SR', 'PW'],
-    color: 'Blue',
-    chassisNumber: 'SHHFK8650MU200123',
     engine: 2000,
     auctionDate: new Date('2024-01-26'),
     status: 'available'
@@ -80,18 +74,16 @@ const allVehicles: Vehicle[] = [
     title: '2023 Nissan Leaf Electric',
     maker: 'Nissan',
     model: 'Leaf',
+    modelCode: 'ZE1',
     year: 2023,
     price: 2800000,
     mileage: 5000,
     transmission: 'Automatic',
+    grade: 'X',
     fuel: 'Electric',
     location: 'Yokohama',
     image: 'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=800',
     lotNumber: 'LOT-2024-003',
-    score: '4',
-    equipment: ['AC', 'PW', 'PS', 'TV'],
-    color: 'White',
-    chassisNumber: 'JN1AZ0CP9ET123456',
     engine: 0,
     auctionDate: new Date('2024-01-27'),
     status: 'negotiating'
@@ -101,18 +93,16 @@ const allVehicles: Vehicle[] = [
     title: '2020 Mazda CX-5 AWD',
     maker: 'Mazda',
     model: 'CX-5',
+    modelCode: 'KF5P',
     year: 2020,
     price: 2900000,
     mileage: 35000,
     transmission: 'Automatic',
+    grade: 'XD Exclusive',
     fuel: 'Petrol',
     location: 'Nagoya',
     image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800',
     lotNumber: 'LOT-2024-004',
-    score: '3.5',
-    equipment: ['AC', 'AW', 'LE', 'PW', 'PS'],
-    color: 'Red',
-    chassisNumber: 'JM3KFADM0L0123456',
     engine: 2500,
     auctionDate: new Date('2024-01-28'),
     status: 'available'
@@ -122,18 +112,16 @@ const allVehicles: Vehicle[] = [
     title: '2019 BMW 3 Series',
     maker: 'BMW',
     model: '3 Series',
+    modelCode: 'G20',
     year: 2019,
     price: 4500000,
     mileage: 28000,
     transmission: 'Automatic',
+    grade: '320i M Sport',
     fuel: 'Petrol',
     location: 'Kobe',
     image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800',
     lotNumber: 'LOT-2024-005',
-    score: '4',
-    equipment: ['AC', 'AW', 'LE', 'SR', 'PW', 'PS'],
-    color: 'Black',
-    chassisNumber: 'WBA5A5C50KG123456',
     engine: 2000,
     auctionDate: new Date('2024-01-29'),
     status: 'sold'
@@ -143,18 +131,16 @@ const allVehicles: Vehicle[] = [
     title: '2022 Mercedes-Benz C-Class',
     maker: 'Mercedes',
     model: 'C-Class',
+    modelCode: 'W206',
     year: 2022,
     price: 5200000,
     mileage: 12000,
     transmission: 'Automatic',
+    grade: 'C200 AMG Line',
     fuel: 'Petrol',
     location: 'Tokyo',
     image: 'https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=800',
     lotNumber: 'LOT-2024-006',
-    score: '4.5',
-    equipment: ['AC', 'AW', 'LE', 'SR', 'PW', 'PS', 'TV'],
-    color: 'Silver',
-    chassisNumber: 'WDD2050351F123456',
     engine: 2000,
     auctionDate: new Date('2024-01-30'),
     status: 'available'
@@ -164,18 +150,16 @@ const allVehicles: Vehicle[] = [
     title: '2021 Subaru WRX STI',
     maker: 'Subaru',
     model: 'WRX STI',
+    modelCode: 'VAB',
     year: 2021,
     price: 3800000,
     mileage: 18000,
     transmission: 'Manual',
+    grade: 'STI Type S',
     fuel: 'Petrol',
     location: 'Saitama',
     image: 'https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=800',
     lotNumber: 'LOT-2024-007',
-    score: '4',
-    equipment: ['AC', 'AW', 'SR', 'PW', 'PS'],
-    color: 'Blue',
-    chassisNumber: 'JF1VA2W68M9123456',
     engine: 2500,
     auctionDate: new Date('2024-01-31'),
     status: 'available'
@@ -185,18 +169,16 @@ const allVehicles: Vehicle[] = [
     title: '2023 Lexus RX 350h',
     maker: 'Lexus',
     model: 'RX',
+    modelCode: 'TALA10',
     year: 2023,
     price: 6500000,
     mileage: 3000,
     transmission: 'Automatic',
+    grade: 'Version L',
     fuel: 'Hybrid',
     location: 'Osaka',
     image: 'https://images.unsplash.com/photo-1606611013016-969c19ba1be8?w=800',
     lotNumber: 'LOT-2024-008',
-    score: '5',
-    equipment: ['AC', 'AW', 'LE', 'SR', 'PW', 'PS', 'TV'],
-    color: 'Pearl White',
-    chassisNumber: 'JTHBA1D27N5123456',
     engine: 2500,
     auctionDate: new Date('2024-02-01'),
     status: 'available',
@@ -526,11 +508,6 @@ function SearchResultsContent() {
                     </h3>
                     <p className="text-xs text-gray-500 mt-1">Lot: {vehicle.lotNumber}</p>
                   </div>
-                  {vehicle.score && (
-                    <span className="px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded ml-2">
-                      Score: {vehicle.score}
-                    </span>
-                  )}
                 </div>
                 
                 <div className="flex items-baseline gap-2 mb-4">
@@ -540,63 +517,43 @@ function SearchResultsContent() {
                   <span className="text-sm text-gray-500">JPY</span>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span>{vehicle.year}</span>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center justify-between text-gray-600">
+                    <span className="text-gray-500">Registration Year:</span>
+                    <span className="font-medium text-gray-900">{vehicle.year}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    <span>{vehicle.mileage.toLocaleString()} km</span>
+                  <div className="flex items-center justify-between text-gray-600">
+                    <span className="text-gray-500">Mileage:</span>
+                    <span className="font-medium text-gray-900">{vehicle.mileage.toLocaleString()} km</span>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                    </svg>
-                    <span>{vehicle.transmission}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    </svg>
-                    <span>{vehicle.location}</span>
+                  {vehicle.modelCode && (
+                    <div className="flex items-center justify-between text-gray-600">
+                      <span className="text-gray-500">Model Code:</span>
+                      <span className="font-medium text-gray-900">{vehicle.modelCode}</span>
+                    </div>
+                  )}
+                  {vehicle.engine && (
+                    <div className="flex items-center justify-between text-gray-600">
+                      <span className="text-gray-500">Engine:</span>
+                      <span className="font-medium text-gray-900">{vehicle.engine}cc</span>
+                    </div>
+                  )}
+                  {vehicle.grade && (
+                    <div className="flex items-center justify-between text-gray-600">
+                      <span className="text-gray-500">Grade:</span>
+                      <span className="font-medium text-gray-900">{vehicle.grade}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between text-gray-600">
+                    <span className="text-gray-500">Transmission:</span>
+                    <span className="font-medium text-gray-900">{vehicle.transmission}</span>
                   </div>
                 </div>
-
-                {vehicle.equipment && vehicle.equipment.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <div className="flex flex-wrap gap-2">
-                      {vehicle.equipment.slice(0, 4).map(eq => (
-                        <span key={eq} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
-                          {eq}
-                        </span>
-                      ))}
-                      {vehicle.equipment.length > 4 && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
-                          +{vehicle.equipment.length - 4}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
                 
-                <div className="mt-4 flex items-center justify-between">
+                <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
                   <button className="text-sm text-[#FA7921] font-medium hover:text-[#FA7921]/80">
                     View Details →
                   </button>
-                  <div className="flex items-center gap-1">
-                    {vehicle.color && (
-                      <div 
-                        className="w-4 h-4 rounded-full border border-gray-300" 
-                        style={{ backgroundColor: vehicle.color === 'Silver' ? '#C0C0C0' : vehicle.color }}
-                        title={vehicle.color}
-                      />
-                    )}
-                  </div>
                 </div>
               </div>
             </div>

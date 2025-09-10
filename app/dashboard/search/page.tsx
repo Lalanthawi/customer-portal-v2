@@ -5,112 +5,88 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { SearchBar } from '@/components/ui/search-bar'
+import { VehicleCard } from '@/components/ui/vehicle-card-new'
 
 interface Vehicle {
   id: number
+  lotNumber?: string
   make: string
   model: string
+  modelCode?: string
   year: number
   price: number
+  startingPrice?: number
   mileage: number
   transmission: string
+  grade?: string
   fuelType: string
-  color: string
-  location: string
-  imageUrl: string
-  condition: string
-  seats: number
-  doors: number
   engineSize: string
-  driveType: string
-  bodyType: string
-  features: string[]
+  imageUrl: string
   auctionEndTime: Date
   bids: number
   verified: boolean
-  dealer: string
-  rating: number
 }
 
 // Demo vehicle data
 const demoVehicles: Vehicle[] = [
   {
     id: 1,
+    lotNumber: 'A2341',
     make: 'Toyota',
     model: 'Land Cruiser 250 VX',
+    modelCode: 'VJA300W',
     year: 2024,
     price: 5600000,
+    startingPrice: 5200000,
     mileage: 13000,
     transmission: 'Automatic',
+    grade: 'VX',
     fuelType: 'Diesel',
-    color: 'Brown',
-    location: 'Osaka',
-    imageUrl: '/images/singlecar/0.jpeg',
-    condition: 'Excellent',
-    seats: 7,
-    doors: 5,
     engineSize: '2.8L Turbo',
-    driveType: '4WD',
-    bodyType: 'SUV',
-    features: ['Multi-Terrain Select', 'Crawl Control', '360° Camera', 'JBL Premium Audio', 'Leather Seats', 'Panoramic Sunroof'],
+    imageUrl: '/images/singlecar/0.jpeg',
     auctionEndTime: new Date(Date.now() + 86400000 * 2),
     bids: 18,
     verified: true,
-    dealer: 'TAA Kinki Osaka',
-    rating: 5.0
   },
   {
     id: 2,
+    lotNumber: 'LOT2',
     make: 'Honda',
     model: 'CR-V',
+    modelCode: 'RW1',
     year: 2022,
     price: 2800000,
     mileage: 28000,
     transmission: 'Automatic',
+    grade: 'EX',
     fuelType: 'Petrol',
-    color: 'Metallic Gray',
-    location: 'Osaka',
-    imageUrl: 'https://images.unsplash.com/photo-1568844293986-8d0400bd4745?w=800&h=600&fit=crop',
-    condition: 'Like New',
-    seats: 7,
-    doors: 5,
     engineSize: '1.5L Turbo',
-    driveType: 'AWD',
-    bodyType: 'SUV',
-    features: ['Sunroof', 'Heated Seats', 'Android Auto', 'Parking Sensors', 'Cruise Control'],
+    imageUrl: 'https://images.unsplash.com/photo-1568844293986-8d0400bd4745?w=800&h=600&fit=crop',
     auctionEndTime: new Date(Date.now() + 86400000 * 3),
     bids: 8,
     verified: true,
-    dealer: 'Osaka Auto Gallery',
-    rating: 4.6
   },
   {
     id: 3,
+    lotNumber: 'LOT3',
     make: 'Mazda',
     model: 'MX-5',
+    modelCode: 'ND5RC',
     year: 2021,
     price: 2500000,
     mileage: 12000,
     transmission: 'Manual',
+    grade: 'S Package',
     fuelType: 'Petrol',
-    color: 'Soul Red',
-    location: 'Yokohama',
-    imageUrl: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&h=600&fit=crop',
-    condition: 'Excellent',
-    seats: 2,
-    doors: 2,
     engineSize: '2.0L',
-    driveType: 'RWD',
-    bodyType: 'Convertible',
-    features: ['Premium Audio', 'Bluetooth', 'Keyless Entry', 'Adaptive Cruise'],
+    imageUrl: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&h=600&fit=crop',
     auctionEndTime: new Date(Date.now() + 86400000 * 1),
     bids: 15,
     verified: false,
-    dealer: 'Sports Car Specialist',
-    rating: 4.9
   },
   {
     id: 4,
+    lotNumber: 'LOT4',
     make: 'Nissan',
     model: 'Leaf',
     year: 2023,
@@ -118,24 +94,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 5000,
     transmission: 'Automatic',
     fuelType: 'Electric',
-    color: 'Arctic Blue',
-    location: 'Tokyo',
     imageUrl: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800&h=600&fit=crop',
-    condition: 'New',
-    seats: 5,
-    doors: 5,
     engineSize: 'Electric',
-    driveType: 'FWD',
-    bodyType: 'Hatchback',
-    features: ['360 Camera', 'Navigation System', 'Apple CarPlay', 'Lane Departure', 'Blind Spot Monitor'],
     auctionEndTime: new Date(Date.now() + 86400000 * 5),
     bids: 6,
     verified: true,
-    dealer: 'EV Specialists Japan',
-    rating: 4.7
   },
   {
     id: 5,
+    lotNumber: 'LOT5',
     make: 'Mercedes-Benz',
     model: 'E-Class',
     year: 2022,
@@ -143,24 +110,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 18000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'Obsidian Black',
-    location: 'Nagoya',
     imageUrl: 'https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=800&h=600&fit=crop',
-    condition: 'Excellent',
-    seats: 5,
-    doors: 4,
     engineSize: '2.0L Turbo',
-    driveType: 'RWD',
-    bodyType: 'Sedan',
-    features: ['Leather Seats', 'Sunroof', 'Navigation System', 'Premium Audio', 'Heated Seats', 'Adaptive Cruise'],
     auctionEndTime: new Date(Date.now() + 86400000 * 4),
     bids: 10,
     verified: true,
-    dealer: 'Luxury Auto Import',
-    rating: 4.9
   },
   {
     id: 6,
+    lotNumber: 'LOT6',
     make: 'BMW',
     model: 'X3',
     year: 2021,
@@ -168,24 +126,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 32000,
     transmission: 'Automatic',
     fuelType: 'Diesel',
-    color: 'Alpine White',
-    location: 'Kobe',
     imageUrl: 'https://images.unsplash.com/photo-1555215858-9dc53c228bec?w=800&h=600&fit=crop',
-    condition: 'Good',
-    seats: 5,
-    doors: 5,
     engineSize: '2.0L Turbo',
-    driveType: 'AWD',
-    bodyType: 'SUV',
-    features: ['Panoramic Sunroof', 'Leather Seats', 'Apple CarPlay', 'Parking Sensors', 'Backup Camera'],
     auctionEndTime: new Date(Date.now() + 86400000 * 2),
     bids: 7,
     verified: true,
-    dealer: 'Bavaria Motors',
-    rating: 4.5
   },
   {
     id: 7,
+    lotNumber: 'LOT7',
     make: 'Subaru',
     model: 'WRX STI',
     year: 2020,
@@ -193,24 +142,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 25000,
     transmission: 'Manual',
     fuelType: 'Petrol',
-    color: 'WR Blue',
-    location: 'Sapporo',
     imageUrl: 'https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=800&h=600&fit=crop',
-    condition: 'Excellent',
-    seats: 5,
-    doors: 4,
     engineSize: '2.5L Turbo',
-    driveType: 'AWD',
-    bodyType: 'Sedan',
-    features: ['Premium Audio', 'Bluetooth', 'Keyless Entry', 'Performance Brakes'],
     auctionEndTime: new Date(Date.now() + 86400000 * 6),
     bids: 18,
     verified: false,
-    dealer: 'Performance Auto',
-    rating: 4.8
   },
   {
     id: 8,
+    lotNumber: 'LOT8',
     make: 'Lexus',
     model: 'RX 450h',
     year: 2023,
@@ -218,24 +158,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 8000,
     transmission: 'Automatic',
     fuelType: 'Hybrid',
-    color: 'Moonbeam Beige',
-    location: 'Tokyo',
     imageUrl: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&h=600&fit=crop',
-    condition: 'Like New',
-    seats: 7,
-    doors: 5,
     engineSize: '3.5L V6',
-    driveType: 'AWD',
-    bodyType: 'SUV',
-    features: ['Mark Levinson Audio', 'Leather Seats', 'Sunroof', '360 Camera', 'Heated & Cooled Seats', 'Navigation System'],
     auctionEndTime: new Date(Date.now() + 86400000 * 3),
     bids: 14,
     verified: true,
-    dealer: 'Lexus Premium Selection',
-    rating: 5.0
   },
   {
     id: 9,
+    lotNumber: 'LOT9',
     make: 'Volkswagen',
     model: 'Golf GTI',
     year: 2022,
@@ -243,24 +174,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 19000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'Tornado Red',
-    location: 'Kyoto',
     imageUrl: 'https://images.unsplash.com/photo-1572348844829-ef6b482e5f94?w=800&h=600&fit=crop',
-    condition: 'Excellent',
-    seats: 5,
-    doors: 5,
     engineSize: '2.0L Turbo',
-    driveType: 'FWD',
-    bodyType: 'Hatchback',
-    features: ['Digital Cockpit', 'Apple CarPlay', 'Android Auto', 'Performance Seats', 'Adaptive Cruise'],
     auctionEndTime: new Date(Date.now() + 86400000 * 4),
     bids: 11,
     verified: true,
-    dealer: 'European Motors',
-    rating: 4.6
   },
   {
     id: 10,
+    lotNumber: 'LOT10',
     make: 'Tesla',
     model: 'Model 3',
     year: 2023,
@@ -268,24 +190,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 3000,
     transmission: 'Automatic',
     fuelType: 'Electric',
-    color: 'Midnight Silver',
-    location: 'Osaka',
     imageUrl: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800&h=600&fit=crop',
-    condition: 'New',
-    seats: 5,
-    doors: 4,
     engineSize: 'Electric',
-    driveType: 'RWD',
-    bodyType: 'Sedan',
-    features: ['Autopilot', 'Premium Audio', 'Glass Roof', 'Wireless Charging', 'Over-the-air Updates'],
     auctionEndTime: new Date(Date.now() + 86400000 * 7),
     bids: 22,
     verified: true,
-    dealer: 'Tesla Certified',
-    rating: 4.9
   },
   {
     id: 11,
+    lotNumber: 'LOT11',
     make: 'Audi',
     model: 'Q5',
     year: 2021,
@@ -293,24 +206,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 27000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'Glacier White',
-    location: 'Fukuoka',
     imageUrl: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&h=600&fit=crop',
-    condition: 'Good',
-    seats: 5,
-    doors: 5,
     engineSize: '2.0L TFSI',
-    driveType: 'Quattro',
-    bodyType: 'SUV',
-    features: ['Virtual Cockpit', 'Leather Seats', 'Navigation System', 'Bang & Olufsen Audio', 'Matrix LED Lights'],
     auctionEndTime: new Date(Date.now() + 86400000 * 2),
     bids: 9,
     verified: true,
-    dealer: 'Audi Approved',
-    rating: 4.7
   },
   {
     id: 12,
+    lotNumber: 'LOT12',
     make: 'Porsche',
     model: '718 Cayman',
     year: 2022,
@@ -318,24 +222,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 11000,
     transmission: 'Manual',
     fuelType: 'Petrol',
-    color: 'Guards Red',
-    location: 'Tokyo',
     imageUrl: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&h=600&fit=crop',
-    condition: 'Excellent',
-    seats: 2,
-    doors: 2,
     engineSize: '2.0L Turbo',
-    driveType: 'RWD',
-    bodyType: 'Coupe',
-    features: ['Sport Chrono', 'PASM', 'Bose Audio', 'Sport Seats', 'Track Mode'],
     auctionEndTime: new Date(Date.now() + 86400000 * 5),
     bids: 16,
     verified: true,
-    dealer: 'Porsche Center',
-    rating: 5.0
   },
   {
     id: 13,
+    lotNumber: 'LOT13',
     make: 'Mitsubishi',
     model: 'Outlander PHEV',
     year: 2023,
@@ -343,24 +238,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 7000,
     transmission: 'Automatic',
     fuelType: 'Plug-in Hybrid',
-    color: 'White Diamond',
-    location: 'Nagoya',
     imageUrl: 'https://images.unsplash.com/photo-1581540222194-0def2dda95b8?w=800&h=600&fit=crop',
-    condition: 'Like New',
-    seats: 7,
-    doors: 5,
     engineSize: '2.4L',
-    driveType: '4WD',
-    bodyType: 'SUV',
-    features: ['Navigation System', 'Leather Seats', '360 Camera', 'Heated Seats', 'Apple CarPlay'],
     auctionEndTime: new Date(Date.now() + 86400000 * 3),
     bids: 9,
     verified: true,
-    dealer: 'Mitsubishi Official',
-    rating: 4.5
   },
   {
     id: 14,
+    lotNumber: 'LOT14',
     make: 'Ferrari',
     model: '488 GTB',
     year: 2020,
@@ -368,24 +254,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 8000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'Rosso Corsa',
-    location: 'Tokyo',
     imageUrl: 'https://images.unsplash.com/photo-1592198084033-aade902d1aae?w=800&h=600&fit=crop',
-    condition: 'Excellent',
-    seats: 2,
-    doors: 2,
     engineSize: '3.9L V8 Turbo',
-    driveType: 'RWD',
-    bodyType: 'Sports',
-    features: ['Carbon Fiber Interior', 'Racing Seats', 'Premium Audio', 'Track Telemetry', 'Lifting System'],
     auctionEndTime: new Date(Date.now() + 86400000 * 10),
     bids: 32,
     verified: true,
-    dealer: 'Ferrari Tokyo',
-    rating: 5.0
   },
   {
     id: 15,
+    lotNumber: 'LOT15',
     make: 'Jeep',
     model: 'Wrangler Unlimited',
     year: 2021,
@@ -393,24 +270,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 22000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'Granite Crystal',
-    location: 'Osaka',
     imageUrl: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800&h=600&fit=crop',
-    condition: 'Good',
-    seats: 5,
-    doors: 4,
     engineSize: '3.6L V6',
-    driveType: '4WD',
-    bodyType: 'SUV',
-    features: ['Removable Top', 'Trail Rated', 'Apple CarPlay', 'All-Terrain Tires', 'Rock Rails'],
     auctionEndTime: new Date(Date.now() + 86400000 * 4),
     bids: 11,
     verified: false,
-    dealer: 'American Auto Import',
-    rating: 4.4
   },
   {
     id: 16,
+    lotNumber: 'LOT16',
     make: 'Mini',
     model: 'Cooper S',
     year: 2022,
@@ -418,24 +286,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 14000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'British Racing Green',
-    location: 'Kyoto',
     imageUrl: 'https://images.unsplash.com/photo-1563720360172-67b8f3dce741?w=800&h=600&fit=crop',
-    condition: 'Excellent',
-    seats: 4,
-    doors: 3,
     engineSize: '2.0L Turbo',
-    driveType: 'FWD',
-    bodyType: 'Hatchback',
-    features: ['Harman Kardon Audio', 'Panoramic Sunroof', 'LED Headlights', 'Sport Mode', 'Navigation System'],
     auctionEndTime: new Date(Date.now() + 86400000 * 2),
     bids: 8,
     verified: true,
-    dealer: 'MINI Kyoto',
-    rating: 4.6
   },
   {
     id: 17,
+    lotNumber: 'LOT17',
     make: 'Range Rover',
     model: 'Sport HSE',
     year: 2023,
@@ -443,24 +302,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 5000,
     transmission: 'Automatic',
     fuelType: 'Diesel',
-    color: 'Santorini Black',
-    location: 'Tokyo',
     imageUrl: 'https://images.unsplash.com/photo-1606611013016-969c19ba43e2?w=800&h=600&fit=crop',
-    condition: 'New',
-    seats: 7,
-    doors: 5,
     engineSize: '3.0L Turbo',
-    driveType: 'AWD',
-    bodyType: 'SUV',
-    features: ['Meridian Audio', 'Air Suspension', 'Terrain Response', 'Matrix LED', 'Heated Steering'],
     auctionEndTime: new Date(Date.now() + 86400000 * 8),
     bids: 19,
     verified: true,
-    dealer: 'Land Rover Premium',
-    rating: 4.9
   },
   {
     id: 18,
+    lotNumber: 'LOT18',
     make: 'Hyundai',
     model: 'Ioniq 5',
     year: 2023,
@@ -468,24 +318,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 3000,
     transmission: 'Automatic',
     fuelType: 'Electric',
-    color: 'Cyber Gray',
-    location: 'Yokohama',
     imageUrl: 'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=800&h=600&fit=crop',
-    condition: 'Like New',
-    seats: 5,
-    doors: 5,
     engineSize: 'Electric',
-    driveType: 'AWD',
-    bodyType: 'Crossover',
-    features: ['Highway Driving Assist', 'V2L', 'Augmented Reality HUD', 'Relaxation Seats', 'Solar Roof'],
     auctionEndTime: new Date(Date.now() + 86400000 * 6),
     bids: 24,
     verified: true,
-    dealer: 'Hyundai EV Center',
-    rating: 4.8
   },
   {
     id: 19,
+    lotNumber: 'LOT19',
     make: 'Alfa Romeo',
     model: 'Giulia Quadrifoglio',
     year: 2021,
@@ -493,24 +334,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 16000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'Rosso Competizione',
-    location: 'Kobe',
     imageUrl: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&h=600&fit=crop',
-    condition: 'Excellent',
-    seats: 5,
-    doors: 4,
     engineSize: '2.9L V6 Turbo',
-    driveType: 'RWD',
-    bodyType: 'Sedan',
-    features: ['Carbon Fiber Trim', 'Sparco Seats', 'Race Mode', 'Akrapovic Exhaust', 'Limited Slip Diff'],
     auctionEndTime: new Date(Date.now() + 86400000 * 3),
     bids: 14,
     verified: true,
-    dealer: 'Italian Motors',
-    rating: 4.7
   },
   {
     id: 20,
+    lotNumber: 'LOT20',
     make: 'Volvo',
     model: 'XC90 T8',
     year: 2022,
@@ -518,24 +350,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 18000,
     transmission: 'Automatic',
     fuelType: 'Plug-in Hybrid',
-    color: 'Crystal White',
-    location: 'Fukuoka',
     imageUrl: 'https://images.unsplash.com/photo-1557254995-0c1ba16b4911?w=800&h=600&fit=crop',
-    condition: 'Like New',
-    seats: 7,
-    doors: 5,
     engineSize: '2.0L + Electric',
-    driveType: 'AWD',
-    bodyType: 'SUV',
-    features: ['Bowers & Wilkins', 'Pilot Assist', 'Air Purifier', 'Crystal Gear Shift', 'Massage Seats'],
     auctionEndTime: new Date(Date.now() + 86400000 * 5),
     bids: 12,
     verified: true,
-    dealer: 'Volvo Cars Fukuoka',
-    rating: 4.8
   },
   {
     id: 21,
+    lotNumber: 'LOT21',
     make: 'Maserati',
     model: 'Levante Trofeo',
     year: 2021,
@@ -543,24 +366,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 13000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'Blu Emozione',
-    location: 'Tokyo',
     imageUrl: 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&h=600&fit=crop',
-    condition: 'Excellent',
-    seats: 5,
-    doors: 5,
     engineSize: '3.8L V8 Turbo',
-    driveType: 'AWD',
-    bodyType: 'SUV',
-    features: ['Ferrari Engine', 'Corsa Mode', 'Carbon Fiber Package', 'Harman Kardon', 'Sport Exhaust'],
     auctionEndTime: new Date(Date.now() + 86400000 * 7),
     bids: 18,
     verified: true,
-    dealer: 'Maserati Japan',
-    rating: 4.9
   },
   {
     id: 22,
+    lotNumber: 'LOT22',
     make: 'Kia',
     model: 'Stinger GT',
     year: 2022,
@@ -568,24 +382,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 21000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'Ceramic Silver',
-    location: 'Nagoya',
     imageUrl: 'https://images.unsplash.com/photo-1609788063095-d71bf3c1f01f?w=800&h=600&fit=crop',
-    condition: 'Good',
-    seats: 5,
-    doors: 5,
     engineSize: '3.3L V6 Turbo',
-    driveType: 'RWD',
-    bodyType: 'Hatchback',
-    features: ['Drift Mode', 'Launch Control', 'Brembo Brakes', 'Limited Slip Diff', 'HUD Display'],
     auctionEndTime: new Date(Date.now() + 86400000 * 2),
     bids: 10,
     verified: false,
-    dealer: 'Korean Auto Gallery',
-    rating: 4.3
   },
   {
     id: 23,
+    lotNumber: 'LOT23',
     make: 'Bentley',
     model: 'Continental GT',
     year: 2020,
@@ -593,24 +398,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 9000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'Onyx Black',
-    location: 'Tokyo',
     imageUrl: 'https://images.unsplash.com/photo-1562911791-c7a97b729ec5?w=800&h=600&fit=crop',
-    condition: 'Excellent',
-    seats: 4,
-    doors: 2,
     engineSize: '6.0L W12 Turbo',
-    driveType: 'AWD',
-    bodyType: 'Coupe',
-    features: ['Naim Audio', 'Rotating Display', 'Diamond Quilting', 'Night Vision', 'Bentley Dynamic Ride'],
     auctionEndTime: new Date(Date.now() + 86400000 * 9),
     bids: 27,
     verified: true,
-    dealer: 'Bentley Tokyo',
-    rating: 5.0
   },
   {
     id: 24,
+    lotNumber: 'LOT24',
     make: 'Genesis',
     model: 'G90',
     year: 2023,
@@ -618,24 +414,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 4000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'Cavendish Red',
-    location: 'Osaka',
     imageUrl: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&h=600&fit=crop',
-    condition: 'New',
-    seats: 5,
-    doors: 4,
     engineSize: '3.5L V6 Turbo',
-    driveType: 'AWD',
-    bodyType: 'Sedan',
-    features: ['Bang & Olufsen', 'Ergo Motion Seats', 'Remote Parking', 'Fingerprint Auth', 'Mood Curator'],
     auctionEndTime: new Date(Date.now() + 86400000 * 4),
     bids: 15,
     verified: true,
-    dealer: 'Genesis Studio',
-    rating: 4.7
   },
   {
     id: 25,
+    lotNumber: 'LOT25',
     make: 'Peugeot',
     model: '3008 GT',
     year: 2022,
@@ -643,24 +430,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 17000,
     transmission: 'Automatic',
     fuelType: 'Diesel',
-    color: 'Pearl White',
-    location: 'Sapporo',
     imageUrl: 'https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=800&h=600&fit=crop',
-    condition: 'Like New',
-    seats: 5,
-    doors: 5,
     engineSize: '2.0L Turbo',
-    driveType: 'FWD',
-    bodyType: 'SUV',
-    features: ['i-Cockpit', 'Focal Audio', 'Night Vision', 'Massage Seats', 'Hands-free Tailgate'],
     auctionEndTime: new Date(Date.now() + 86400000 * 3),
     bids: 7,
     verified: false,
-    dealer: 'French Auto Import',
-    rating: 4.2
   },
   {
     id: 26,
+    lotNumber: 'LOT26',
     make: 'Lamborghini',
     model: 'Huracán EVO',
     year: 2021,
@@ -668,24 +446,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 6000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'Verde Mantis',
-    location: 'Tokyo',
     imageUrl: 'https://images.unsplash.com/photo-1621135802920-133df287f89c?w=800&h=600&fit=crop',
-    condition: 'Excellent',
-    seats: 2,
-    doors: 2,
     engineSize: '5.2L V10',
-    driveType: 'AWD',
-    bodyType: 'Sports',
-    features: ['LDVI System', 'Magneto Suspension', 'Carbon Ceramic Brakes', 'Telemetry', 'Launch Control'],
     auctionEndTime: new Date(Date.now() + 86400000 * 11),
     bids: 41,
     verified: true,
-    dealer: 'Lamborghini Tokyo',
-    rating: 5.0
   },
   {
     id: 27,
+    lotNumber: 'LOT27',
     make: 'Rolls-Royce',
     model: 'Ghost',
     year: 2022,
@@ -693,24 +462,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 2000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'English White',
-    location: 'Tokyo',
     imageUrl: 'https://images.unsplash.com/photo-1631295868223-63265b40d9e4?w=800&h=600&fit=crop',
-    condition: 'New',
-    seats: 5,
-    doors: 4,
     engineSize: '6.75L V12 Turbo',
-    driveType: 'AWD',
-    bodyType: 'Sedan',
-    features: ['Starlight Headliner', 'Champagne Cooler', 'Bespoke Audio', 'Magic Carpet Ride', 'Spirit of Ecstasy'],
     auctionEndTime: new Date(Date.now() + 86400000 * 15),
     bids: 8,
     verified: true,
-    dealer: 'Rolls-Royce Motor Cars Tokyo',
-    rating: 5.0
   },
   {
     id: 28,
+    lotNumber: 'LOT28',
     make: 'McLaren',
     model: '720S',
     year: 2020,
@@ -718,24 +478,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 7500,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'Papaya Spark',
-    location: 'Osaka',
     imageUrl: 'https://images.unsplash.com/photo-1622741524350-9f81a5cdbc81?w=800&h=600&fit=crop',
-    condition: 'Excellent',
-    seats: 2,
-    doors: 2,
     engineSize: '4.0L V8 Turbo',
-    driveType: 'RWD',
-    bodyType: 'Sports',
-    features: ['Variable Drift Control', 'Folding Driver Display', 'Track Telemetry', 'Proactive Chassis', 'Lift System'],
     auctionEndTime: new Date(Date.now() + 86400000 * 8),
     bids: 35,
     verified: true,
-    dealer: 'McLaren Osaka',
-    rating: 5.0
   },
   {
     id: 29,
+    lotNumber: 'LOT29',
     make: 'Aston Martin',
     model: 'DB11',
     year: 2021,
@@ -743,24 +494,15 @@ const demoVehicles: Vehicle[] = [
     mileage: 11000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'Magnetic Silver',
-    location: 'Kyoto',
     imageUrl: 'https://images.unsplash.com/photo-1618563833017-943c0df5c3a8?w=800&h=600&fit=crop',
-    condition: 'Excellent',
-    seats: 4,
-    doors: 2,
     engineSize: '5.2L V12 Turbo',
-    driveType: 'RWD',
-    bodyType: 'Coupe',
-    features: ['Bang & Olufsen', 'Adaptive Damping', 'Torque Vectoring', 'Garage Door Opener', 'Alcantara Headliner'],
     auctionEndTime: new Date(Date.now() + 86400000 * 6),
     bids: 22,
     verified: true,
-    dealer: 'Aston Martin Kyoto',
-    rating: 4.9
   },
   {
     id: 30,
+    lotNumber: 'LOT30',
     make: 'Cadillac',
     model: 'Escalade ESV',
     year: 2023,
@@ -768,21 +510,11 @@ const demoVehicles: Vehicle[] = [
     mileage: 6000,
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    color: 'Black Raven',
-    location: 'Tokyo',
     imageUrl: 'https://images.unsplash.com/photo-1563720360906-04085c5a7fd5?w=800&h=600&fit=crop',
-    condition: 'Like New',
-    seats: 8,
-    doors: 5,
     engineSize: '6.2L V8',
-    driveType: '4WD',
-    bodyType: 'SUV',
-    features: ['AKG Studio Audio', 'Super Cruise', 'Curved OLED Display', 'Air Ride Suspension', 'Night Vision'],
     auctionEndTime: new Date(Date.now() + 86400000 * 5),
     bids: 13,
     verified: true,
-    dealer: 'Cadillac Japan',
-    rating: 4.6
   }
 ]
 
@@ -800,16 +532,8 @@ function SearchResults() {
   const [yearRange, setYearRange] = useState<[number, number]>([2015, 2024])
   const [mileageMax, setMileageMax] = useState(200000)
   const [selectedMakes, setSelectedMakes] = useState<string[]>([])
-  const [selectedBodyTypes, setSelectedBodyTypes] = useState<string[]>([])
   const [selectedFuelTypes, setSelectedFuelTypes] = useState<string[]>([])
   const [selectedTransmissions, setSelectedTransmissions] = useState<string[]>([])
-  const [selectedColors, setSelectedColors] = useState<string[]>([])
-  const [selectedDriveTypes, setSelectedDriveTypes] = useState<string[]>([])
-  const [selectedConditions, setSelectedConditions] = useState<string[]>([])
-  const [selectedLocations, setSelectedLocations] = useState<string[]>([])
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([])
-  const [selectedDoors, setSelectedDoors] = useState<string[]>([])
-  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([])
   const [engineSizeRange, setEngineSizeRange] = useState<[number, number]>([0, 5000])
   const [verifiedOnly, setVerifiedOnly] = useState(false)
 
@@ -842,10 +566,6 @@ function SearchResults() {
       filtered = filtered.filter(v => selectedMakes.includes(v.make))
     }
 
-    // Body type filter
-    if (selectedBodyTypes.length > 0) {
-      filtered = filtered.filter(v => selectedBodyTypes.includes(v.bodyType))
-    }
 
     // Fuel type filter
     if (selectedFuelTypes.length > 0) {
@@ -857,44 +577,12 @@ function SearchResults() {
       filtered = filtered.filter(v => selectedTransmissions.includes(v.transmission))
     }
 
-    // Color filter
-    if (selectedColors.length > 0) {
-      filtered = filtered.filter(v => selectedColors.some(color => 
-        v.color.toLowerCase().includes(color.toLowerCase())
-      ))
-    }
 
-    // Drive type filter
-    if (selectedDriveTypes.length > 0) {
-      filtered = filtered.filter(v => selectedDriveTypes.includes(v.driveType))
-    }
 
-    // Condition filter
-    if (selectedConditions.length > 0) {
-      filtered = filtered.filter(v => selectedConditions.includes(v.condition))
-    }
 
-    // Location filter
-    if (selectedLocations.length > 0) {
-      filtered = filtered.filter(v => selectedLocations.includes(v.location))
-    }
 
-    // Seats filter
-    if (selectedSeats.length > 0) {
-      filtered = filtered.filter(v => selectedSeats.includes(v.seats.toString()))
-    }
 
-    // Doors filter
-    if (selectedDoors.length > 0) {
-      filtered = filtered.filter(v => selectedDoors.includes(v.doors.toString()))
-    }
 
-    // Features filter
-    if (selectedFeatures.length > 0) {
-      filtered = filtered.filter(v => 
-        selectedFeatures.every(feature => v.features.includes(feature))
-      )
-    }
 
     // Engine size filter
     filtered = filtered.filter(v => {
@@ -927,10 +615,9 @@ function SearchResults() {
     }
 
     setFilteredVehicles(filtered)
-  }, [searchQuery, priceRange, yearRange, mileageMax, selectedMakes, selectedBodyTypes, 
-      selectedFuelTypes, selectedTransmissions, selectedColors, selectedDriveTypes, 
-      selectedConditions, selectedLocations, selectedSeats, selectedDoors, 
-      selectedFeatures, engineSizeRange, verifiedOnly, sortBy, vehicles])
+  }, [searchQuery, priceRange, yearRange, mileageMax, selectedMakes, 
+      selectedFuelTypes, selectedTransmissions, 
+      engineSizeRange, verifiedOnly, sortBy, vehicles])
 
   const formatPrice = (price: number) => {
     return `¥${(price / 1000000).toFixed(1)}M`
@@ -1039,28 +726,6 @@ function SearchResults() {
             </button>
           ))}
 
-          <div className="h-6 w-px bg-gray-300 flex-shrink-0"></div>
-
-          {/* Body Types */}
-          {['Sedan', 'SUV', 'Hatchback'].map(type => (
-            <button
-              key={type}
-              onClick={() => {
-                if (selectedBodyTypes.includes(type)) {
-                  setSelectedBodyTypes(selectedBodyTypes.filter(t => t !== type))
-                } else {
-                  setSelectedBodyTypes([...selectedBodyTypes, type])
-                }
-              }}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex-shrink-0 ${
-                selectedBodyTypes.includes(type)
-                  ? 'bg-[#FA7921] text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {type}
-            </button>
-          ))}
 
           <div className="h-6 w-px bg-gray-300 flex-shrink-0"></div>
 
@@ -1111,7 +776,7 @@ function SearchResults() {
           </button>
 
           {/* Clear All - Shows when filters are active */}
-          {(selectedMakes.length > 0 || selectedBodyTypes.length > 0 || selectedTransmissions.length > 0 || 
+          {(selectedMakes.length > 0 || selectedTransmissions.length > 0 || 
             selectedFuelTypes.length > 0 || priceRange[0] > 0 || priceRange[1] < 10000000 || 
             yearRange[0] > 2015 || yearRange[1] < 2024 || verifiedOnly) && (
             <>
@@ -1119,19 +784,11 @@ function SearchResults() {
               <button
                 onClick={() => {
                   setSelectedMakes([])
-                  setSelectedBodyTypes([])
                   setSelectedTransmissions([])
                   setSelectedFuelTypes([])
                   setPriceRange([0, 10000000])
                   setYearRange([2015, 2024])
                   setMileageMax(200000)
-                  setSelectedColors([])
-                  setSelectedDriveTypes([])
-                  setSelectedConditions([])
-                  setSelectedLocations([])
-                  setSelectedSeats([])
-                  setSelectedDoors([])
-                  setSelectedFeatures([])
                   setEngineSizeRange([0, 5000])
                   setVerifiedOnly(false)
                 }}
@@ -1147,16 +804,12 @@ function SearchResults() {
         </div>
         
         {/* Active Filters Summary */}
-        {(selectedMakes.length > 0 || selectedBodyTypes.length > 0 || selectedTransmissions.length > 0 || 
-          selectedFuelTypes.length > 0 || selectedColors.length > 0 || selectedDriveTypes.length > 0 ||
-          selectedConditions.length > 0 || selectedLocations.length > 0 || selectedSeats.length > 0 ||
-          selectedDoors.length > 0 || selectedFeatures.length > 0) && (
+        {(selectedMakes.length > 0 || selectedTransmissions.length > 0 || 
+          selectedFuelTypes.length > 0) && (
           <div className="pt-3 border-t border-gray-200 flex items-center gap-2 flex-wrap">
             <span className="text-xs text-gray-500">Active:</span>
-            {[...selectedMakes, ...selectedBodyTypes, ...selectedTransmissions, ...selectedFuelTypes,
-              ...selectedColors, ...selectedDriveTypes, ...selectedConditions, ...selectedLocations,
-              ...selectedSeats.map(s => `${s} seats`), ...selectedDoors.map(d => `${d} doors`),
-              ...selectedFeatures].map((filter, index) => (
+            {[...selectedMakes, ...selectedTransmissions, ...selectedFuelTypes,
+].map((filter, index) => (
               <span key={index} className="px-2 py-1 bg-[#FA7921]/10 text-[#FA7921] rounded text-xs">
                 {filter}
               </span>
@@ -1338,32 +991,6 @@ function SearchResults() {
                 </div>
               </div>
 
-              {/* Body Type Filter */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-3">Body Type</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {Array.from(new Set(vehicles.map(v => v.bodyType))).map(type => (
-                    <button
-                      key={type}
-                      onClick={() => {
-                        if (selectedBodyTypes.includes(type)) {
-                          setSelectedBodyTypes(selectedBodyTypes.filter(t => t !== type))
-                        } else {
-                          setSelectedBodyTypes([...selectedBodyTypes, type])
-                        }
-                      }}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                        selectedBodyTypes.includes(type)
-                          ? 'bg-[#FA7921] text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {/* Transmission Filter */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-3">Transmission</label>
@@ -1414,158 +1041,6 @@ function SearchResults() {
                 </div>
               </div>
 
-              {/* Drive Type Filter */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-3">Drive Type</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {['FWD', 'RWD', 'AWD', '4WD', 'Quattro'].map(type => (
-                    <button
-                      key={type}
-                      onClick={() => {
-                        if (selectedDriveTypes.includes(type)) {
-                          setSelectedDriveTypes(selectedDriveTypes.filter(t => t !== type))
-                        } else {
-                          setSelectedDriveTypes([...selectedDriveTypes, type])
-                        }
-                      }}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                        selectedDriveTypes.includes(type)
-                          ? 'bg-[#FA7921] text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Color Filter */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-3">Color</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {['Black', 'White', 'Silver', 'Gray', 'Red', 'Blue', 'Green', 'Pearl', 'Beige'].map(color => (
-                    <button
-                      key={color}
-                      onClick={() => {
-                        if (selectedColors.includes(color)) {
-                          setSelectedColors(selectedColors.filter(c => c !== color))
-                        } else {
-                          setSelectedColors([...selectedColors, color])
-                        }
-                      }}
-                      className={`px-2 py-1 rounded-lg text-xs font-medium transition-all ${
-                        selectedColors.includes(color)
-                          ? 'bg-[#FA7921] text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      {color}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Condition Filter */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-3">Condition</label>
-                <div className="space-y-2">
-                  {['New', 'Like New', 'Excellent', 'Good', 'Fair'].map(condition => (
-                    <label key={condition} className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedConditions.includes(condition)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedConditions([...selectedConditions, condition])
-                          } else {
-                            setSelectedConditions(selectedConditions.filter(c => c !== condition))
-                          }
-                        }}
-                        className="w-4 h-4 text-[#FA7921] border-gray-300 rounded focus:ring-[#FA7921]"
-                      />
-                      <span className="text-sm text-gray-700">{condition}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Number of Seats */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-3">Number of Seats</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {['2', '4', '5', '7', '8+'].map(seats => (
-                    <button
-                      key={seats}
-                      onClick={() => {
-                        if (selectedSeats.includes(seats)) {
-                          setSelectedSeats(selectedSeats.filter(s => s !== seats))
-                        } else {
-                          setSelectedSeats([...selectedSeats, seats])
-                        }
-                      }}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                        selectedSeats.includes(seats)
-                          ? 'bg-[#FA7921] text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      {seats}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Number of Doors */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-3">Number of Doors</label>
-                <div className="grid grid-cols-4 gap-2">
-                  {['2', '3', '4', '5'].map(doors => (
-                    <button
-                      key={doors}
-                      onClick={() => {
-                        if (selectedDoors.includes(doors)) {
-                          setSelectedDoors(selectedDoors.filter(d => d !== doors))
-                        } else {
-                          setSelectedDoors([...selectedDoors, doors])
-                        }
-                      }}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                        selectedDoors.includes(doors)
-                          ? 'bg-[#FA7921] text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      {doors}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Location Filter */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-3">Location</label>
-                <div className="space-y-2 max-h-32 overflow-y-auto border border-gray-200 rounded-lg p-2">
-                  {['Tokyo', 'Osaka', 'Yokohama', 'Nagoya', 'Kobe', 'Kyoto', 'Fukuoka', 'Sapporo'].map(location => (
-                    <label key={location} className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedLocations.includes(location)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedLocations([...selectedLocations, location])
-                          } else {
-                            setSelectedLocations(selectedLocations.filter(l => l !== location))
-                          }
-                        }}
-                        className="w-4 h-4 text-[#FA7921] border-gray-300 rounded focus:ring-[#FA7921]"
-                      />
-                      <span className="text-sm text-gray-700">{location}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
               {/* Engine Size */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -1586,35 +1061,6 @@ function SearchResults() {
                 </div>
               </div>
 
-              {/* Features Filter */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-3">Features</label>
-                <div className="space-y-2 max-h-32 overflow-y-auto border border-gray-200 rounded-lg p-2">
-                  {[
-                    'Navigation System', 'Leather Seats', 'Sunroof', 'Backup Camera',
-                    'Bluetooth', 'Heated Seats', 'Keyless Entry', 'Cruise Control',
-                    'Apple CarPlay', 'Android Auto', 'Parking Sensors', 'Blind Spot Monitor',
-                    'Lane Departure', 'Adaptive Cruise', '360 Camera', 'Premium Audio'
-                  ].map(feature => (
-                    <label key={feature} className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedFeatures.includes(feature)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedFeatures([...selectedFeatures, feature])
-                          } else {
-                            setSelectedFeatures(selectedFeatures.filter(f => f !== feature))
-                          }
-                        }}
-                        className="w-4 h-4 text-[#FA7921] border-gray-300 rounded focus:ring-[#FA7921]"
-                      />
-                      <span className="text-xs text-gray-700">{feature}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
               {/* Clear Filters */}
               <button
                 onClick={() => {
@@ -1622,16 +1068,8 @@ function SearchResults() {
                   setYearRange([2015, 2024])
                   setMileageMax(200000)
                   setSelectedMakes([])
-                  setSelectedBodyTypes([])
                   setSelectedFuelTypes([])
                   setSelectedTransmissions([])
-                  setSelectedColors([])
-                  setSelectedDriveTypes([])
-                  setSelectedConditions([])
-                  setSelectedLocations([])
-                  setSelectedSeats([])
-                  setSelectedDoors([])
-                  setSelectedFeatures([])
                   setEngineSizeRange([0, 5000])
                   setVerifiedOnly(false)
                 }}
@@ -1648,192 +1086,61 @@ function SearchResults() {
           {viewMode === 'grid' ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {filteredVehicles.map(vehicle => (
-                <div key={vehicle.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group">
-                  {/* Image */}
-                  <div className="relative h-48 overflow-hidden">
-                    <Image
-                      src={vehicle.imageUrl}
-                      alt={`${vehicle.make} ${vehicle.model}`}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    {vehicle.verified && (
-                      <div className="absolute top-3 left-3 px-2 py-1 bg-green-500 text-white text-xs font-semibold rounded-full flex items-center gap-1">
-                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                        Verified
-                      </div>
-                    )}
-                    <div className="absolute top-3 right-3 px-3 py-1 bg-black/50 backdrop-blur-md text-red-500 text-sm rounded-full font-semibold">
-                      {getTimeRemaining(vehicle.auctionEndTime)} left
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-5">
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <Link href={`/dashboard/vehicle/${vehicle.id}`}>
-                          <h3 className="text-lg font-semibold text-gray-900 hover:text-[#FA7921] transition-colors cursor-pointer">
-                            {vehicle.year} {vehicle.make} {vehicle.model}
-                          </h3>
-                        </Link>
-                        <p className="text-sm text-gray-500">{vehicle.condition} • {vehicle.location}</p>
-                      </div>
-                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                      </button>
-                    </div>
-
-                    {/* Price and Bids */}
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <p className="text-2xl font-bold text-[#FA7921]">{formatPrice(vehicle.price)}</p>
-                        <p className="text-xs text-gray-500">{vehicle.bids} bids</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm text-gray-600">{vehicle.mileage.toLocaleString()} km</p>
-                        <p className="text-xs text-gray-500">{vehicle.transmission}</p>
-                      </div>
-                    </div>
-
-                    {/* Specs */}
-                    <div className="grid grid-cols-3 gap-3 mb-4">
-                      <div className="text-center p-2 bg-gray-50 rounded-lg">
-                        <svg className="w-4 h-4 mx-auto text-gray-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                        <p className="text-xs text-gray-600">{vehicle.fuelType}</p>
-                      </div>
-                      <div className="text-center p-2 bg-gray-50 rounded-lg">
-                        <svg className="w-4 h-4 mx-auto text-gray-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                        </svg>
-                        <p className="text-xs text-gray-600">{vehicle.driveType}</p>
-                      </div>
-                      <div className="text-center p-2 bg-gray-50 rounded-lg">
-                        <svg className="w-4 h-4 mx-auto text-gray-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        <p className="text-xs text-gray-600">{vehicle.seats} Seats</p>
-                      </div>
-                    </div>
-
-                    {/* Action Button */}
-                    <div className="pt-4 border-t border-gray-100">
-                      <Link
-                        href={`/dashboard/vehicle/${vehicle.id}`}
-                        className="block w-full px-4 py-2 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white text-sm font-medium rounded-lg hover:shadow-lg transition-all text-center"
-                      >
-                        View Details
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+                <VehicleCard
+                  key={vehicle.id}
+                  vehicle={{
+                    ...vehicle,
+                    id: vehicle.id,
+                    lotNumber: vehicle.lotNumber,
+                    make: vehicle.make,
+                    model: vehicle.model,
+                    modelCode: vehicle.modelCode,
+                    year: vehicle.year,
+                    price: vehicle.price,
+                    currentBid: vehicle.price,
+                    startingPrice: vehicle.startingPrice,
+                    mileage: vehicle.mileage,
+                    transmission: vehicle.transmission,
+                    grade: vehicle.grade,
+                    engineSize: vehicle.engineSize,
+                    imageUrl: vehicle.imageUrl,
+                    auctionEndTime: vehicle.auctionEndTime,
+                    bids: vehicle.bids,
+                    verified: vehicle.verified
+                  }}
+                  viewMode="grid"
+                  showBidButton={false}
+                />
               ))}
             </div>
           ) : (
             <div className="space-y-4">
               {filteredVehicles.map(vehicle => (
-                <div key={vehicle.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-lg transition-all duration-300">
-                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-                    {/* Image */}
-                    <div className="relative w-full sm:w-64 h-48 rounded-lg overflow-hidden flex-shrink-0">
-                      <Image
-                        src={vehicle.imageUrl}
-                        alt={`${vehicle.make} ${vehicle.model}`}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-
-                    {/* Content */}
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <Link href={`/dashboard/vehicle/${vehicle.id}`}>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-1 hover:text-[#FA7921] transition-colors cursor-pointer">
-                              {vehicle.year} {vehicle.make} {vehicle.model}
-                            </h3>
-                          </Link>
-                          <div className="flex items-center gap-4 text-sm text-gray-500">
-                            <span>{vehicle.condition}</span>
-                            <span>•</span>
-                            <span>{vehicle.location}</span>
-                            <span>•</span>
-                            <span>{vehicle.mileage.toLocaleString()} km</span>
-                          </div>
-                        </div>
-                        <div className="text-right mt-3 sm:mt-0">
-                          <p className="text-xl sm:text-2xl font-bold text-[#FA7921]">{formatPrice(vehicle.price)}</p>
-                          <p className="text-xs sm:text-sm text-gray-500">{vehicle.bids} bids • <span className="text-red-600 font-semibold">{getTimeRemaining(vehicle.auctionEndTime)} left</span></p>
-                        </div>
-                      </div>
-
-                      {/* Specs Grid */}
-                      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4 mb-4">
-                        <div>
-                          <p className="text-xs text-gray-500">Transmission</p>
-                          <p className="text-sm font-medium text-gray-900">{vehicle.transmission}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Fuel</p>
-                          <p className="text-sm font-medium text-gray-900">{vehicle.fuelType}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Drive</p>
-                          <p className="text-sm font-medium text-gray-900">{vehicle.driveType}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Engine</p>
-                          <p className="text-sm font-medium text-gray-900">{vehicle.engineSize}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Seats</p>
-                          <p className="text-sm font-medium text-gray-900">{vehicle.seats}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Color</p>
-                          <p className="text-sm font-medium text-gray-900">{vehicle.color}</p>
-                        </div>
-                      </div>
-
-                      {/* Features */}
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {vehicle.features.slice(0, 5).map(feature => (
-                          <span key={feature} className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded-lg">
-                            {feature}
-                          </span>
-                        ))}
-                        {vehicle.features.length > 5 && (
-                          <span className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded-lg">
-                            +{vehicle.features.length - 5} more
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex items-center justify-between sm:justify-end">
-                        <div className="flex items-center gap-3 w-full sm:w-auto">
-                          <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                            </svg>
-                          </button>
-                          <Link
-                            href={`/dashboard/vehicle/${vehicle.id}`}
-                            className="flex-1 sm:flex-none text-center px-4 sm:px-6 py-2 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white font-medium rounded-lg hover:shadow-lg transition-all"
-                          >
-                            View Details
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <VehicleCard
+                  key={vehicle.id}
+                  vehicle={{
+                    ...vehicle,
+                    id: vehicle.id,
+                    lotNumber: vehicle.lotNumber,
+                    make: vehicle.make,
+                    model: vehicle.model,
+                    modelCode: vehicle.modelCode,
+                    year: vehicle.year,
+                    price: vehicle.price,
+                    currentBid: vehicle.price,
+                    startingPrice: vehicle.startingPrice,
+                    mileage: vehicle.mileage,
+                    transmission: vehicle.transmission,
+                    grade: vehicle.grade,
+                    engineSize: vehicle.engineSize,
+                    imageUrl: vehicle.imageUrl,
+                    auctionEndTime: vehicle.auctionEndTime,
+                    bids: vehicle.bids,
+                    verified: vehicle.verified
+                  }}
+                  viewMode="list"
+                  showBidButton={false}
+                />
               ))}
             </div>
           )}
