@@ -1,12 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import type { AuctionItem, ActivityItem } from './types'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { ClaimRequiredModal, useClaimStatus } from './components/ClaimRequired'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
 import { StatCard } from '@/components/ui/stat-card'
@@ -18,39 +15,6 @@ function Skeleton({ className }: { className?: string }) {
   return <div className={`animate-pulse bg-gray-200 rounded ${className}`} />
 }
 
-// Countdown Timer Hook - Shows bidding deadline (1 hour before auction)
-function useCountdown(targetDate: Date) {
-  const [timeLeft, setTimeLeft] = useState<{
-    days: number
-    hours: number
-    minutes: number
-    seconds: number
-  }>({ days: 0, hours: 0, minutes: 0, seconds: 0 })
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date().getTime()
-      // Bidding closes 1 hour before the actual auction time
-      const biddingDeadline = targetDate.getTime() - (60 * 60 * 1000)
-      const distance = biddingDeadline - now
-
-      if (distance > 0) {
-        setTimeLeft({
-          days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-          seconds: Math.floor((distance % (1000 * 60)) / 1000),
-        })
-      } else {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 })
-      }
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [targetDate])
-
-  return timeLeft
-}
 
 
 

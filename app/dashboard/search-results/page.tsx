@@ -285,15 +285,8 @@ function SearchResultsContent() {
         )
       }
       
-      if (filters.colors.length > 0) {
-        results = results.filter(v => v.color && filters.colors.includes(v.color))
-      }
-      
-      if (filters.equipment.length > 0) {
-        results = results.filter(v => 
-          v.equipment && filters.equipment.some(eq => v.equipment!.includes(eq))
-        )
-      }
+      // Color and equipment filters removed as these properties don't exist on Vehicle type
+      // These filters can be re-enabled when the properties are added to the Vehicle interface
       
       setFilteredVehicles(results)
       setIsLoading(false)

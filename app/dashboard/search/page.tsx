@@ -2,8 +2,6 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import Image from 'next/image'
-import Link from 'next/link'
 import { SearchBar } from '@/components/ui/search-bar'
 import { VehicleCard } from '@/components/ui/vehicle-card-new'
 
@@ -621,16 +619,6 @@ function SearchResults() {
 
   const formatPrice = (price: number) => {
     return `¥${(price / 1000000).toFixed(1)}M`
-  }
-
-  const getTimeRemaining = (endTime: Date) => {
-    const now = new Date()
-    const diff = endTime.getTime() - now.getTime()
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    
-    if (days > 0) return `${days}d ${hours}h`
-    return `${hours}h`
   }
 
   return (

@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Heart, Clock, MapPin } from 'lucide-react'
+import { Clock, MapPin } from 'lucide-react'
 
 export interface VehicleCardData {
   id: number | string

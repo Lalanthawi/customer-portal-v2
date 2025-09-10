@@ -89,9 +89,6 @@ export default function AuctionCalendarPage() {
   const [selectedDay, setSelectedDay] = useState<string | null>(null)
   
   // Calculate statistics
-  const uniqueHouses = new Set(
-    Object.values(auctionSchedule).flat().map(a => a.split(' ')[0])
-  ).size
 
   const getAuctionHouseKey = (auction: string): string => {
     return Object.keys(auctionHouseInfo).find(key => 
@@ -304,7 +301,7 @@ export default function AuctionCalendarPage() {
                   <div className="flex items-center gap-1.5 sm:gap-2">
                     <div 
                       className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full"
-                      style={{ backgroundColor: info.color }}
+                      style={{ backgroundColor: info?.color || '#6B7280' }}
                     />
                     <CardTitle className="text-[13px] sm:text-sm font-semibold text-gray-900">{house}</CardTitle>
                   </div>
@@ -318,11 +315,11 @@ export default function AuctionCalendarPage() {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-[10px] sm:text-[11px] text-gray-600">Avg. vehicles</span>
-                  <span className="text-[11px] sm:text-[12px] font-semibold text-gray-900">~{info.avgVehicles.toLocaleString()}</span>
+                  <span className="text-[11px] sm:text-[12px] font-semibold text-gray-900">~{info?.avgVehicles?.toLocaleString() || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-[10px] sm:text-[11px] text-gray-600">Locations</span>
-                  <span className="text-[11px] sm:text-[12px] font-semibold text-gray-900">{info.location}</span>
+                  <span className="text-[11px] sm:text-[12px] font-semibold text-gray-900">{info?.location || 'N/A'}</span>
                 </div>
               </CardContent>
             </Card>
