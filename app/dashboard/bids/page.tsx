@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { StatCard } from '@/components/ui/stat-card'
@@ -187,6 +186,39 @@ export default function MyBidsPage() {
   const [selectedBid, setSelectedBid] = useState<AuctionBid | null>(null)
   const [newBidAmount, setNewBidAmount] = useState('')
 
+  // Format currency with proper Japanese formatting
+  const formatCurrency = (amount: number): string => {
+    if (amount >= 1000000) {
+      return `¥${(amount / 1000000).toFixed(2)}M`
+    } else if (amount >= 100000) {
+      return `¥${(amount / 1000).toFixed(0)}K`
+    }
+    return `¥${amount.toLocaleString('ja-JP')}`
+  }
+
+  // Calculate smart bid increment based on current price
+  const getSmartIncrement = (currentBid: number): number[] => {
+    if (currentBid < 500000) {
+      return [10000, 20000, 50000] // Under ¥500K: +10K, +20K, +50K
+    } else if (currentBid < 1000000) {
+      return [10000, 50000, 100000] // ¥500K-1M: +10K, +50K, +100K
+    } else if (currentBid < 5000000) {
+      return [50000, 100000, 200000] // ¥1M-5M: +50K, +100K, +200K
+    } else {
+      return [100000, 200000, 500000] // Over ¥5M: +100K, +200K, +500K
+    }
+  }
+
+  // Format increment button text
+  const formatIncrement = (amount: number): string => {
+    if (amount >= 1000000) {
+      return `+¥${amount / 1000000}M`
+    } else if (amount >= 1000) {
+      return `+¥${amount / 1000}K`
+    }
+    return `+¥${amount}`
+  }
+
   // Filter bids based on active tab
   const filteredBids = mockBids.filter(bid => {
     if (activeTab === 'active') return bid.status === 'active' || bid.status === 'outbid'
@@ -200,13 +232,13 @@ export default function MyBidsPage() {
   const getStatusBadge = (status: BidStatus) => {
     switch (status) {
       case 'won':
-        return <StatusBadge status="won" label="Won" />
+        return <StatusBadge status="won" />
       case 'lost':
-        return <StatusBadge status="lost" label="Lost" />
+        return <StatusBadge status="lost" />
       case 'active':
-        return <StatusBadge status="active" label="Active" />
+        return <StatusBadge status="active" />
       case 'outbid':
-        return <StatusBadge status="outbid" label="Outbid" />
+        return <StatusBadge status="outbid" />
       default:
         return null
     }
@@ -270,7 +302,6 @@ export default function MyBidsPage() {
           title="Total Bids"
           value={statistics.totalBids.toString()}
           subtitle="All time"
-          variant="blue"
           className="min-h-[140px]"
         />
 
@@ -278,9 +309,8 @@ export default function MyBidsPage() {
         <StatCard
           title="Vehicles Won"
           value={statistics.wonAuctions.toString()}
-          subtitle="Successfully won"
-          badge={{ label: `${statistics.inTransitVehicles} Transit`, variant: 'secondary' }}
-          variant="green"
+          subtitle={`Successfully won • ${statistics.inTransitVehicles} in transit`}
+          trend={{ value: 12.5, isPositive: true }}
           className="min-h-[140px]"
         />
 
@@ -288,19 +318,15 @@ export default function MyBidsPage() {
         <StatCard
           title="Active Auctions"
           value={(statistics.activeBids + statistics.outbidCount).toString()}
-          subtitle={`${statistics.activeBids} leading`}
-          badge={{ label: 'Live', variant: 'warning' }}
-          variant="yellow"
+          subtitle={`${statistics.activeBids} leading • ${statistics.outbidCount} outbid`}
           className="min-h-[140px]"
         />
 
         {/* Average Bid Card */}
         <StatCard
           title="Avg Bid Amount"
-          value={`¥${(statistics.avgBidAmount / 1000000).toFixed(1)}M`}
-          subtitle="Per vehicle"
-          badge={statistics.pendingPayments > 0 ? { label: `${statistics.pendingPayments} Pending`, variant: 'secondary' } : undefined}
-          variant="orange"
+          value={formatCurrency(statistics.avgBidAmount)}
+          subtitle={statistics.pendingPayments > 0 ? `Per vehicle • ${statistics.pendingPayments} pending` : 'Per vehicle'}
           className="min-h-[140px]"
         />
       </div>
@@ -356,24 +382,28 @@ export default function MyBidsPage() {
       {/* Bids List */}
       <div className="space-y-4">
         {filteredBids.map((bid) => (
-          <Link 
+          <div 
             key={bid.id} 
-            href={`/dashboard/bids/${bid.id}`}
-            className="block bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+            className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group"
           >
             <div className="p-6">
               <div className="flex flex-col lg:flex-row gap-6">
                 {/* Vehicle Image */}
-                <div className="relative w-full lg:w-48 h-32 lg:h-32 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                <div className="relative w-full lg:w-56 h-40 lg:h-40 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                   <Image
                     src={bid.vehicleImage}
                     alt={bid.vehicleTitle}
                     fill
-                    className="object-cover"
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute top-2 left-2">
                     {getStatusBadge(bid.status)}
                   </div>
+                  {bid.status === 'active' && checkIfUrgent(bid.auctionEndDate) && (
+                    <div className="absolute bottom-2 right-2 px-2 py-1 bg-amber-500 text-white text-xs font-bold rounded-md animate-pulse">
+                      ⚡ LIVE SOON
+                    </div>
+                  )}
                 </div>
 
                 {/* Vehicle Details */}
@@ -450,14 +480,14 @@ export default function MyBidsPage() {
                     <div className="text-right">
                       <div className="mb-3">
                         <p className="text-xs text-gray-500 mb-1">Your Bid</p>
-                        <p className="text-xl font-bold text-[#FA7921]">¥{bid.yourBid.toLocaleString()}</p>
+                        <p className="text-xl font-bold text-[#FA7921]">{formatCurrency(bid.yourBid)}</p>
                       </div>
                       <div className="mb-3">
                         <p className="text-xs text-gray-500 mb-1">
                           {bid.status === 'won' ? 'Winning Bid' : 'Current Highest'}
                         </p>
                         <p className="text-lg font-semibold text-gray-900">
-                          ¥{(bid.winningBid || bid.currentHighestBid).toLocaleString()}
+                          {formatCurrency(bid.winningBid || bid.currentHighestBid)}
                         </p>
                       </div>
                       <p className="text-xs text-gray-500">
@@ -468,107 +498,129 @@ export default function MyBidsPage() {
 
                   {/* Action Buttons and Status */}
                   <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t border-gray-100">
-                    <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2">
                       {(bid.status === 'active' || bid.status === 'outbid') && (
                         <>
                           <button
-                            onClick={(e) => {
-                              e.preventDefault()
-                              handleChangeBid(bid)
+                            onClick={() => {
+                              if (bid.status === 'outbid') {
+                                // Smart increment based on current bid amount
+                                const increments = getSmartIncrement(bid.currentHighestBid)
+                                const newAmount = bid.currentHighestBid + (increments[0] || 10000)
+                                setNewBidAmount(newAmount.toString())
+                                handleChangeBid(bid)
+                              } else {
+                                window.location.href = `/dashboard/vehicle/${bid.id}`
+                              }
                             }}
-                            className="px-3 py-1.5 bg-[#FA7921] text-white text-sm font-medium rounded-lg hover:bg-[#FA7921]/90 transition-colors"
+                            className="relative px-5 py-2.5 bg-gradient-to-r from-[#FA7921] to-[#FF6B35] text-white text-sm font-semibold rounded-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2 overflow-hidden group"
                           >
-                            Change Bid
+                            <div className="absolute inset-0 bg-gradient-to-r from-[#FF6B35] to-[#FA7921] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <svg className="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="relative z-10">
+                              {bid.status === 'outbid' ? 'Increase Bid' : 'View Live Auction'}
+                            </span>
                           </button>
                           <button
-                            onClick={(e) => {
-                              e.preventDefault()
-                              handleCancelBid(bid)
-                            }}
-                            className="px-3 py-1.5 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
+                            onClick={() => window.location.href = `/dashboard/auctions/${bid.auctionId}`}
+                            className="px-4 py-2.5 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-700 text-sm font-medium rounded-lg hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 transform hover:scale-105 transition-all duration-200 flex items-center gap-2"
                           >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Auction Details
+                          </button>
+                          <button
+                            onClick={() => handleCancelBid(bid)}
+                            className="px-4 py-2.5 bg-gradient-to-r from-red-50 to-pink-50 text-red-600 text-sm font-medium rounded-lg hover:from-red-100 hover:to-pink-100 border border-red-200 hover:border-red-300 transform hover:scale-105 transition-all duration-200 flex items-center gap-2"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
                             Cancel Bid
                           </button>
                         </>
                       )}
                       {bid.status === 'won' && (
-                      <>
-                        {bid.paymentStatus === 'completed' ? (
-                          <span className="inline-flex items-center px-3 py-1 rounded-lg bg-green-50 text-green-700 text-xs font-medium">
-                            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                            </svg>
-                            Payment Completed
-                          </span>
-                        ) : (
-                          <Button variant="primary" size="sm">
-                            Complete Payment
-                          </Button>
-                        )}
-                        {bid.shippingStatus && (
-                          <span className="inline-flex items-center px-3 py-1 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">
-                            <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                            </svg>
-                            {bid.shippingStatus === 'delivered' ? 'Delivered' : 
-                             bid.shippingStatus === 'in_transit' ? 'In Transit' : 
-                             'Pending Shipment'}
-                          </span>
-                        )}
-                      </>
-                    )}
-                      {(bid.status === 'active' || bid.status === 'outbid') && (
-                      <>
-                        <Button variant="primary" size="sm">
-                          {bid.status === 'outbid' ? 'Increase Bid' : 'View Auction'}
-                        </Button>
-                        <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
-                          Auction Details
-                        </button>
-                      </>
-                    )}
+                        <>
+                          {bid.paymentStatus === 'completed' ? (
+                            <span className="inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 text-sm font-semibold border border-green-300">
+                              <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                              </svg>
+                              Payment Completed
+                            </span>
+                          ) : (
+                            <button
+                              onClick={() => window.location.href = `/dashboard/payments/${bid.id}`}
+                              className="relative px-5 py-2.5 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-sm font-semibold rounded-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2 overflow-hidden group"
+                            >
+                              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-green-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                              <svg className="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                              </svg>
+                              <span className="relative z-10">Complete Payment</span>
+                            </button>
+                          )}
+                          {bid.shippingStatus && (
+                            <button
+                              onClick={() => window.location.href = `/dashboard/shipment/${bid.id}`}
+                              className="px-4 py-2.5 bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 text-sm font-semibold border border-blue-200 rounded-lg hover:from-blue-100 hover:to-cyan-100 hover:border-blue-300 transform hover:scale-105 transition-all duration-200 flex items-center gap-2"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                              </svg>
+                              {bid.shippingStatus === 'delivered' ? 'Delivered' : 
+                               bid.shippingStatus === 'in_transit' ? 'Track Shipment' : 
+                               'Pending Shipment'}
+                            </button>
+                          )}
+                        </>
+                      )}
                       {bid.status === 'lost' && (
-                      <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
-                        View Similar Vehicles
-                      </button>
-                    )}
+                        <button 
+                          onClick={() => window.location.href = `/dashboard/vehicles?similar=${encodeURIComponent(bid.vehicleTitle)}`}
+                          className="px-4 py-2.5 bg-gradient-to-r from-gray-100 to-slate-100 text-gray-700 rounded-lg text-sm font-semibold hover:from-gray-200 hover:to-slate-200 border border-gray-200 hover:border-gray-300 transform hover:scale-105 transition-all duration-200 flex items-center gap-2"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                          </svg>
+                          View Similar Vehicles
+                        </button>
+                      )}
                     </div>
                     
                     {/* Quick Actions */}
                     <div className="flex items-center gap-2">
-                      {bid.status === 'won' && bid.paymentStatus === 'completed' && (
-                        <button 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            window.location.href = `/dashboard/bids/${bid.id}`;
-                          }}
-                          className="px-3 py-2 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium flex items-center gap-2" 
-                          title="Track Shipment"
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                          </svg>
-                          Track Shipment
-                        </button>
-                      )}
                       <button 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          window.location.href = `/dashboard/bids/${bid.id}`;
-                        }}
-                        className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" 
-                        title="View Details"
+                        onClick={() => window.location.href = `/dashboard/vehicle/${bid.id}`}
+                        className="p-2.5 bg-gradient-to-r from-gray-50 to-gray-100 text-gray-600 hover:from-gray-100 hover:to-gray-200 rounded-lg transition-all duration-200 group" 
+                        title="View Vehicle Details"
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                       </button>
+                      {bid.status === 'won' && bid.paymentStatus === 'completed' && (
+                        <button 
+                          onClick={() => window.location.href = `/dashboard/documents/${bid.id}`}
+                          className="p-2.5 bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-600 hover:from-indigo-100 hover:to-purple-100 rounded-lg transition-all duration-200 group" 
+                          title="View Documents"
+                        >
+                          <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
 
@@ -628,19 +680,46 @@ export default function MyBidsPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   New Bid Amount
                 </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">¥</span>
-                  <input
-                    type="number"
-                    value={newBidAmount}
-                    onChange={(e) => setNewBidAmount(e.target.value)}
-                    className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
-                    placeholder="Enter new bid amount"
-                  />
+                <div className="space-y-3">
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">¥</span>
+                    <input
+                      type="number"
+                      value={newBidAmount}
+                      onChange={(e) => setNewBidAmount(e.target.value)}
+                      step="10000"
+                      min={selectedBid.currentHighestBid + 10000}
+                      className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
+                      placeholder="Enter new bid amount"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    {getSmartIncrement(selectedBid.currentHighestBid).map((increment, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => {
+                          const current = parseInt(newBidAmount) || selectedBid.currentHighestBid
+                          setNewBidAmount((current + increment).toString())
+                        }}
+                        className="flex-1 px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        {formatIncrement(increment)}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  Current bid: ¥{selectedBid.yourBid.toLocaleString()}
-                </p>
+                <div className="mt-3 space-y-1">
+                  <p className="text-xs text-gray-500">
+                    Current highest bid: {formatCurrency(selectedBid.currentHighestBid)}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Your current bid: {formatCurrency(selectedBid.yourBid)}
+                  </p>
+                  <p className="text-xs text-[#FA7921] font-medium">
+                    Minimum increment: {formatCurrency(getSmartIncrement(selectedBid.currentHighestBid)[0] || 10000)}
+                  </p>
+                </div>
               </div>
             )}
 
@@ -648,7 +727,7 @@ export default function MyBidsPage() {
             {modalType === 'cancel' && (
               <div className="mb-6">
                 <p className="text-gray-700">
-                  Are you sure you want to cancel your bid of <span className="font-semibold">¥{selectedBid.yourBid.toLocaleString()}</span> for this vehicle?
+                  Are you sure you want to cancel your bid of <span className="font-semibold">{formatCurrency(selectedBid.yourBid)}</span> for this vehicle?
                 </p>
                 <p className="text-sm text-gray-500 mt-2">
                   This action requires staff approval and cannot be undone once processed.

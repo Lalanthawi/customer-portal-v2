@@ -241,7 +241,6 @@ export default function MyVehiclesPage() {
           title="Total Vehicles"
           value={vehiclesByStatus.total.toString()}
           subtitle="All time"
-          variant="blue"
           className="min-h-[140px]"
         />
 
@@ -250,8 +249,6 @@ export default function MyVehiclesPage() {
           title="In Transit"
           value={vehiclesByStatus.active.toString()}
           subtitle="Active shipping"
-          badge={{ label: 'Live', variant: 'success' }}
-          variant="orange"
           className="min-h-[140px]"
         />
 
@@ -260,7 +257,6 @@ export default function MyVehiclesPage() {
           title="Delivered"
           value={vehiclesByStatus.delivered.toString()}
           subtitle="Ready for pickup"
-          variant="green"
           className="min-h-[140px]"
         />
 
@@ -269,7 +265,6 @@ export default function MyVehiclesPage() {
           title="Completed"
           value={vehiclesByStatus.completed.toString()}
           subtitle="Archived"
-          variant="default"
           className="min-h-[140px]"
         />
       </div>

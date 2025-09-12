@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { sharedDataStore } from '../../utils/sharedData'
+import { ImageGalleryEnhanced } from '@/components/ui/image-gallery-enhanced'
 
 // Shadcn UI Components
 import { Button } from '@/components/ui/button'
@@ -14,14 +14,11 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
-import { cn } from '@/lib/utils'
 
 // Icons
 import { 
-  ArrowLeft, Clock, ZoomIn, Grid3x3, Eye,
-  ChevronLeft, ChevronRight, Check, Share2,
+  ArrowLeft, Clock, Check, Share2,
   Mail, AlertCircle, CheckCircle, Loader2,
   ExternalLink, Heart,
   ChevronDown, Plus
@@ -92,14 +89,12 @@ export default function VehiclePageShadcn() {
   const router = useRouter()
   
   // State management
-  const [selectedImage, setSelectedImage] = useState(0)
-  const [showImageModal, setShowImageModal] = useState(false)
   const [bidAmount, setBidAmount] = useState('')
   const [bidMessage, setBidMessage] = useState('')
   const [isSubmittingBid, setIsSubmittingBid] = useState(false)
   const [bidHistory, setBidHistory] = useState<BidData[]>([])
   const [timeRemaining, setTimeRemaining] = useState('')
-  const [selectedList, setSelectedList] = useState<string>('')
+  const [selectedLists, setSelectedLists] = useState<string[]>([])
   const [favoritesList] = useState([
     { id: 'all', name: 'All', count: 6, max: 100 },
     { id: 'A', name: 'List A', count: 3, max: 20 },
@@ -108,6 +103,7 @@ export default function VehiclePageShadcn() {
     { id: 'D', name: 'List D', count: 0, max: 20 },
     { id: 'E', name: 'List E', count: 0, max: 20 },
   ])
+  const isInFavorites = selectedLists.length > 0
   
   // Tab state - only details tab now
   
@@ -434,61 +430,113 @@ export default function VehiclePageShadcn() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              {/* Add to Favorites Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    size="default"
-                    className={`flex items-center gap-2 px-4 py-2 font-medium shadow-sm ${
-                      selectedList 
-                        ? "bg-[#FA7921] text-white border-2 border-[#FA7921] hover:bg-[#FA7921]/90" 
-                        : "bg-white text-gray-900 border-2 border-gray-300 hover:border-[#FA7921] hover:bg-[#FA7921]/5"
-                    }`}
-                  >
-                    <Heart className={`h-5 w-5 ${selectedList ? 'fill-white' : ''}`} />
-                    <span className="font-medium">{selectedList ? `In ${selectedList === 'all' ? 'All' : `List ${selectedList}`}` : 'Add to Favorites'}</span>
-                    <ChevronDown className="h-4 w-4 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <div className="px-2 py-1.5 text-sm font-semibold text-gray-900">Select a List</div>
-                  <DropdownMenuSeparator />
-                  {favoritesList.map((list) => (
-                    <DropdownMenuItem
-                      key={list.id}
-                      onClick={() => {
-                        if (selectedList === list.id) {
-                          setSelectedList('')
-                          alert(`Removed from ${list.name}`)
-                        } else {
-                          setSelectedList(list.id)
-                          alert(`Added to ${list.name}`)
-                        }
-                      }}
-                      className="cursor-pointer"
+              {/* Add to Favorites - Main button adds to All, dropdown for specific lists */}
+              <div className="flex items-center">
+                <Button
+                  onClick={() => {
+                    if (selectedLists.includes('all')) {
+                      // Remove from all lists
+                      setSelectedLists([])
+                      // Show notification
+                      const notification = document.createElement('div')
+                      notification.className = 'fixed top-20 right-4 bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg z-50'
+                      notification.textContent = '✓ Removed from favorites'
+                      document.body.appendChild(notification)
+                      setTimeout(() => notification.remove(), 3000)
+                    } else {
+                      // Add to All list
+                      setSelectedLists(['all'])
+                      // Show notification
+                      const notification = document.createElement('div')
+                      notification.className = 'fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50'
+                      notification.textContent = '✓ Added to All favorites list'
+                      document.body.appendChild(notification)
+                      setTimeout(() => notification.remove(), 3000)
+                    }
+                  }}
+                  className={`flex items-center gap-2 px-4 py-2 font-medium shadow-sm rounded-l-lg rounded-r-none ${
+                    isInFavorites
+                      ? "bg-[#FA7921] text-white border-2 border-[#FA7921] hover:bg-[#FA7921]/90" 
+                      : "bg-white text-gray-900 border-2 border-gray-300 hover:border-[#FA7921] hover:bg-[#FA7921]/5"
+                  }`}
+                >
+                  <Heart className={`h-5 w-5 ${isInFavorites ? 'fill-white' : ''}`} />
+                  <span className="font-medium">
+                    {isInFavorites 
+                      ? selectedLists.length === 1 && selectedLists[0] === 'all' 
+                        ? 'In All' 
+                        : `In ${selectedLists.length} lists`
+                      : 'Add to Favorites'
+                    }
+                  </span>
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      size="icon"
+                      className={`px-2 rounded-l-none rounded-r-lg border-l-0 ${
+                        isInFavorites
+                          ? "bg-[#FA7921] text-white border-2 border-[#FA7921] hover:bg-[#FA7921]/90" 
+                          : "bg-white text-gray-900 border-2 border-gray-300 hover:border-[#FA7921] hover:bg-[#FA7921]/5"
+                      }`}
                     >
-                      <div className="flex items-center justify-between w-full">
-                        <div className="flex items-center gap-2">
-                          {selectedList === list.id && <Check className="h-4 w-4 text-[#FA7921]" />}
-                          <span className={selectedList === list.id ? 'font-semibold text-[#FA7921]' : ''}>
-                            {list.name}
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-2 py-1.5 text-sm font-semibold text-gray-900">Add to Specific Lists</div>
+                    <DropdownMenuSeparator />
+                    {favoritesList.map((list) => (
+                      <DropdownMenuItem
+                        key={list.id}
+                        onClick={() => {
+                          if (selectedLists.includes(list.id)) {
+                            // Remove from this list
+                            setSelectedLists(selectedLists.filter(id => id !== list.id))
+                            // Show notification
+                            const notification = document.createElement('div')
+                            notification.className = 'fixed top-20 right-4 bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg z-50'
+                            notification.textContent = `✓ Removed from ${list.name}`
+                            document.body.appendChild(notification)
+                            setTimeout(() => notification.remove(), 3000)
+                          } else {
+                            // Add to this list
+                            if (!selectedLists.includes(list.id)) {
+                              setSelectedLists([...selectedLists, list.id])
+                            }
+                            // Show notification
+                            const notification = document.createElement('div')
+                            notification.className = 'fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50'
+                            notification.textContent = `✓ Added to ${list.name}`
+                            document.body.appendChild(notification)
+                            setTimeout(() => notification.remove(), 3000)
+                          }
+                        }}
+                        className="cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex items-center gap-2">
+                            {selectedLists.includes(list.id) && <Check className="h-4 w-4 text-[#FA7921]" />}
+                            <span className={selectedLists.includes(list.id) ? 'font-semibold text-[#FA7921]' : ''}>
+                              {list.name}
+                            </span>
+                          </div>
+                          <span className="text-xs text-gray-500">
+                            {list.count}/{list.max}
                           </span>
                         </div>
-                        <span className="text-xs text-gray-500">
-                          {list.count}/{list.max}
-                        </span>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => window.location.href = '/dashboard/favorites'}>
+                      <div className="flex items-center gap-2 text-[#FA7921]">
+                        <Plus className="h-4 w-4" />
+                        <span>Manage Lists</span>
                       </div>
                     </DropdownMenuItem>
-                  ))}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => window.location.href = '/dashboard/favorites'}>
-                    <div className="flex items-center gap-2 text-[#FA7921]">
-                      <Plus className="h-4 w-4" />
-                      <span>Manage Lists</span>
-                    </div>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
 
               {/* Share Button - More Visible */}
               <Button 
@@ -519,132 +567,12 @@ export default function VehiclePageShadcn() {
           <div className="lg:col-span-2 space-y-6">
             {/* Enhanced Image Gallery */}
             <Card className="overflow-hidden bg-white border border-gray-200">
-              <div className="relative bg-gradient-to-b from-gray-900 to-gray-800">
-                {/* Top Bar with Actions */}
-                <div className="absolute top-0 left-0 right-0 z-20 p-4 bg-gradient-to-b from-black/60 to-transparent">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="bg-white/20 backdrop-blur-sm text-white">
-                        {selectedImage + 1} / {vehicleData.images.length}
-                      </Badge>
-                      <Badge className="bg-[#FA7921]/20 backdrop-blur-sm text-[#FFB956]">
-                        HD Photos
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button 
-                        onClick={() => setShowImageModal(true)}
-                        size="icon"
-                        variant="ghost"
-                        className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
-                      >
-                        <ZoomIn className="h-5 w-5" />
-                      </Button>
-                      <Button 
-                        size="icon"
-                        variant="ghost"
-                        className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
-                      >
-                        <Grid3x3 className="h-5 w-5" />
-                      </Button>
-                      <Button 
-                        size="icon"
-                        variant="ghost"
-                        className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
-                      >
-                        <Eye className="h-5 w-5" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Main Image Container */}
-                <div className="relative h-[500px] flex items-center justify-center">
-                  <Image
-                    src={vehicleData.images[selectedImage] || '/images/car-placeholder.jpg'}
-                    alt={`${vehicleData.make} ${vehicleData.model}`}
-                    width={900}
-                    height={500}
-                    className="object-contain cursor-zoom-in transition-transform duration-300 hover:scale-105"
-                    onClick={() => setShowImageModal(true)}
-                    priority
-                  />
-                  
-                  {/* Navigation Arrows */}
-                  <Button 
-                    onClick={() => setSelectedImage(prev => (prev - 1 + vehicleData.images.length) % vehicleData.images.length)}
-                    size="icon"
-                    variant="ghost"
-                    className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 hover:scale-110"
-                  >
-                    <ChevronLeft className="h-6 w-6" />
-                  </Button>
-                  <Button 
-                    onClick={() => setSelectedImage(prev => (prev + 1) % vehicleData.images.length)}
-                    size="icon"
-                    variant="ghost"
-                    className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 hover:scale-110"
-                  >
-                    <ChevronRight className="h-6 w-6" />
-                  </Button>
-                </div>
-
-                {/* Category Tags */}
-                <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
-                  <Badge className="bg-blue-600/80 backdrop-blur-sm text-white">
-                    Exterior
-                  </Badge>
-                  <Badge className="bg-green-600/80 backdrop-blur-sm text-white">
-                    Verified
-                  </Badge>
-                </div>
+              <div className="p-4">
+                <ImageGalleryEnhanced 
+                  images={vehicleData.images}
+                  alt={`${vehicleData.make} ${vehicleData.model}`}
+                />
               </div>
-
-              {/* Thumbnail Grid with Scroll */}
-              <CardContent className="bg-gray-50 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-semibold text-gray-900">Vehicle Photos</h3>
-                  <Button 
-                    onClick={() => setShowImageModal(true)}
-                    variant="ghost"
-                    size="sm"
-                    className="text-[#FA7921] hover:text-[#FA7921]/80"
-                  >
-                    <Grid3x3 className="h-4 w-4 mr-1" />
-                    View Gallery
-                  </Button>
-                </div>
-                
-                <ScrollArea className="w-full">
-                  <div className="flex gap-2 pb-2">
-                    {vehicleData.images.map((image, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedImage(index)}
-                        className={cn(
-                          "relative flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden transition-all",
-                          selectedImage === index 
-                            ? "ring-2 ring-[#FA7921] ring-offset-2 scale-105" 
-                            : "hover:ring-2 hover:ring-gray-300 hover:ring-offset-1"
-                        )}
-                      >
-                        <Image
-                          src={image}
-                          alt={`Thumbnail ${index + 1}`}
-                          fill
-                          className="object-cover"
-                        />
-                        {selectedImage === index && (
-                          <div className="absolute inset-0 bg-[#FA7921]/20 flex items-center justify-center">
-                            <Check className="h-6 w-6 text-white drop-shadow-lg" />
-                          </div>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </ScrollArea>
-
-              </CardContent>
             </Card>
 
             {/* Auction Timer - Mobile Only */}
@@ -1248,18 +1176,6 @@ export default function VehiclePageShadcn() {
         </div>
       </div>
 
-      {/* Image Modal */}
-      <Dialog open={showImageModal} onOpenChange={setShowImageModal}>
-        <DialogContent className="max-w-6xl bg-white dark:bg-white">
-          <Image
-            src={vehicleData.images[selectedImage] || '/images/car-placeholder.jpg'}
-            alt={`${vehicleData.make} ${vehicleData.model}`}
-            width={1200}
-            height={800}
-            className="w-full h-auto rounded-lg"
-          />
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

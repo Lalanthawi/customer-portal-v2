@@ -1,49 +1,41 @@
-import React from 'react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+import { LucideIcon } from 'lucide-react'
+import { Button } from './button'
 
 interface EmptyStateProps {
-  icon?: React.ReactNode
+  icon?: LucideIcon
   title: string
   description?: string
   action?: {
     label: string
     onClick: () => void
-    variant?: 'default' | 'outline' | 'ghost'
   }
   className?: string
-  children?: React.ReactNode
 }
 
 export function EmptyState({
-  icon,
+  icon: Icon,
   title,
   description,
   action,
-  className,
-  children
+  className
 }: EmptyStateProps) {
   return (
     <div className={cn(
-      "bg-white rounded-xl p-12 text-center border border-gray-200",
+      "flex flex-col items-center justify-center py-12 px-4 text-center",
       className
     )}>
-      {icon && (
-        <div className="w-16 h-16 text-gray-300 mx-auto mb-4">
-          {icon}
+      {Icon && (
+        <div className="p-3 bg-gray-100 rounded-full mb-4">
+          <Icon className="h-8 w-8 text-gray-400" />
         </div>
       )}
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-1">{title}</h3>
       {description && (
-        <p className="text-gray-600 mb-6 max-w-md mx-auto">{description}</p>
+        <p className="text-sm text-gray-500 max-w-sm mb-4">{description}</p>
       )}
-      {children}
       {action && (
-        <Button
-          onClick={action.onClick}
-          variant={action.variant || 'default'}
-          className={action.variant === 'default' ? 'bg-[#FA7921] hover:bg-[#FA7921]/90' : ''}
-        >
+        <Button onClick={action.onClick} size="sm">
           {action.label}
         </Button>
       )}

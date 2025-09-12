@@ -6,9 +6,10 @@ import type { AuctionItem, ActivityItem } from './types'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ClaimRequiredModal, useClaimStatus } from './components/ClaimRequired'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
-import { StatCard } from '@/components/ui/stat-card'
+import { StatCard } from '@/components/ui/stat-card-modern'
 import { Gavel, Shield, AlertCircle, Wallet } from 'lucide-react'
 import { VehicleCard } from '@/components/ui/vehicle-card-new'
+import { AddFundsButton } from '@/components/ui/add-funds-buttons'
 
 // Skeleton component for loading states
 function Skeleton({ className }: { className?: string }) {
@@ -349,19 +350,26 @@ export default function DashboardPage() {
 
         {/* Stats Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Link href="/dashboard/bids">
-          <StatCard
-            title="Active Bids"
-            value="12"
-            subtitle="from last week"
-            icon={<Gavel className="w-5 h-5" />}
-            status={{ label: 'Active', type: 'active' }}
-            trend={{ value: 25, label: 'from last month', isPositive: true, customColor: '#FA7921' }}
-            variant="orange"
-            valueClassName="text-[#FA7921]"
-          >
-            <div className="mt-6 pt-4 border-t border-gray-50">
-              <div className="space-y-2">
+          <Link href="/dashboard/bids" className="h-full block">
+            <StatCard
+              title="Active Bids"
+              value={12}
+              loading={loading}
+              subtitle="from last week"
+              icon={Gavel}
+              status={{ label: 'Active', type: 'active' }}
+              trend={{ 
+                value: 25, 
+                label: 'from last month', 
+                isPositive: true,
+                customColor: '#FA7921',
+                sparkline: [12, 18, 15, 22, 28, 25, 30, 35]
+              }}
+              variant="orange"
+              valueClassName="text-[#FA7921]"
+              animate={!loading}
+            >
+              <div className="mt-4 space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-gray-600">Winning</span>
                   <span className="font-semibold text-[#FA7921]">7</span>
@@ -375,19 +383,20 @@ export default function DashboardPage() {
                   <span className="font-semibold text-gray-900">2</span>
                 </div>
               </div>
-            </div>
-          </StatCard>
-        </Link>
+            </StatCard>
+          </Link>
 
-        <Link href="/dashboard/profile?tab=status">
-          <StatCard
-            title="Account Status"
-            value={isClaimedBySales ? "Premium" : "Verify Now"}
-            subtitle={isClaimedBySales ? "Full access enabled" : "Limited access"}
-            icon={<Shield className="w-5 h-5" />}
-            status={{ label: isClaimedBySales ? 'Verified' : 'Action needed', type: isClaimedBySales ? 'active' : 'error' }}
-            variant={isClaimedBySales ? "purple" : "red"}
-            valueClassName={!isClaimedBySales ? "text-2xl text-red-600" : "text-2xl"}
+          <Link href="/dashboard/profile?tab=status" className="h-full block">
+            <StatCard
+              title="Account Status"
+              value={isClaimedBySales ? "Premium" : "Verify Now"}
+              loading={loading}
+              subtitle={isClaimedBySales ? "Full access enabled" : "Limited access"}
+              icon={Shield}
+              status={{ label: isClaimedBySales ? 'Verified' : 'Action needed', type: isClaimedBySales ? 'active' : 'error' }}
+              variant={isClaimedBySales ? "purple" : "red"}
+              valueClassName={!isClaimedBySales ? "text-2xl text-red-600" : "text-2xl"}
+              animate={false}
           >
             <div className="mt-6 pt-4 border-t border-gray-50">
               {isClaimedBySales ? (
@@ -425,19 +434,27 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
-          </StatCard>
-        </Link>
+            </StatCard>
+          </Link>
 
-        <Link href="/dashboard/notifications">
-          <StatCard
-            title="Requires Action"
-            value="5"
-            subtitle="Pending tasks"
-            icon={<AlertCircle className="w-5 h-5" />}
-            status={{ label: 'Urgent', type: 'warning' }}
-            trend={{ value: 2, label: 'new today', isPositive: false, customColor: '#F59E0B' }}
-            variant="warning"
-            valueClassName="text-[#F59E0B]"
+          <Link href="/dashboard/notifications" className="h-full block">
+            <StatCard
+              title="Requires Action"
+              value={5}
+              loading={loading}
+              subtitle="Pending tasks"
+              icon={AlertCircle}
+              status={{ label: 'Urgent', type: 'warning' }}
+              trend={{ 
+                value: 2, 
+                label: 'new today', 
+                isPositive: false,
+                customColor: '#F59E0B',
+                sparkline: [3, 5, 4, 6, 5, 7, 5, 5]
+              }}
+              variant="orange"
+              valueClassName="text-[#F59E0B]"
+              animate={!loading}
           >
             <div className="mt-6 pt-4 border-t border-gray-50">
               <div className="space-y-2">
@@ -455,40 +472,40 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
-          </StatCard>
-        </Link>
+            </StatCard>
+          </Link>
 
-        <StatCard
-          title="Total Balance"
-          value="¥1.25M"
-          subtitle="≈ $8,333 USD"
-          icon={<Wallet className="w-5 h-5" />}
-          status={{ label: 'Available', type: 'active' }}
-          trend={{ value: 8.5, label: 'from last month', isPositive: true }}
-          variant="green"
-        >
-          <div className="mt-6 pt-4 border-t border-gray-50">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-600">Available</span>
-                <span className="font-semibold text-gray-900">¥950K</span>
+          <StatCard
+            title="Total Balance"
+            value="¥1.25M"
+            loading={loading}
+            subtitle="≈ $8,333 USD"
+            icon={Wallet}
+            status={{ label: 'Available', type: 'active' }}
+            trend={{ 
+              value: 8.5, 
+              label: 'from last month', 
+              isPositive: true,
+              sparkline: [850, 920, 890, 980, 1050, 1150, 1200, 1250]
+            }}
+            variant="green"
+            animate={!loading}
+          >
+            <div className="mt-6 pt-4 border-t border-gray-50">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600">Available</span>
+                  <span className="font-semibold text-gray-900">¥950K</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600">Pending</span>
+                  <span className="font-semibold text-gray-900">¥300K</span>
+                </div>
+                {/* Modern Add Funds Button - Try different variants: 'gradient', 'neon', 'glass', 'minimal', 'pulse' */}
+                <AddFundsButton variant="glass" className="mt-2" />
               </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-600">Pending</span>
-                <span className="font-semibold text-gray-900">¥300K</span>
-              </div>
-              <button 
-                onClick={() => window.location.href = '/dashboard/wallet?action=deposit'}
-                className="w-full mt-2 px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-semibold rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg hover:-translate-y-0.5 transform"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v12m6-6H6" />
-                </svg>
-                Add Funds
-              </button>
             </div>
-          </div>
-        </StatCard>
+          </StatCard>
         </div>
       </div>
 

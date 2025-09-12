@@ -1,17 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Image from 'next/image'
+import { useState } from 'react'
 import ShipmentTimeline from '../../components/ShipmentTimeline'
 import { TimelineStage } from '../../components/types'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { VehicleDetails, VehicleDocument, generateMockVehicle } from '../types'
+import { ImageGalleryEnhanced } from '@/components/ui/image-gallery-enhanced'
 
 export default function VehicleDetailPage() {
   const params = useParams()
   const [activeTab, setActiveTab] = useState<'overview' | 'documents' | 'shipping' | 'history' | 'inspection' | 'translation'>('overview')
-  const [selectedImage, setSelectedImage] = useState(0)
   
   // Inspection and Translation states
   const [inspectionRequested, setInspectionRequested] = useState(false)
@@ -255,11 +254,6 @@ export default function VehicleDetailPage() {
     }
   ]
 
-  // Set initial image to 0 on component mount
-  useEffect(() => {
-    setSelectedImage(0)
-  }, [params['id']])
-
   const getDocumentIcon = (type: VehicleDocument['type']) => {
     const icons = {
       invoice: (
@@ -332,57 +326,10 @@ export default function VehicleDetailPage() {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Enhanced Image Gallery */}
           <div className="lg:w-1/2">
-            <div className="relative h-96 lg:h-[500px] rounded-lg overflow-hidden mb-4 bg-gray-100">
-              <Image
-                src={vehicle.images[selectedImage] || '/placeholder.jpg'}
-                alt={`${vehicle.title} - Image ${selectedImage + 1}`}
-                fill
-                className="object-contain"
-                priority
-              />
-              {/* Image Navigation Arrows */}
-              <button
-                onClick={() => setSelectedImage(prev => prev > 0 ? prev - 1 : vehicle.images.length - 1)}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button
-                onClick={() => setSelectedImage(prev => prev < vehicle.images.length - 1 ? prev + 1 : 0)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-              {/* Image Counter */}
-              <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                {selectedImage + 1} / {vehicle.images.length}
-              </div>
-            </div>
-            {/* Thumbnail Grid */}
-            <div className="grid grid-cols-6 gap-2 max-h-32 overflow-y-auto">
-              {vehicle.images.map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedImage(index)}
-                  className={`relative h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                    selectedImage === index
-                      ? 'border-[#FA7921] shadow-lg'
-                      : 'border-transparent hover:border-gray-300'
-                  }`}
-                >
-                  <Image
-                    src={image}
-                    alt={`${vehicle.title} thumbnail ${index + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-                </button>
-              ))}
-            </div>
+            <ImageGalleryEnhanced 
+              images={vehicle.images}
+              alt={vehicle.title}
+            />
           </div>
 
           {/* Vehicle Info */}

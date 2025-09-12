@@ -50,6 +50,190 @@
   50% { transform: translateY(-10px); }
 }
 
+/* Custom animations for toasts */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+/* Subtle bounce animation for trend arrows */
+@keyframes bounce-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+/* Shimmer effect for loading */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 1000px 100%;
+}
+
+/* Pulse glow effect */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(250, 121, 33, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(250, 121, 33, 0.4);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Number counter animation */
+@keyframes count-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-count-up {
+  animation: count-up 0.5s ease-out;
+}
+
+/* Glass morphism utilities */
+.glass {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Ultra glass effect */
+.glass-ultra {
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 
+    0 8px 32px 0 rgba(31, 38, 135, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Holographic effect */
+.holographic {
+  background: linear-gradient(
+    135deg,
+    #ff006e,
+    #8338ec,
+    #3a86ff,
+    #06ffb4,
+    #ffbe0b,
+    #ff006e
+  );
+  background-size: 300% 300%;
+  animation: holographic 8s ease infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Neon glow text */
+.neon-text {
+  text-shadow: 
+    0 0 7px currentColor,
+    0 0 10px currentColor,
+    0 0 21px currentColor,
+    0 0 42px currentColor;
+  animation: neon-pulse 2s ease-in-out infinite;
+}
+
+/* Liquid background */
+.liquid-bg {
+  background: linear-gradient(270deg, #4361ee, #7209b7, #f72585, #4cc9f0);
+  background-size: 400% 400%;
+  animation: liquid 20s ease infinite;
+}
+
+/* Iridescent surface */
+.iridescent {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 0, 110, 0.3),
+    rgba(131, 56, 236, 0.3),
+    rgba(58, 134, 255, 0.3),
+    rgba(6, 255, 180, 0.3)
+  );
+  animation: iridescent 6s ease infinite;
+}
+
+.glass-dark {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+/* Improved scrollbar for thumbnails */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @keyframes progressFill {
   0% { 
     width: 0%;
@@ -458,6 +642,82 @@ select option:hover {
   }
   50% {
     background-position: 100% 50%;
+  }
+}
+
+/* Holographic animation */
+@keyframes holographic {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+/* Liquid animation */
+@keyframes liquid {
+  0%, 100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    transform: rotate(0deg);
+  }
+  33% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+    transform: rotate(120deg);
+  }
+  66% {
+    border-radius: 40% 60% 40% 60% / 70% 30% 60% 40%;
+    transform: rotate(240deg);
+  }
+}
+
+/* Neon pulse */
+@keyframes neon-pulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 5px currentColor,
+      0 0 10px currentColor,
+      0 0 20px currentColor,
+      0 0 40px currentColor;
+  }
+  50% {
+    box-shadow: 
+      0 0 10px currentColor,
+      0 0 20px currentColor,
+      0 0 30px currentColor,
+      0 0 60px currentColor;
+  }
+}
+
+/* Iridescent shift */
+@keyframes iridescent {
+  0% {
+    filter: hue-rotate(0deg) saturate(1.2) brightness(1.1);
+  }
+  50% {
+    filter: hue-rotate(180deg) saturate(1.5) brightness(1.2);
+  }
+  100% {
+    filter: hue-rotate(360deg) saturate(1.2) brightness(1.1);
+  }
+}
+
+/* Magnetic float */
+@keyframes magnetic-float {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(2px, -2px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-2px, 2px) rotate(-1deg);
+  }
+  75% {
+    transform: translate(2px, 2px) rotate(1deg);
   }
 }
 

@@ -172,7 +172,7 @@ function ShipmentContent() {
         {/* Page Header */}
         <PageHeader
           title="Shipment Tracking"
-          description="Track your vehicle's journey from auction to delivery"
+          subtitle="Track your vehicle's journey from auction to delivery"
           actions={
             <div className="flex items-center gap-3">
               <button 

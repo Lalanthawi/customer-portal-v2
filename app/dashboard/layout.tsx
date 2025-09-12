@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import type { NavigationItem, UserProfile } from './types'
 import JapanTime from './components/JapanTime'
 import { BackgroundAnimation } from '@/components/ui/background-animation'
+import { ToastProvider } from '@/components/providers/toast-provider'
 
 const navigation: NavigationItem[] = [
   {
@@ -567,6 +568,9 @@ export default function DashboardLayout({
         </main>
         <Footer />
       </div>
+      
+      {/* Toast Provider */}
+      <ToastProvider />
     </div>
   )
 }

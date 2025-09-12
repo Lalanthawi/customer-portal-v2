@@ -254,7 +254,6 @@ export default function InspectionsPage() {
             title="Total Inspections"
             value={(mockInspections.length + inspections.length).toString()}
             subtitle="All time"
-            variant="purple"
             className="min-h-[140px]"
           />
 
@@ -263,7 +262,6 @@ export default function InspectionsPage() {
             title="Completed"
             value={(mockInspections.filter(i => i.status === 'completed').length + inspections.filter(i => i.status === 'completed').length).toString()}
             subtitle="Ready to view"
-            variant="green"
             className="min-h-[140px]"
           />
 
@@ -272,8 +270,6 @@ export default function InspectionsPage() {
             title="In Progress"
             value={(mockInspections.filter(i => i.status === 'processing').length + inspections.filter(i => i.status === 'processing').length).toString()}
             subtitle="Being processed"
-            badge={{ label: 'Active', variant: 'info' }}
-            variant="blue"
             className="min-h-[140px]"
           />
 
@@ -282,7 +278,6 @@ export default function InspectionsPage() {
             title="Pending"
             value={(mockInspections.filter(i => i.status === 'requested').length + inspections.filter(i => i.status === 'requested').length).toString()}
             subtitle="Awaiting action"
-            variant="yellow"
             className="min-h-[140px]"
           />
         </div>
