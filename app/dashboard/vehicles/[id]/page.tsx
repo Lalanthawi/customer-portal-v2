@@ -10,7 +10,7 @@ import { ImageGalleryEnhanced } from '@/components/ui/image-gallery-enhanced'
 
 export default function VehicleDetailPage() {
   const params = useParams()
-  const [activeTab, setActiveTab] = useState<'overview' | 'documents' | 'shipping' | 'history' | 'inspection' | 'translation'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'documents' | 'shipping' | 'history' | 'inspection' | 'translation' | 'included-items'>('overview')
   
   // Inspection and Translation states
   const [inspectionRequested, setInspectionRequested] = useState(false)
@@ -25,6 +25,18 @@ export default function VehicleDetailPage() {
   const [deliveryConfirmed, setDeliveryConfirmed] = useState(false)
   const [deliveryNotes, setDeliveryNotes] = useState('')
   const [deliveryRating, setDeliveryRating] = useState(5)
+
+  // Included Items state (admin-controlled, read-only for customers)
+  const [includedItems] = useState({
+    spareKey: true,
+    maintenanceRecords: true,
+    manuals: true,
+    catalogues: false,
+    accessories: true,
+    accessoriesDetails: 'Floor mats, Original remote control',
+    others: false,
+    othersDetails: ''
+  })
   
   // Handlers for inspection and translation requests
   const handleRequestInspection = () => {
@@ -416,17 +428,17 @@ export default function VehicleDetailPage() {
       <div className="bg-white rounded-xl border border-gray-200">
         <div className="border-b border-gray-200">
           <nav className="flex -mb-px">
-            {['overview', 'documents', 'shipping', 'inspection', 'translation', 'history'].map((tab) => (
+            {['overview', 'documents', 'shipping', 'inspection', 'translation', 'included-items', 'history'].map((tab) => (
               <button
                 key={tab}
-                onClick={() => setActiveTab(tab as 'overview' | 'documents' | 'shipping' | 'history' | 'inspection' | 'translation')}
+                onClick={() => setActiveTab(tab as 'overview' | 'documents' | 'shipping' | 'history' | 'inspection' | 'translation' | 'included-items')}
                 className={`py-4 px-6 text-sm font-medium capitalize transition-colors ${
                   activeTab === tab
                     ? 'border-b-2 border-[#FA7921] text-[#FA7921]'
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                {tab}
+                {tab === 'included-items' ? 'Included Items' : tab}
                 {tab === 'documents' && (
                   <span className="ml-2 px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs">
                     {vehicle.documents.length}
@@ -590,51 +602,6 @@ export default function VehicleDetailPage() {
                 ))}
               </div>
 
-              {/* Additional Documents Section - Only show if there are additional documents */}
-              {vehicle.documents.some(doc => !doc.required) && (
-                <div className="mt-8 border-t pt-6">
-                  <h4 className="text-sm font-semibold text-gray-900 mb-4">Additional Documents</h4>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    {vehicle.documents.filter(doc => !doc.required).map((doc) => (
-                      <div key={doc.id} className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-start gap-3">
-                            <div className="p-2 rounded-lg bg-gray-100 text-gray-600">
-                              {getDocumentIcon(doc.type)}
-                            </div>
-                            <div>
-                              <h4 className="text-sm font-medium text-gray-900">{doc.name}</h4>
-                              <p className="text-xs text-gray-500 mt-1">
-                                Added {doc.uploadDate.toLocaleDateString()} • {doc.size}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {doc.status === 'available' && doc.url && (
-                              <>
-                                <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors" title="View">
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                  </svg>
-                                </button>
-                                <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors" title="Download">
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                  </svg>
-                                </button>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-xs text-gray-500 mt-4">
-                    * Additional documents are uploaded by our team to provide you with comprehensive vehicle information
-                  </p>
-                </div>
-              )}
             </div>
           )}
 
@@ -882,6 +849,150 @@ export default function VehicleDetailPage() {
                   </button>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Included Items Tab */}
+          {activeTab === 'included-items' && (
+            <div className="space-y-6">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <p className="text-sm text-blue-900 font-medium mb-1">DHL Shipment Information</p>
+                    <p className="text-xs text-blue-700">These items will be shipped separately via DHL along with your vehicle documentation. The items below indicate what will be included with your vehicle shipment.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {/* Spare Key */}
+                <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                  <input
+                    type="checkbox"
+                    id="spareKey"
+                    checked={includedItems.spareKey}
+                    disabled
+                    readOnly
+                    className="mt-1 w-5 h-5 text-[#FA7921] bg-white border-gray-300 rounded cursor-not-allowed"
+                  />
+                  <label htmlFor="spareKey" className="flex-1 cursor-pointer">
+                    <span className="block text-sm font-medium text-gray-900">Spare Key</span>
+                    <span className="text-xs text-gray-500">Additional key for the vehicle</span>
+                  </label>
+                </div>
+
+                {/* Maintenance Records */}
+                <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                  <input
+                    type="checkbox"
+                    id="maintenanceRecords"
+                    checked={includedItems.maintenanceRecords}
+                    disabled
+                    readOnly
+                    className="mt-1 w-5 h-5 text-[#FA7921] bg-white border-gray-300 rounded cursor-not-allowed"
+                  />
+                  <label htmlFor="maintenanceRecords" className="flex-1 cursor-pointer">
+                    <span className="block text-sm font-medium text-gray-900">Maintenance Records</span>
+                    <span className="text-xs text-gray-500">Service history and maintenance documentation</span>
+                  </label>
+                </div>
+
+                {/* Manuals */}
+                <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                  <input
+                    type="checkbox"
+                    id="manuals"
+                    checked={includedItems.manuals}
+                    disabled
+                    readOnly
+                    className="mt-1 w-5 h-5 text-[#FA7921] bg-white border-gray-300 rounded cursor-not-allowed"
+                  />
+                  <label htmlFor="manuals" className="flex-1 cursor-pointer">
+                    <span className="block text-sm font-medium text-gray-900">Manuals</span>
+                    <span className="text-xs text-gray-500">Owner's manual and instruction booklets</span>
+                  </label>
+                </div>
+
+                {/* Catalogues */}
+                <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                  <input
+                    type="checkbox"
+                    id="catalogues"
+                    checked={includedItems.catalogues}
+                    disabled
+                    readOnly
+                    className="mt-1 w-5 h-5 text-[#FA7921] bg-white border-gray-300 rounded cursor-not-allowed"
+                  />
+                  <label htmlFor="catalogues" className="flex-1 cursor-pointer">
+                    <span className="block text-sm font-medium text-gray-900">Catalogues</span>
+                    <span className="text-xs text-gray-500">Parts catalogues and promotional materials</span>
+                  </label>
+                </div>
+
+                {/* Accessories */}
+                <div className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      id="accessories"
+                      checked={includedItems.accessories}
+                      disabled
+                      readOnly
+                      className="mt-1 w-5 h-5 text-[#FA7921] bg-white border-gray-300 rounded cursor-not-allowed"
+                    />
+                    <label htmlFor="accessories" className="flex-1 cursor-pointer">
+                      <span className="block text-sm font-medium text-gray-900">Accessories</span>
+                      <span className="text-xs text-gray-500">Remotes, shift knobs, parts, etc.</span>
+                    </label>
+                  </div>
+                  {includedItems.accessories && (
+                    <div className="mt-3 ml-8">
+                      <input
+                        type="text"
+                        value={includedItems.accessoriesDetails}
+                        disabled
+                        readOnly
+                        placeholder="Please specify accessories (e.g., remote control, custom shift knob)"
+                        className="w-full px-3 py-2 text-sm bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Others */}
+                <div className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      id="othersItem"
+                      checked={includedItems.others}
+                      disabled
+                      readOnly
+                      className="mt-1 w-5 h-5 text-[#FA7921] bg-white border-gray-300 rounded cursor-not-allowed"
+                    />
+                    <label htmlFor="othersItem" className="flex-1 cursor-pointer">
+                      <span className="block text-sm font-medium text-gray-900">Others</span>
+                      <span className="text-xs text-gray-500">Any other items not listed above</span>
+                    </label>
+                  </div>
+                  {includedItems.others && (
+                    <div className="mt-3 ml-8">
+                      <textarea
+                        value={includedItems.othersDetails}
+                        disabled
+                        readOnly
+                        placeholder="Please describe other items that will be included"
+                        rows={3}
+                        className="w-full px-3 py-2 text-sm bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed resize-none"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+
             </div>
           )}
 

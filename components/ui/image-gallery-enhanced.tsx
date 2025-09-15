@@ -6,23 +6,21 @@ import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  ZoomIn, 
-  ZoomOut, 
+import {
+  ChevronLeft,
+  ChevronRight,
+  ZoomIn,
+  ZoomOut,
   Maximize2,
   X,
   Download,
   Share2,
-  Grid3x3,
   Camera,
   Play,
   Pause,
   RotateCw,
   Loader2,
   EyeOff,
-  Image as ImageIcon,
   Info
 } from 'lucide-react'
 
@@ -30,24 +28,20 @@ interface ImageGalleryEnhancedProps {
   images: string[]
   alt?: string
   className?: string
-  enableMinimap?: boolean
 }
 
-export function ImageGalleryEnhanced({ 
-  images, 
-  alt = 'Vehicle image', 
-  className,
-  enableMinimap = true
+export function ImageGalleryEnhanced({
+  images,
+  alt = 'Vehicle image',
+  className
 }: ImageGalleryEnhancedProps) {
   // Core states
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [showLightbox, setShowLightbox] = useState(false)
-  const [showThumbnails, setShowThumbnails] = useState(true)
   const [zoomLevel, setZoomLevel] = useState(1)
   
   // Enhanced states
   const [isPlaying, setIsPlaying] = useState(false)
-  const [showMinimap, setShowMinimap] = useState(false)
   const [loadingStates, setLoadingStates] = useState<Record<number, boolean>>({})
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({})
   const [isDragging, setIsDragging] = useState(false)
@@ -123,9 +117,6 @@ export function ImageGalleryEnhanced({
         case ' ':
           e.preventDefault()
           setIsPlaying(prev => !prev)
-          break
-        case 'm':
-          setShowMinimap(prev => !prev)
           break
         case 'i':
           setShowInfo(prev => !prev)
@@ -270,20 +261,17 @@ export function ImageGalleryEnhanced({
 
   return (
     <>
-      {/* Main Gallery Container */}
-      <div className={cn("relative bg-gradient-to-b from-gray-900 to-gray-800 rounded-lg overflow-hidden", className)}>
-        {/* Top Bar */}
-        <div className="absolute top-0 left-0 right-0 z-20 p-4 bg-gradient-to-b from-black/60 to-transparent">
+      {/* Main Gallery Container - Clean white design matching site theme */}
+      <div className={cn("bg-white rounded-xl border border-gray-200 overflow-hidden", className)}>
+        {/* Header Bar - Clean and minimal */}
+        <div className="px-4 py-3 border-b border-gray-200 bg-white">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="bg-white/20 backdrop-blur-sm text-white border-0">
-                {selectedIndex + 1} / {images.length}
-              </Badge>
-              <Badge className="bg-[#FA7921]/20 backdrop-blur-sm text-[#FFB956] border-0">
-                HD Photos
-              </Badge>
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium text-gray-900">
+                {selectedIndex + 1} of {images.length} photos
+              </span>
               {loadingStates[selectedIndex] && (
-                <Badge className="bg-blue-500/20 backdrop-blur-sm text-blue-300 border-0">
+                <Badge className="bg-blue-50 text-blue-700 border border-blue-200">
                   <Loader2 className="h-3 w-3 mr-1 animate-spin" />
                   Loading
                 </Badge>
@@ -292,63 +280,45 @@ export function ImageGalleryEnhanced({
             <div className="flex items-center gap-2">
               <Button
                 onClick={() => setIsPlaying(!isPlaying)}
-                size="icon"
-                variant="ghost"
-                className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+                size="sm"
+                variant="outline"
+                className="border-gray-200 hover:border-[#FA7921] hover:bg-orange-50"
                 title={isPlaying ? "Pause slideshow" : "Start slideshow"}
               >
-                {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                <span className="ml-2 hidden sm:inline">Slideshow</span>
               </Button>
-              <Button
-                onClick={() => setShowThumbnails(!showThumbnails)}
-                size="icon"
-                variant="ghost"
-                className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
-                title="Toggle thumbnails"
-              >
-                <Grid3x3 className="h-5 w-5" />
-              </Button>
-              {enableMinimap && (
-                <Button
-                  onClick={() => setShowMinimap(!showMinimap)}
-                  size="icon"
-                  variant="ghost"
-                  className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
-                  title="Toggle minimap"
-                >
-                  <ImageIcon className="h-5 w-5" />
-                </Button>
-              )}
               <Button
                 onClick={() => setShowLightbox(true)}
-                size="icon"
-                variant="ghost"
-                className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
-                title="Open fullscreen"
+                size="sm"
+                variant="outline"
+                className="border-gray-200 hover:border-[#FA7921] hover:bg-orange-50"
+                title="View fullscreen"
               >
-                <Maximize2 className="h-5 w-5" />
+                <Maximize2 className="h-4 w-4" />
+                <span className="ml-2 hidden sm:inline">Fullscreen</span>
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Main Image */}
-        <div 
+        {/* Main Image Container */}
+        <div
           ref={containerRef}
-          className="relative h-[500px] flex items-center justify-center"
+          className="relative bg-gray-50 aspect-[16/10] flex items-center justify-center"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
           {imageErrors[selectedIndex] ? (
             <div className="text-center">
               <EyeOff className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-              <p className="text-gray-400">Failed to load image</p>
+              <p className="text-gray-500">Failed to load image</p>
             </div>
           ) : (
             <>
               {loadingStates[selectedIndex] && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                  <Loader2 className="h-12 w-12 text-white animate-spin" />
+                <div className="absolute inset-0 flex items-center justify-center bg-white/80">
+                  <Loader2 className="h-12 w-12 text-[#FA7921] animate-spin" />
                 </div>
               )}
               <Image
@@ -356,7 +326,7 @@ export function ImageGalleryEnhanced({
                 alt={`${alt} ${selectedIndex + 1}`}
                 width={900}
                 height={500}
-                className="object-contain cursor-zoom-in transition-transform duration-300 hover:scale-105"
+                className="object-contain w-full h-full cursor-zoom-in transition-transform duration-300 hover:scale-[1.02]"
                 onClick={() => setShowLightbox(true)}
                 onLoadingComplete={() => setLoadingStates(prev => ({ ...prev, [selectedIndex]: false }))}
                 onError={() => setImageErrors(prev => ({ ...prev, [selectedIndex]: true }))}
@@ -365,65 +335,46 @@ export function ImageGalleryEnhanced({
             </>
           )}
 
-          {/* Navigation Arrows */}
+          {/* Clean Navigation Arrows */}
           {images.length > 1 && (
             <>
-              <Button
+              <button
                 onClick={navigatePrev}
-                size="icon"
-                variant="ghost"
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 transition-all"
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-gray-200 rounded-full shadow-lg hover:border-[#FA7921] hover:bg-orange-50 transition-all flex items-center justify-center group"
+                aria-label="Previous image"
               >
-                <ChevronLeft className="h-6 w-6" />
-              </Button>
-              <Button
+                <ChevronLeft className="h-5 w-5 text-gray-600 group-hover:text-[#FA7921]" />
+              </button>
+              <button
                 onClick={navigateNext}
-                size="icon"
-                variant="ghost"
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 transition-all"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-gray-200 rounded-full shadow-lg hover:border-[#FA7921] hover:bg-orange-50 transition-all flex items-center justify-center group"
+                aria-label="Next image"
               >
-                <ChevronRight className="h-6 w-6" />
-              </Button>
+                <ChevronRight className="h-5 w-5 text-gray-600 group-hover:text-[#FA7921]" />
+              </button>
             </>
           )}
 
-          {/* Minimap Overlay */}
-          {showMinimap && images.length > 1 && (
-            <div className="absolute bottom-4 right-4 w-32 h-24 bg-black/60 backdrop-blur-sm rounded-lg p-2">
-              <div className="grid grid-cols-4 gap-1 h-full">
-                {images.slice(0, 8).map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedIndex(index)}
-                    className={cn(
-                      "bg-white/20 rounded-sm transition-all",
-                      selectedIndex === index && "bg-[#FA7921] scale-110"
-                    )}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Thumbnail Strip */}
-        {showThumbnails && images.length > 1 && (
-          <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm p-4">
-            <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+        {/* Clean Thumbnail Grid */}
+        {images.length > 1 && (
+          <div className="p-4 bg-white border-t border-gray-200">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
               {images.map((image, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedIndex(index)}
                   className={cn(
-                    "relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all",
-                    selectedIndex === index 
-                      ? "border-[#FA7921] scale-110" 
-                      : "border-transparent opacity-70 hover:opacity-100"
+                    "relative flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border-2 transition-all",
+                    selectedIndex === index
+                      ? "border-[#FA7921] shadow-md"
+                      : "border-gray-200 hover:border-gray-300"
                   )}
                 >
                   {imageErrors[index] ? (
-                    <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                      <EyeOff className="h-4 w-4 text-gray-500" />
+                    <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                      <EyeOff className="h-4 w-4 text-gray-400" />
                     </div>
                   ) : (
                     <Image
@@ -434,9 +385,26 @@ export function ImageGalleryEnhanced({
                     />
                   )}
                   {selectedIndex === index && (
-                    <div className="absolute inset-0 bg-[#FA7921]/20" />
+                    <div className="absolute inset-0 ring-2 ring-[#FA7921] ring-inset rounded-lg" />
                   )}
                 </button>
+              ))}
+            </div>
+
+            {/* Dots indicator for mobile */}
+            <div className="flex justify-center gap-1.5 mt-3 sm:hidden">
+              {images.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedIndex(index)}
+                  className={cn(
+                    "w-2 h-2 rounded-full transition-all",
+                    selectedIndex === index
+                      ? "bg-[#FA7921] w-6"
+                      : "bg-gray-300 hover:bg-gray-400"
+                  )}
+                  aria-label={`Go to image ${index + 1}`}
+                />
               ))}
             </div>
           </div>
@@ -493,7 +461,6 @@ export function ImageGalleryEnhanced({
                     <RotateCw className="h-5 w-5" />
                   </Button>
                   
-                  <div className="w-px h-6 bg-white/20 mx-2" />
                   
                   {/* Action Controls */}
                   <Button
@@ -659,7 +626,6 @@ export function ImageGalleryEnhanced({
                   <div>← → Navigate</div>
                   <div>Space: Play/Pause</div>
                   <div>+/- Zoom</div>
-                  <div>M: Minimap</div>
                   <div>I: Info</div>
                   <div>ESC: Close</div>
                 </div>

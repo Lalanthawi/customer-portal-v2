@@ -459,6 +459,16 @@ body {
   background: #d1d5db;
 }
 
+/* Hide scrollbar class */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
 /* Placeholder text styles - DARK GRAY for better visibility */
 ::placeholder {
   color: #374151 !important; /* gray-700 */

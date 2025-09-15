@@ -250,26 +250,6 @@ function generateMockDocuments(): VehicleDocument[] {
     },
     {
       id: '6',
-      name: 'Vehicle Manual',
-      type: 'other',
-      uploadDate: new Date('2024-01-23'),
-      size: '2.3 MB',
-      url: '#',
-      status: 'available',
-      required: false
-    },
-    {
-      id: '7',
-      name: 'Service History',
-      type: 'other',
-      uploadDate: new Date('2024-01-23'),
-      size: '890 KB',
-      url: '#',
-      status: 'available',
-      required: false
-    },
-    {
-      id: '8',
       name: 'Port Photos',
       type: 'other',
       uploadDate: new Date('2024-01-24'),
@@ -279,7 +259,7 @@ function generateMockDocuments(): VehicleDocument[] {
       required: false
     },
     {
-      id: '9',
+      id: '7',
       name: 'Insurance Policy',
       type: 'insurance',
       uploadDate: new Date('2024-01-25'),
