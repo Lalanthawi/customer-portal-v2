@@ -6,10 +6,9 @@ import type { AuctionItem, ActivityItem } from './types'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ClaimRequiredModal, useClaimStatus } from './components/ClaimRequired'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
-import { StatCard } from '@/components/ui/stat-card-modern'
-import { Gavel, Shield, AlertCircle, Wallet } from 'lucide-react'
+import { StatCard } from '@/components/ui/stat-card-glassmorphism'
+import { Shield, AlertCircle, Wallet } from 'lucide-react'
 import { VehicleCard } from '@/components/ui/vehicle-card-new'
-import { AddFundsButton } from '@/components/ui/add-funds-buttons'
 
 // Skeleton component for loading states
 function Skeleton({ className }: { className?: string }) {
@@ -186,7 +185,6 @@ function ActivityItem({ activity }: { activity: ActivityItem }) {
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
-  const { isClaimedBySales } = useClaimStatus()
   const username = "Avishka"
 
   useEffect(() => {
@@ -350,159 +348,115 @@ export default function DashboardPage() {
 
         {/* Stats Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Link href="/dashboard/bids" className="h-full block">
-            <StatCard
-              title="Active Bids"
-              value={12}
-              loading={loading}
-              subtitle="from last week"
-              icon={Gavel}
-              status={{ label: 'Active', type: 'active' }}
-              trend={{ 
-                value: 25, 
-                label: 'from last month', 
-                isPositive: true,
-                customColor: '#FA7921',
-                sparkline: [12, 18, 15, 22, 28, 25, 30, 35]
-              }}
-              variant="orange"
-              valueClassName="text-[#FA7921]"
-              animate={!loading}
-            >
-              <div className="mt-4 space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">Winning</span>
-                  <span className="font-semibold text-[#FA7921]">7</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">Outbid</span>
-                  <span className="font-semibold text-amber-600">3</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">Watching</span>
-                  <span className="font-semibold text-gray-900">2</span>
-                </div>
+          <StatCard
+            title="Active Bids"
+            value="12"
+            subtitle="From yesterday"
+            trend={{ value: "+3", isPositive: true }}
+            icon={
+              <svg className="w-4 h-4 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            }
+            href="/dashboard/bids"
+            iconBgColor="from-gray-800/20 to-gray-900/10"
+            glowColor="black"
+          >
+            <div className="space-y-1 mt-3">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-600">Winning</span>
+                <span className="font-semibold text-green-600">7</span>
               </div>
-            </StatCard>
-          </Link>
-
-          <Link href="/dashboard/profile?tab=status" className="h-full block">
-            <StatCard
-              title="Account Status"
-              value={isClaimedBySales ? "Premium" : "Verify Now"}
-              loading={loading}
-              subtitle={isClaimedBySales ? "Full access enabled" : "Limited access"}
-              icon={Shield}
-              status={{ label: isClaimedBySales ? 'Verified' : 'Action needed', type: isClaimedBySales ? 'active' : 'error' }}
-              variant={isClaimedBySales ? "purple" : "red"}
-              valueClassName={!isClaimedBySales ? "text-2xl text-red-600" : "text-2xl"}
-              animate={false}
-          >
-            <div className="mt-6 pt-4 border-t border-gray-50">
-              {isClaimedBySales ? (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-gray-600">Bid Limit</span>
-                    <span className="font-semibold text-gray-900">¥10M</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-gray-600">Member Since</span>
-                    <span className="font-semibold text-gray-900">2023</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-gray-600">Trust Score</span>
-                    <span className="font-semibold text-purple-600">95/100</span>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <div className="mb-5"></div>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-600">Status</span>
-                      <span className="font-semibold text-red-600">Unverified</span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-600">Access Level</span>
-                      <span className="font-semibold text-red-600">Limited</span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-600">Required</span>
-                      <span className="font-semibold text-gray-900">Verify</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-            </StatCard>
-          </Link>
-
-          <Link href="/dashboard/notifications" className="h-full block">
-            <StatCard
-              title="Requires Action"
-              value={5}
-              loading={loading}
-              subtitle="Pending tasks"
-              icon={AlertCircle}
-              status={{ label: 'Urgent', type: 'warning' }}
-              trend={{ 
-                value: 2, 
-                label: 'new today', 
-                isPositive: false,
-                customColor: '#F59E0B',
-                sparkline: [3, 5, 4, 6, 5, 7, 5, 5]
-              }}
-              variant="orange"
-              valueClassName="text-[#F59E0B]"
-              animate={!loading}
-          >
-            <div className="mt-6 pt-4 border-t border-gray-50">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">Payment Due</span>
-                  <span className="font-semibold text-[#F59E0B]">2</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">Documents</span>
-                  <span className="font-semibold text-gray-900">1</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">Expiring Bids</span>
-                  <span className="font-semibold text-gray-900">2</span>
-                </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-600">Outbid</span>
+                <span className="font-semibold text-orange-600">3</span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-600">Watching</span>
+                <span className="font-semibold text-gray-700">2</span>
               </div>
             </div>
-            </StatCard>
-          </Link>
+          </StatCard>
 
           <StatCard
-            title="Total Balance"
-            value="¥1.25M"
-            loading={loading}
-            subtitle="≈ $8,333 USD"
-            icon={Wallet}
-            status={{ label: 'Available', type: 'active' }}
-            trend={{ 
-              value: 8.5, 
-              label: 'from last month', 
-              isPositive: true,
-              sparkline: [850, 920, 890, 980, 1050, 1150, 1200, 1250]
+            title="Account Status"
+            value="Verified"
+            subtitle="Account verification"
+            status={{
+              label: "Active",
+              type: "success"
             }}
-            variant="green"
-            animate={!loading}
+            icon={
+              <Shield className="w-4 h-4 text-green-600" />
+            }
+            href="/dashboard/profile"
+            iconBgColor="from-green-500/20 to-emerald-500/10"
+            glowColor="green"
           >
-            <div className="mt-6 pt-4 border-t border-gray-50">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">Available</span>
-                  <span className="font-semibold text-gray-900">¥950K</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">Pending</span>
-                  <span className="font-semibold text-gray-900">¥300K</span>
-                </div>
-                {/* Modern Add Funds Button - Try different variants: 'gradient', 'neon', 'glass', 'minimal', 'pulse' */}
-                <AddFundsButton variant="glass" className="mt-2" />
+            <div className="mt-3 p-2 bg-green-50 rounded-lg border border-green-200">
+              <p className="text-xs text-green-700 font-medium">Full access granted</p>
+            </div>
+          </StatCard>
+
+          <StatCard
+            title="Pending Actions"
+            value="5"
+            subtitle="Requires attention"
+            trend={{ value: "-2", isPositive: true }}
+            icon={
+              <AlertCircle className="w-4 h-4 text-gray-800" />
+            }
+            href="/dashboard/tasks"
+            iconBgColor="from-gray-800/20 to-gray-900/10"
+            glowColor="black"
+          >
+            <div className="space-y-1 mt-3">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-600">Payments Due</span>
+                <span className="font-semibold text-orange-600">2</span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-600">Documents</span>
+                <span className="font-semibold text-blue-600">3</span>
+              </div>
+            </div>
+          </StatCard>
+
+          <StatCard
+            title="Available Balance"
+            value="¥485,000"
+            subtitle="Ready to use"
+            icon={
+              <Wallet className="w-4 h-4 text-green-600" />
+            }
+            href="/dashboard/wallet"
+            iconBgColor="from-green-500/20 to-emerald-500/10"
+            glowColor="green"
+            customFooter={
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.location.href = '/dashboard/wallet?action=deposit';
+                }}
+                className="flex items-center gap-1.5 text-xs font-medium text-green-600 hover:text-green-700 transition-colors group"
+              >
+                <span className="w-2 h-2 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 animate-pulse shadow-lg shadow-green-500/50"></span>
+                <span>Add Funds</span>
+                <svg className="w-3 h-3 text-green-600/60 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            }
+          >
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-600">Deposit</span>
+                <span className="font-semibold text-gray-700">¥500,000</span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-600">Used</span>
+                <span className="font-semibold text-orange-600">¥15,000</span>
               </div>
             </div>
           </StatCard>
