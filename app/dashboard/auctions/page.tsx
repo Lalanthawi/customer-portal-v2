@@ -5,13 +5,7 @@ import { useRouter } from 'next/navigation'
 import { manufacturerLogos } from './ManufacturerLogos'
 import AdvancedSearchStatic from '../components/search/AdvancedSearchStatic'
 import { TermsOfServiceModal, useTOSAcceptance } from '../components/TermsOfService'
-
-interface Manufacturer {
-  id: string
-  name: string
-  vehicleCount: number
-  popular?: boolean
-}
+import { mockManufacturers } from '@/services/api/mock-data'
 
 interface FilterState {
   manufacturers: string[]
@@ -32,88 +26,8 @@ interface FilterState {
   sortBy: string
 }
 
-const manufacturers: Manufacturer[] = [
-  // Japanese
-  { id: 'toyota', name: 'Toyota', vehicleCount: 245, popular: true },
-  { id: 'lexus', name: 'Lexus', vehicleCount: 156, popular: true },
-  { id: 'honda', name: 'Honda', vehicleCount: 198, popular: true },
-  { id: 'nissan', name: 'Nissan', vehicleCount: 167, popular: true },
-  { id: 'mazda', name: 'Mazda', vehicleCount: 145, popular: true },
-  { id: 'subaru', name: 'Subaru', vehicleCount: 134 },
-  { id: 'suzuki', name: 'Suzuki', vehicleCount: 156 },
-  { id: 'mitsubishi', name: 'Mitsubishi', vehicleCount: 98 },
-  { id: 'daihatsu', name: 'Daihatsu', vehicleCount: 67 },
-  { id: 'infiniti', name: 'Infiniti', vehicleCount: 54 },
-  { id: 'acura', name: 'Acura', vehicleCount: 43 },
-  { id: 'isuzu', name: 'Isuzu', vehicleCount: 38 },
-  
-  // German
-  { id: 'mercedes', name: 'Mercedes-Benz', vehicleCount: 134 },
-  { id: 'bmw', name: 'BMW', vehicleCount: 145, popular: true },
-  { id: 'audi', name: 'Audi', vehicleCount: 123 },
-  { id: 'volkswagen', name: 'Volkswagen', vehicleCount: 112 },
-  { id: 'porsche', name: 'Porsche', vehicleCount: 89, popular: true },
-  { id: 'mini', name: 'MINI', vehicleCount: 56 },
-  { id: 'smart', name: 'Smart', vehicleCount: 23 },
-  { id: 'opel', name: 'Opel', vehicleCount: 31 },
-  
-  // American
-  { id: 'tesla', name: 'Tesla', vehicleCount: 45, popular: true },
-  { id: 'ford', name: 'Ford', vehicleCount: 178 },
-  { id: 'chevrolet', name: 'Chevrolet', vehicleCount: 134 },
-  { id: 'jeep', name: 'Jeep', vehicleCount: 92 },
-  { id: 'dodge', name: 'Dodge', vehicleCount: 78 },
-  { id: 'cadillac', name: 'Cadillac', vehicleCount: 34 },
-  { id: 'gmc', name: 'GMC', vehicleCount: 67 },
-  { id: 'chrysler', name: 'Chrysler', vehicleCount: 29 },
-  { id: 'lincoln', name: 'Lincoln', vehicleCount: 21 },
-  { id: 'ram', name: 'RAM', vehicleCount: 45 },
-  { id: 'hummer', name: 'Hummer', vehicleCount: 12 },
-  
-  // British
-  { id: 'jaguar', name: 'Jaguar', vehicleCount: 67 },
-  { id: 'land-rover', name: 'Land Rover', vehicleCount: 78 },
-  { id: 'bentley', name: 'Bentley', vehicleCount: 7 },
-  { id: 'rolls-royce', name: 'Rolls-Royce', vehicleCount: 5 },
-  { id: 'aston-martin', name: 'Aston Martin', vehicleCount: 9 },
-  { id: 'mclaren', name: 'McLaren', vehicleCount: 6 },
-  { id: 'lotus', name: 'Lotus', vehicleCount: 11 },
-  { id: 'mg', name: 'MG', vehicleCount: 24 },
-  
-  // Korean
-  { id: 'hyundai', name: 'Hyundai', vehicleCount: 189 },
-  { id: 'kia', name: 'Kia', vehicleCount: 145 },
-  { id: 'genesis', name: 'Genesis', vehicleCount: 23 },
-  { id: 'ssangyong', name: 'SsangYong', vehicleCount: 18 },
-  
-  // Italian
-  { id: 'ferrari', name: 'Ferrari', vehicleCount: 12 },
-  { id: 'lamborghini', name: 'Lamborghini', vehicleCount: 8 },
-  { id: 'maserati', name: 'Maserati', vehicleCount: 15 },
-  { id: 'alfa-romeo', name: 'Alfa Romeo', vehicleCount: 19 },
-  { id: 'fiat', name: 'Fiat', vehicleCount: 28 },
-  { id: 'lancia', name: 'Lancia', vehicleCount: 14 },
-  
-  // French
-  { id: 'peugeot', name: 'Peugeot', vehicleCount: 67 },
-  { id: 'renault', name: 'Renault', vehicleCount: 54 },
-  { id: 'citroen', name: 'Citroen', vehicleCount: 41 },
-  { id: 'bugatti', name: 'Bugatti', vehicleCount: 3 },
-  { id: 'ds', name: 'DS', vehicleCount: 18 },
-  
-  // Swedish
-  { id: 'volvo', name: 'Volvo', vehicleCount: 87 },
-  { id: 'saab', name: 'Saab', vehicleCount: 22 },
-  { id: 'polestar', name: 'Polestar', vehicleCount: 14 },
-  { id: 'koenigsegg', name: 'Koenigsegg', vehicleCount: 2 },
-
-  // Chinese
-  { id: 'byd', name: 'BYD', vehicleCount: 34 },
-  { id: 'geely', name: 'Geely', vehicleCount: 28 },
-  { id: 'nio', name: 'NIO', vehicleCount: 19 },
-  { id: 'xpeng', name: 'Xpeng', vehicleCount: 15 },
-  { id: 'li-auto', name: 'Li Auto', vehicleCount: 12 },
-]
+// Using centralized manufacturers data
+const manufacturers = mockManufacturers
 
 // Country-specific trending searches based on import regulations
 const trendingSearchesByCountry: { [key: string]: string[] } = {
@@ -622,25 +536,6 @@ export default function AuctionsPage() {
         </div>
       </div>
 
-      {/* Auction Calendar Banner */}
-      <div className="mb-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-100">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">Weekly Auction Schedule</h3>
-            <p className="text-sm text-gray-600">Check auction times and locations across Japan</p>
-          </div>
-          <button
-            onClick={() => router.push('/dashboard/auction-calendar')}
-            className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#e86f1e] transition-colors text-sm font-medium flex items-center gap-2"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            View Calendar
-          </button>
-        </div>
-      </div>
-
       {/* Manufacturers Grid */}
       <div className="mb-12">
         <div className="flex items-center justify-between mb-6 px-4 sm:px-0">
@@ -693,6 +588,25 @@ export default function AuctionsPage() {
               </div>
             </button>
           ))}
+        </div>
+      </div>
+
+      {/* Auction Calendar Banner */}
+      <div className="mb-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-100">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">Weekly Auction Schedule</h3>
+            <p className="text-sm text-gray-600">Check auction times and locations across Japan</p>
+          </div>
+          <button
+            onClick={() => router.push('/dashboard/auction-calendar')}
+            className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#e86f1e] transition-colors text-sm font-medium flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            View Calendar
+          </button>
         </div>
       </div>
 

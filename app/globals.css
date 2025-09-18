@@ -46,8 +46,44 @@
 
 /* Custom animations for stat cards */
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) scale(1);
+  }
+  33% {
+    transform: translateY(-20px) translateX(10px) scale(1.05);
+  }
+  66% {
+    transform: translateY(10px) translateX(-5px) scale(0.95);
+  }
+}
+
+@keyframes float-delayed {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) scale(1);
+  }
+  33% {
+    transform: translateY(15px) translateX(-10px) scale(1.1);
+  }
+  66% {
+    transform: translateY(-10px) translateX(15px) scale(0.9);
+  }
+}
+
+.animate-float {
+  animation: float 20s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 20s ease-in-out infinite;
+  animation-delay: 5s;
+}
+
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animation-delay-400 {
+  animation-delay: 400ms;
 }
 
 /* Custom animations for toasts */

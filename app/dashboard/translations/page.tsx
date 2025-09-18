@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getRandomAuctionHouse, allAuctionHouses } from '@/src/data/auctionHouses'
+import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
 import { sharedDataStore, TranslationData, TranslationStatus } from '../utils/sharedData'
 import Link from 'next/link'
 import { EmptyState } from '@/components/ui/empty-state'
+import { cn } from '@/lib/utils'
+import { CleanStatCard } from '@/components/ui/stat-card-clean'
 
 // Types
 interface AuctionSheetTranslation {
@@ -178,86 +180,84 @@ export default function TranslationsPage() {
   )
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#FA7921] to-[#FF9A56] rounded-xl flex items-center justify-center shadow-lg">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
-                </svg>
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Auction Sheet Translations</h1>
-                <p className="text-sm text-gray-500 mt-1">
-                  Free translation service for all auction sheets
-                </p>
-              </div>
+    <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50/50">
+      {/* Subtle background pattern */}
+      <div className="fixed inset-0 opacity-[0.015] pointer-events-none">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }} />
+      </div>
+
+      <div className="relative w-full max-w-7xl mx-auto px-4 py-6">
+        {/* Page Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#FA7921] to-[#FF9A56] rounded-xl flex items-center justify-center shadow-lg">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+              </svg>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
-                <p className="text-xs text-blue-600">Total Translations</p>
-                <p className="text-lg font-bold text-blue-900">{mockTranslations.length + translations.length}</p>
-              </div>
-              <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-                <p className="text-xs text-amber-700 font-medium">
-                  Request from vehicle page
-                </p>
-              </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Auction Sheet Translations</h1>
+              <p className="text-sm text-gray-500">Free professional translation service for all auction sheets</p>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Filter Tabs */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-1 inline-flex">
-          <button
-            onClick={() => setFilterStatus('all')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filterStatus === 'all' 
-                ? 'bg-[#FA7921] text-white' 
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            All ({auctionSheetTranslations.length})
-          </button>
-          <button
-            onClick={() => setFilterStatus('translated')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filterStatus === 'translated' 
-                ? 'bg-[#FA7921] text-white' 
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            Completed ({auctionSheetTranslations.filter(t => t.translationStatus === 'completed').length})
-          </button>
-          <button
-            onClick={() => setFilterStatus('translating')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filterStatus === 'translating' 
-                ? 'bg-[#FA7921] text-white' 
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            In Progress ({auctionSheetTranslations.filter(t => t.translationStatus === 'in-progress').length})
-          </button>
-          <button
-            onClick={() => setFilterStatus('requested')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filterStatus === 'requested' 
-                ? 'bg-[#FA7921] text-white' 
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            Pending ({auctionSheetTranslations.filter(t => t.translationStatus === 'pending').length})
-          </button>
-        </div>
+            {/* Stat Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <div onClick={() => setFilterStatus('all')} className="cursor-pointer transform transition-all duration-300 hover:scale-[1.02]">
+                <CleanStatCard
+                  title="All Translations"
+                  value={auctionSheetTranslations.length}
+                  subtitle="Total requests"
+                  variant={0}
+                  className={cn(
+                    "transition-all duration-300",
+                    filterStatus === 'all' && "ring-2 ring-[#FA7921] ring-offset-2"
+                  )}
+                />
+              </div>
+              <div onClick={() => setFilterStatus('translated')} className="cursor-pointer transform transition-all duration-300 hover:scale-[1.02]">
+                <CleanStatCard
+                  title="Completed"
+                  value={auctionSheetTranslations.filter(t => t.translationStatus === 'completed').length}
+                  subtitle="Ready to view"
+                  variant={1}
+                  className={cn(
+                    "transition-all duration-300",
+                    filterStatus === 'translated' && "ring-2 ring-[#FA7921] ring-offset-2"
+                  )}
+                />
+              </div>
+              <div onClick={() => setFilterStatus('translating')} className="cursor-pointer transform transition-all duration-300 hover:scale-[1.02]">
+                <CleanStatCard
+                  title="In Progress"
+                  value={auctionSheetTranslations.filter(t => t.translationStatus === 'in-progress').length}
+                  subtitle="Being processed"
+                  variant={2}
+                  className={cn(
+                    "transition-all duration-300",
+                    filterStatus === 'translating' && "ring-2 ring-[#FA7921] ring-offset-2"
+                  )}
+                />
+              </div>
+              <div onClick={() => setFilterStatus('requested')} className="cursor-pointer transform transition-all duration-300 hover:scale-[1.02]">
+                <CleanStatCard
+                  title="Pending"
+                  value={auctionSheetTranslations.filter(t => t.translationStatus === 'pending').length}
+                  subtitle="Awaiting translation"
+                  variant={3}
+                  className={cn(
+                    "transition-all duration-300",
+                    filterStatus === 'requested' && "ring-2 ring-[#FA7921] ring-offset-2"
+                  )}
+                />
+              </div>
+            </div>
 
         {/* Date Range Notice */}
-        <div className="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
           <div className="flex items-start">
             <svg className="h-5 w-5 text-blue-600 mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -269,10 +269,13 @@ export default function TranslationsPage() {
         </div>
 
         {/* Translations List */}
-        <div className="mt-6 space-y-4">
+        <div className="space-y-4">
           {/* Show shared translations from customers */}
           {filteredSharedTranslations.map((translation) => (
-            <div key={translation.vehicleId} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div key={translation.vehicleId} className={cn(
+              "bg-white rounded-xl shadow-sm border border-gray-200 p-6",
+              "hover:shadow-md transition-all duration-300"
+            )}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-6">
                   <div className="w-32 h-24 bg-gray-200 rounded-lg flex items-center justify-center">
@@ -299,14 +302,14 @@ export default function TranslationsPage() {
                 </div>
                 
                 <div className="flex flex-col items-end gap-3">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(translation.status)}`}>
+                  <span className={`px-3 py-1.5 rounded-xl text-xs font-semibold ${getStatusBadge(translation.status)}`}>
                     {getStatusLabel(translation.status)}
                   </span>
                   
                   <div className="flex gap-2">
                     <Link
                       href={`/dashboard/vehicle/${translation.vehicleId}`}
-                      className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition-colors font-medium"
+                      className="px-4 py-2 bg-gray-50 text-gray-700 rounded-xl text-sm hover:bg-gray-100 transition-colors font-medium border border-gray-200"
                     >
                       View Vehicle
                     </Link>
@@ -316,14 +319,14 @@ export default function TranslationsPage() {
                           setSelectedTranslation(translation)
                           setShowTranslationModal(true)
                         }}
-                        className="px-4 py-2 bg-[#FA7921] text-white rounded-lg text-sm hover:bg-[#FA7921]/90 transition-colors font-medium"
+                        className="px-4 py-2 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl text-sm hover:shadow-md transition-all font-medium"
                       >
                         View Translation
                       </button>
                     ) : (
                       <button
                         disabled
-                        className="px-4 py-2 bg-gray-200 text-gray-400 rounded-lg text-sm font-medium cursor-not-allowed"
+                        className="px-4 py-2 bg-gray-100 text-gray-400 rounded-xl text-sm font-medium cursor-not-allowed border border-gray-200"
                       >
                         Translation {translation.status === 'translating' ? 'In Progress' : 'Pending'}
                       </button>
@@ -336,7 +339,10 @@ export default function TranslationsPage() {
           
           {/* Show mock translations */}
           {filteredMockTranslations.map((translation) => (
-            <div key={translation.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div key={translation.id} className={cn(
+              "bg-white rounded-xl shadow-sm border border-gray-200 p-6",
+              "hover:shadow-md transition-all duration-300"
+            )}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-6">
                   <img
@@ -366,7 +372,7 @@ export default function TranslationsPage() {
                 </div>
                 
                 <div className="flex flex-col items-end gap-3">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(translation.translationStatus)}`}>
+                  <span className={`px-3 py-1.5 rounded-xl text-xs font-semibold ${getStatusBadge(translation.translationStatus)}`}>
                     {getStatusLabel(translation.translationStatus)}
                   </span>
                   
@@ -380,7 +386,7 @@ export default function TranslationsPage() {
                   <div className="flex gap-2">
                     <a
                       href={translation.sheetUrl}
-                      className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition-colors font-medium"
+                      className="px-4 py-2 bg-gray-50 text-gray-700 rounded-xl text-sm hover:bg-gray-100 transition-colors font-medium border border-gray-200"
                     >
                       View Original
                     </a>
@@ -390,14 +396,14 @@ export default function TranslationsPage() {
                           setSelectedTranslation(translation)
                           setShowTranslationModal(true)
                         }}
-                        className="px-4 py-2 bg-[#FA7921] text-white rounded-lg text-sm hover:bg-[#FA7921]/90 transition-colors font-medium"
+                        className="px-4 py-2 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl text-sm hover:shadow-md transition-all font-medium"
                       >
                         View Translation
                       </button>
                     ) : (
                       <button
                         disabled
-                        className="px-4 py-2 bg-gray-200 text-gray-400 rounded-lg text-sm font-medium cursor-not-allowed"
+                        className="px-4 py-2 bg-gray-100 text-gray-400 rounded-xl text-sm font-medium cursor-not-allowed border border-gray-200"
                       >
                         Translation Pending
                       </button>
@@ -418,150 +424,6 @@ export default function TranslationsPage() {
         )}
       </div>
 
-      {/* Request Translation Modal removed - functionality moved to vehicle pages */}
-      {false && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900">Request Auction Sheet Translation</h2>
-                <button 
-                  onClick={() => {}}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6 space-y-4">
-              {/* Vehicle Information */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Vehicle Name/Model
-                </label>
-                <input
-                  type="text"
-                  value={''}
-                  onChange={() => {}}
-                  placeholder="e.g., 2023 Toyota Camry Hybrid"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
-                />
-              </div>
-
-              {/* Auction House */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Auction House
-                </label>
-                <select
-                  value={''}
-                  onChange={() => {}}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
->
-                  <option value="">Select Auction House</option>
-                  {allAuctionHouses.map((house) => (
-                    <option key={house} value={house}>{house}</option>
-                  ))}
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                {/* Lot Number */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Lot Number
-                  </label>
-                  <input
-                    type="text"
-                    value={''}
-                    onChange={() => {}}
-                    placeholder="e.g., 42315"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
-                  />
-                </div>
-
-                {/* Auction Date */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Auction Date
-                  </label>
-                  <input
-                    type="date"
-                    value={''}
-                    onChange={() => {}}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              {/* Auction Sheet Upload */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Upload Auction Sheet
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
-                  <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
-                  <p className="text-sm text-gray-600">Drop files here or click to browse</p>
-                  <p className="text-xs text-gray-500 mt-1">PDF, JPG, PNG up to 10MB</p>
-                  <input type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png" />
-                </div>
-              </div>
-
-              {/* Additional Notes */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Additional Notes (Optional)
-                </label>
-                <textarea
-                  value={''}
-                  onChange={() => {}}
-                  rows={3}
-                  placeholder="Any specific areas of concern or details you need translated..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
-                />
-              </div>
-
-              {/* Service Notice */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div className="text-sm">
-                    <p className="font-medium text-blue-900">Free Translation Service</p>
-                    <p className="text-blue-700 mt-1">
-                      All auction sheet translations are provided free of charge. Our professional translators ensure accurate and detailed translations including grade, condition notes, and repair history.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-6 border-t border-gray-200 flex items-center justify-end gap-3">
-              <button 
-                onClick={() => {}}
-                className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium"
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={() => {
-                  // Modal removed - functionality moved to vehicle pages
-                }}
-                className="px-6 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium"
-              >
-                Submit Request
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Translation Viewer Modal */}
       {showTranslationModal && selectedTranslation && (
@@ -714,10 +576,10 @@ export default function TranslationsPage() {
                   Translation completed on {new Date().toLocaleDateString()}
                 </div>
                 <div className="flex gap-3">
-                  <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+                  <button className="px-4 py-2 bg-gray-50 text-gray-700 rounded-xl hover:bg-gray-100 transition-colors font-medium border border-gray-200">
                     Download PDF
                   </button>
-                  <button className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#FA7921]/90 transition-colors font-medium">
+                  <button className="px-4 py-2 bg-gradient-to-r from-[#FA7921] to-[#FF9A56] text-white rounded-xl hover:shadow-md transition-all font-medium">
                     Print Translation
                   </button>
                 </div>

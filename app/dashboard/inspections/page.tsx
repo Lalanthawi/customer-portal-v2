@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
-import { StatCard } from '@/components/ui/stat-card'
+import { CleanStatCard } from '@/components/ui/stat-card-clean'
+import { PremiumTabs } from '@/components/ui/premium-tabs'
 import { sharedDataStore, InspectionData, InspectionStatus } from '../utils/sharedData'
 
 // Types
@@ -257,80 +258,94 @@ export default function InspectionsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {/* Total Inspections Card */}
-          <StatCard
+          <CleanStatCard
             title="Total Inspections"
             value={(mockInspections.length + inspections.length).toString()}
             subtitle="All time"
-            className="min-h-[140px]"
+            trend={{ value: 15, isPositive: true }}
+            variant={0}
           />
 
           {/* Completed Card */}
-          <StatCard
+          <CleanStatCard
             title="Completed"
             value={(mockInspections.filter(i => i.status === 'completed').length + inspections.filter(i => i.status === 'completed').length).toString()}
             subtitle="Ready to view"
-            className="min-h-[140px]"
+            trend={{ value: 8.3, isPositive: true }}
+            variant={2}
           />
 
           {/* In Progress Card */}
-          <StatCard
+          <CleanStatCard
             title="In Progress"
             value={(mockInspections.filter(i => i.status === 'processing').length + inspections.filter(i => i.status === 'processing').length).toString()}
             subtitle="Being processed"
-            className="min-h-[140px]"
+            trend={{ value: 12, isPositive: true }}
+            variant={1}
           />
 
           {/* Pending Card */}
-          <StatCard
+          <CleanStatCard
             title="Pending"
             value={(mockInspections.filter(i => i.status === 'requested').length + inspections.filter(i => i.status === 'requested').length).toString()}
             subtitle="Awaiting action"
-            className="min-h-[140px]"
+            trend={{ value: 5, isPositive: false }}
+            variant={3}
           />
         </div>
 
-        {/* Filter Tabs */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-1 inline-flex mb-6">
-          <button
-            onClick={() => setFilterStatus('all')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filterStatus === 'all' 
-                ? 'bg-[#FA7921] text-white' 
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            All ({mockInspections.length + inspections.length})
-          </button>
-          <button
-            onClick={() => setFilterStatus('completed')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filterStatus === 'completed' 
-                ? 'bg-[#FA7921] text-white' 
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            Completed ({mockInspections.filter(i => i.status === 'completed').length + inspections.filter(i => i.status === 'completed').length})
-          </button>
-          <button
-            onClick={() => setFilterStatus('processing')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filterStatus === 'processing' 
-                ? 'bg-[#FA7921] text-white' 
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            Processing ({mockInspections.filter(i => i.status === 'processing').length + inspections.filter(i => i.status === 'processing').length})
-          </button>
-          <button
-            onClick={() => setFilterStatus('requested')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filterStatus === 'requested' 
-                ? 'bg-[#FA7921] text-white' 
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            Requested ({mockInspections.filter(i => i.status === 'requested').length + inspections.filter(i => i.status === 'requested').length})
-          </button>
+        {/* Filters and Search */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] border border-gray-100/50 p-5 mb-6">
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Tabs using PremiumTabs component */}
+            <PremiumTabs
+              tabs={[
+                {
+                  id: 'all',
+                  label: 'All',
+                  count: mockInspections.length + inspections.length
+                },
+                {
+                  id: 'completed',
+                  label: 'Completed',
+                  count: mockInspections.filter(i => i.status === 'completed').length + inspections.filter(i => i.status === 'completed').length
+                },
+                {
+                  id: 'processing',
+                  label: 'Processing',
+                  count: mockInspections.filter(i => i.status === 'processing').length + inspections.filter(i => i.status === 'processing').length
+                },
+                {
+                  id: 'requested',
+                  label: 'Requested',
+                  count: mockInspections.filter(i => i.status === 'requested').length + inspections.filter(i => i.status === 'requested').length
+                }
+              ]}
+              activeTab={filterStatus}
+              onTabChange={(tab) => setFilterStatus(tab as any)}
+            />
+
+            {/* Search and Sort */}
+            <div className="flex gap-3 ml-auto">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search inspections..."
+                  className="pl-10 pr-4 py-2.5 bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-xl focus:ring-2 focus:ring-[#FA7921]/20 focus:border-[#FA7921]/50 focus:bg-white transition-all duration-300 text-sm"
+                />
+                <svg className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <select
+                className="px-4 py-2.5 bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-xl focus:ring-2 focus:ring-[#FA7921]/20 focus:border-[#FA7921]/50 focus:bg-white transition-all duration-300 text-sm text-gray-700 cursor-pointer"
+              >
+                <option>Sort by Date</option>
+                <option>Sort by Status</option>
+                <option>Sort by Vehicle</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         {/* Date Range Notice */}

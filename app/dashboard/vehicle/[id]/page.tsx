@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { sharedDataStore } from '../../utils/sharedData'
 import { ImageGalleryEnhanced } from '@/components/ui/image-gallery-enhanced'
+import { mockVehicles } from '@/services/api/mock-data'
 
 // Shadcn UI Components
 import { Button } from '@/components/ui/button'
@@ -113,19 +114,76 @@ export default function VehiclePageShadcn() {
   const [translationStatus, setTranslationStatus] = useState<'not available' | 'requested' | 'translating' | 'translated'>('not available')
   const [translationData, setTranslationData] = useState<{ translation?: string; original?: string; sharedBy?: string } | null>(null)
   
+  // Get vehicle data from mock data
+  const vehicleId = params['id'] as string
+  const mockVehicle = mockVehicles.find(v => v.id === vehicleId)
+
   // Generate images array dynamically based on vehicle ID
-  const vehicleImages = params['id'] === '4' || params['id'] === 'land-cruiser' 
+  const vehicleImages = vehicleId === '4' || vehicleId === 'land-cruiser'
     ? Array.from({ length: 12 }, (_, i) => `/images/singlecar/${i}.jpeg`)
-    : [
+    : mockVehicle?.images || [
       'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1200&q=80',
       'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1200&q=80&fit=crop',
       'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1000&q=80'
     ]
 
-  // Mock data - different data based on vehicle ID
-  const isLandCruiser = params['id'] === '4' || params['id'] === 'land-cruiser'
-  
-  const vehicleData: AuctionCar = isLandCruiser ? {
+  // Use mock data if available, otherwise use default Land Cruiser data
+  const vehicleData: AuctionCar = mockVehicle ? {
+    id: mockVehicle.id,
+    chassisNumber: mockVehicle.chassisNumber || 'N/A',
+    make: mockVehicle.make,
+    model: mockVehicle.model,
+    year: mockVehicle.year,
+    mileage: typeof mockVehicle.mileage === 'string'
+      ? parseInt((mockVehicle.mileage as string).replace(/[^0-9]/g, '')) || 0
+      : (mockVehicle.mileage as number) || 0,
+    transmission: mockVehicle.transmission,
+    displacement: mockVehicle.displacement || 2000,
+    color: mockVehicle.color || 'N/A',
+    scores: mockVehicle.scores || {
+      interior: 4.5,
+      exterior: 4.0,
+      overall: 4.5
+    },
+    pricing: mockVehicle.pricing || {
+      startPrice: 2000000,
+      currentBid: 2100000,
+      averagePrice: 2200000
+    },
+    auction: {
+      deadline: mockVehicle.auction?.deadline ? new Date(mockVehicle.auction.deadline) : new Date('2025-09-10T14:00:00'),
+      location: mockVehicle.auction?.location || 'Tokyo',
+      result: mockVehicle.auction?.result || 'not yet auction',
+      lotNumber: mockVehicle.auction?.lotNumber || `LOT-${mockVehicle.id}`
+    },
+    images: vehicleImages,
+    equipment: mockVehicle.equipment || [],
+    condition: mockVehicle.condition || 'Good',
+    fuel: mockVehicle.fuel || 'Petrol',
+    drive: mockVehicle.drive || '2WD',
+    doors: mockVehicle.doors || 4,
+    seats: mockVehicle.seats || 5,
+    bodyType: mockVehicle.bodyType || 'Sedan',
+    engineNumber: mockVehicle.engineNumber || 'N/A',
+    registrationDate: mockVehicle.registrationDate || '2020-01-01',
+    inspectionDate: mockVehicle.inspectionDate || '2025-01-01',
+    additionalData: {
+      cooling: 'Air Conditioning',
+      appraisalPoint: '4',
+      shift: mockVehicle.transmission,
+      openingDay: new Date('2025-09-10T14:00:00').toLocaleString(),
+      grade: '4',
+      holdingFrequency: new Date('2025-09-10T14:00:00').getFullYear().toString(),
+      colorSubstitution: 'Original',
+      holdingHall: 'Tokyo',
+      yearH: `${mockVehicle.year} year`,
+      notes: [
+        'One owner vehicle',
+        'Full service history available',
+        'Non-smoking vehicle'
+      ]
+    }
+  } : (vehicleId === '4' || vehicleId === 'land-cruiser') ? {
     id: params['id'] as string,
     chassisNumber: 'GDJ250W-9876543',
     make: 'Toyota',
@@ -200,57 +258,56 @@ export default function VehiclePageShadcn() {
       ]
     }
   } : {
-    id: params['id'] as string,
-    chassisNumber: 'NZE161-3153697',
+    // Default fallback data for unknown vehicle IDs
+    id: vehicleId,
+    chassisNumber: 'N/A',
     make: 'Toyota',
-    model: 'Corolla Axio',
-    year: 2018,
-    mileage: 122000,
+    model: 'Vehicle',
+    year: 2020,
+    mileage: 50000,
     transmission: 'Automatic',
     displacement: 2000,
-    color: 'Pearl',
+    color: 'Silver',
     scores: {
-      interior: 4.5,
+      interior: 4.0,
       exterior: 4.0,
-      overall: 4.5
+      overall: 4.0
     },
     pricing: {
-      startPrice: 3000000,
-      currentBid: 343000,
-      averagePrice: 7260000
+      startPrice: 2000000,
+      currentBid: 2100000,
+      averagePrice: 2200000
     },
     auction: {
-      deadline: new Date('2025-09-06T13:10:00'),
-      location: 'JU Gifu [ Gifu prefecture Hashima city ]',
+      deadline: new Date('2025-09-10T14:00:00'),
+      location: 'Tokyo',
       result: 'not yet auction',
-      lotNumber: 'LOT-2024-0892'
+      lotNumber: `LOT-${vehicleId}`
     },
     images: vehicleImages,
-    equipment: ['P/S', 'P/W', 'ABS', 'leather', 'airbag'],
-    condition: 'bidding is possible',
-    fuel: 'GS',
-    drive: '4WD',
+    equipment: ['Air Conditioning', 'Power Steering', 'Power Windows'],
+    condition: 'Good',
+    fuel: 'Petrol',
+    drive: '2WD',
     doors: 4,
     seats: 5,
     bodyType: 'Sedan',
-    engineNumber: '1NZ-FE-7896543',
-    registrationDate: '2019-03-15',
-    inspectionDate: '2024-03-15',
+    engineNumber: 'N/A',
+    registrationDate: '2020-01-01',
+    inspectionDate: '2025-01-01',
     additionalData: {
-      cooling: 'AAC',
+      cooling: 'Air Conditioning',
       appraisalPoint: '4',
-      shift: 'F6',
-      openingDay: '2025-09-06 14:10',
-      grade: '4WD Evolution 9 MR GSR',
-      holdingFrequency: '2010',
-      colorSubstitution: 'equipped',
-      holdingHall: 'JU Gifu [ Gifu prefecture Hashima city ]',
-      yearH: 'H19 year',
+      shift: 'Automatic',
+      openingDay: '2025-09-10 14:00',
+      grade: '4',
+      holdingFrequency: '2025',
+      colorSubstitution: 'Original',
+      holdingHall: 'Tokyo',
+      yearH: '2020 year',
       notes: [
-        'One owner vehicle',
-        'Full service history available',
-        'Non-smoking vehicle',
-        'Garage kept'
+        'Well maintained vehicle',
+        'Regular service history'
       ]
     }
   }
@@ -602,7 +659,7 @@ export default function VehiclePageShadcn() {
                 <div className="space-y-4 mb-6">
                   <div>
                     <p className="text-sm text-muted-foreground">Start Price</p>
-                    <p className="text-2xl font-bold">{vehicleData.pricing.startPrice.toLocaleString()}</p>
+                    <p className="text-2xl font-bold">{(vehicleData.pricing.startPrice || 0).toLocaleString()}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Current Bid</p>
@@ -826,7 +883,7 @@ export default function VehiclePageShadcn() {
                 <div className="space-y-4 mb-6">
                   <div>
                     <p className="text-sm text-muted-foreground">Start Price</p>
-                    <p className="text-2xl font-bold">{vehicleData.pricing.startPrice.toLocaleString()}</p>
+                    <p className="text-2xl font-bold">{(vehicleData.pricing.startPrice || 0).toLocaleString()}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Current Bid</p>

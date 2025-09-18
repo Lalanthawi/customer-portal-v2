@@ -3,43 +3,8 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
-import { StatCard } from '@/components/ui/stat-card'
-
-type VehicleSource = 'auction' | 'direct' | 'export'
-type VehicleStatus = 'payment_pending' | 'preparing' | 'in_transit' | 'at_port' | 'delivered' | 'completed'
-
-interface Vehicle {
-  id: string
-  title: string
-  image: string
-  vin?: string
-  chassisNumber?: string
-  source: VehicleSource
-  purchaseDate: Date
-  status: VehicleStatus
-  location?: string
-  price: number
-  documents: {
-    invoice?: boolean
-    exportCertificate?: boolean
-    billOfLading?: boolean
-    deregistration?: boolean
-    inspection?: boolean
-  }
-  shipping?: {
-    vessel?: string
-    eta?: Date
-    departurePort?: string
-    arrivalPort?: string
-  }
-  auctionDetails?: {
-    auctionHouse: string
-    lotNumber: string
-    auctionDate: Date
-  }
-  notes?: string
-}
+import { CleanStatCard } from '@/components/ui/stat-card-clean'
+import { mockMyVehicles, type MyVehicle, type VehicleSource, type VehicleStatus } from '@/services/api/mock-data'
 
 export default function MyVehiclesPage() {
   const [filterStatus, setFilterStatus] = useState<'all' | VehicleStatus>('all')
@@ -47,119 +12,8 @@ export default function MyVehiclesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedYear, setSelectedYear] = useState<'all' | '2024' | '2023' | '2022' | 'older'>('all')
 
-  // Mock data - would come from API
-  const [vehicles] = useState<Vehicle[]>([
-    {
-      id: '1',
-      title: '2024 Toyota Land Cruiser 250 VX 4WD',
-      image: '/images/singlecar/0.jpeg',
-      vin: 'GDJ250W-001234',
-      chassisNumber: 'GDJ250W-9876543',
-      source: 'auction',
-      purchaseDate: new Date('2024-01-10'),
-      status: 'in_transit',
-      location: 'Pacific Ocean',
-      price: 5600000,
-      documents: {
-        invoice: true,
-        exportCertificate: true,
-        billOfLading: true,
-        deregistration: false,
-        inspection: true
-      },
-      shipping: {
-        vessel: 'NYK Delphinus',
-        eta: new Date('2024-02-20'),
-        departurePort: 'Yokohama Port',
-        arrivalPort: 'Los Angeles Port'
-      },
-      auctionDetails: {
-        auctionHouse: 'TAA Kinki',
-        lotNumber: '2024-0892',
-        auctionDate: new Date('2024-01-10')
-      }
-    },
-    {
-      id: '2',
-      title: '2022 Honda Vezel Hybrid',
-      image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800',
-      source: 'direct',
-      purchaseDate: new Date('2024-01-05'),
-      status: 'delivered',
-      location: 'Customer Warehouse',
-      price: 3200000,
-      documents: {
-        invoice: true,
-        exportCertificate: true,
-        billOfLading: true,
-        deregistration: true,
-        inspection: true
-      },
-      notes: 'Direct purchase from dealer stock'
-    },
-    {
-      id: '3',
-      title: '2019 Nissan Leaf',
-      image: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800',
-      source: 'export',
-      purchaseDate: new Date('2023-11-15'),
-      status: 'completed',
-      price: 2800000,
-      documents: {
-        invoice: true,
-        exportCertificate: true,
-        billOfLading: true,
-        deregistration: true,
-        inspection: true
-      },
-      notes: 'Customer personal vehicle export'
-    },
-    {
-      id: '4',
-      title: '2020 Mazda CX-5',
-      image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800',
-      vin: 'JM3KFBDM1L0123456',
-      source: 'auction',
-      purchaseDate: new Date('2023-06-20'),
-      status: 'completed',
-      price: 4500000,
-      documents: {
-        invoice: true,
-        exportCertificate: true,
-        billOfLading: true,
-        deregistration: true,
-        inspection: true
-      },
-      auctionDetails: {
-        auctionHouse: getRandomAuctionHouse(),
-        lotNumber: '78234',
-        auctionDate: new Date('2023-06-20')
-      }
-    },
-    {
-      id: '5',
-      title: '2021 Toyota Prius',
-      image: 'https://images.unsplash.com/photo-1623869675781-80aa31012a5a?w=800',
-      chassisNumber: 'ZVW51-8234567',
-      source: 'auction',
-      purchaseDate: new Date('2024-01-25'),
-      status: 'preparing',
-      location: 'Auction Yard',
-      price: 3800000,
-      documents: {
-        invoice: true,
-        exportCertificate: false,
-        billOfLading: false,
-        deregistration: false,
-        inspection: false
-      },
-      auctionDetails: {
-        auctionHouse: getRandomAuctionHouse(),
-        lotNumber: '15789',
-        auctionDate: new Date('2024-01-25')
-      }
-    }
-  ])
+  // Using centralized mock data
+  const [vehicles] = useState<MyVehicle[]>(mockMyVehicles)
 
   const getStatusBadge = (status: VehicleStatus) => {
     const statusConfig = {
@@ -227,11 +81,19 @@ export default function MyVehiclesPage() {
   }
 
   return (
-    <div className="w-full">
-      {/* Page Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#FA7921] to-[#FF9A56] rounded-xl flex items-center justify-center shadow-lg">
+    <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50/50">
+      {/* Subtle background pattern */}
+      <div className="fixed inset-0 opacity-[0.015] pointer-events-none">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }} />
+      </div>
+
+      <div className="relative w-full max-w-7xl mx-auto px-4 py-6">
+        {/* Page Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#FA7921] to-[#FF9A56] rounded-xl flex items-center justify-center shadow-lg">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
@@ -247,35 +109,35 @@ export default function MyVehiclesPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {/* Total Vehicles Card */}
-        <StatCard
+        <CleanStatCard
           title="Total Vehicles"
           value={vehiclesByStatus.total.toString()}
           subtitle="All time"
-          className="min-h-[140px]"
+          trend={{ value: 23.5, isPositive: true }}
         />
 
         {/* In Transit Card */}
-        <StatCard
+        <CleanStatCard
           title="In Transit"
           value={vehiclesByStatus.active.toString()}
           subtitle="Active shipping"
-          className="min-h-[140px]"
+          trend={{ value: 12, isPositive: true }}
         />
 
         {/* Delivered Card */}
-        <StatCard
+        <CleanStatCard
           title="Delivered"
           value={vehiclesByStatus.delivered.toString()}
           subtitle="Ready for pickup"
-          className="min-h-[140px]"
+          trend={{ value: 18.7, isPositive: true }}
         />
 
         {/* Completed Card */}
-        <StatCard
+        <CleanStatCard
           title="Completed"
           value={vehiclesByStatus.completed.toString()}
           subtitle="Archived"
-          className="min-h-[140px]"
+          trend={{ value: 3.2, isPositive: false }}
         />
       </div>
 
@@ -498,6 +360,7 @@ export default function MyVehiclesPage() {
           Add Non-Auction Vehicle
         </span>
       </button>
+      </div>
     </div>
   )
 }
