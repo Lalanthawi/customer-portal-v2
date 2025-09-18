@@ -879,8 +879,8 @@ export default function VehicleDetailPage() {
                     className="mt-1 w-5 h-5 text-[#FA7921] bg-white border-gray-300 rounded cursor-not-allowed"
                   />
                   <label htmlFor="spareKey" className="flex-1 cursor-pointer">
-                    <span className="block text-sm font-medium text-gray-900">Spare Key</span>
-                    <span className="text-xs text-gray-500">Additional key for the vehicle</span>
+                    <span className="block text-sm font-medium text-gray-900">Spare Keys</span>
+                    <span className="text-xs text-gray-500">Additional keys for the vehicle</span>
                   </label>
                 </div>
 

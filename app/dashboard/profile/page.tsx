@@ -140,7 +140,7 @@ function ProfileSettingsContent() {
     
     // Customer account types
     if (companyData.hasCompany) {
-      return { type: 'Business Account', description: 'Verified business with priority support', isStaff: false }
+      return { type: 'Business Account', description: 'Verified business account', isStaff: false }
     } else {
       // Check if user has bid history to determine if they're new or regular
       const hasPreviousPurchases = false // This would check actual purchase history
@@ -683,13 +683,13 @@ function ProfileSettingsContent() {
                         <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
-                        <span className="text-gray-600">Basic support</span>
+                        <span className="text-gray-600">Access to auctions</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
-                        <span className="text-gray-600">Access to auctions</span>
+                        <span className="text-gray-600">Email notifications</span>
                       </li>
                     </ul>
                   </div>
@@ -720,13 +720,13 @@ function ProfileSettingsContent() {
                         <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
-                        <span className="text-gray-600">Standard support</span>
+                        <span className="text-gray-600">Purchase history</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
-                        <span className="text-gray-600">Purchase history</span>
+                        <span className="text-gray-600">Faster processing</span>
                       </li>
                     </ul>
                   </div>
@@ -757,13 +757,13 @@ function ProfileSettingsContent() {
                         <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
-                        <span className="text-gray-600">Priority support</span>
+                        <span className="text-gray-600">Business tools</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
-                        <span className="text-gray-600">Business tools</span>
+                        <span className="text-gray-600">Volume discounts</span>
                       </li>
                     </ul>
                   </div>
@@ -784,7 +784,7 @@ function ProfileSettingsContent() {
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">Upgrade Your Account</h3>
                     <p className="text-sm text-gray-700 mb-4">
-                      Verify your business to unlock instant bid approval, priority support, and exclusive dealer benefits.
+                      Verify your business to unlock instant bid approval and exclusive dealer benefits.
                     </p>
                     <div className="flex gap-3">
                       <Button 
@@ -1091,7 +1091,7 @@ function ProfileSettingsContent() {
                           <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
-                          <span>Priority customer support with dedicated account manager</span>
+                          <span>Dedicated account manager</span>
                         </li>
                         {(companyData.importFrequency === 'weekly' || companyData.importFrequency === 'monthly') && (
                           <>
@@ -1099,7 +1099,7 @@ function ProfileSettingsContent() {
                               <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                               </svg>
-                              <span className="font-semibold">Business Account - Priority support available</span>
+                              <span className="font-semibold">Business Account - All features available</span>
                             </li>
                             <li className="flex items-start gap-2">
                               <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1147,7 +1147,7 @@ function ProfileSettingsContent() {
                     </div>
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">Register Your Business</h4>
                     <p className="text-sm text-gray-600 mb-6 max-w-md mx-auto">
-                      Enable business account to get instant bid approval, priority support, and access to exclusive features.
+                      Enable business account to get instant bid approval and access to exclusive features.
                     </p>
                     <Button
                       onClick={() => setCompanyData({ ...companyData, hasCompany: true })}

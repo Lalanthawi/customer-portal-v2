@@ -36,7 +36,7 @@ interface AuctionCar {
   displacement: number
   color: string
   scores: {
-    interior: number
+    interior?: number
     exterior: number
     overall: number
   }
@@ -602,7 +602,7 @@ export default function VehiclePageShadcn() {
                 <div className="space-y-4 mb-6">
                   <div>
                     <p className="text-sm text-muted-foreground">Start Price</p>
-                    <p className="text-2xl font-bold">{formatJPY(vehicleData.pricing.startPrice)}</p>
+                    <p className="text-2xl font-bold">{vehicleData.pricing.startPrice.toLocaleString()}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Current Bid</p>
@@ -664,7 +664,7 @@ export default function VehiclePageShadcn() {
                   {[
                     { label: 'Make & Model', value: `${vehicleData.make} ${vehicleData.model}` },
                     { label: 'Year', value: vehicleData.year },
-                    { label: 'Mileage', value: `${vehicleData.mileage.toLocaleString()} km` },
+                    { label: 'Mileage', value: vehicleData.mileage.toLocaleString() },
                     { label: 'Transmission', value: vehicleData.transmission },
                     { label: 'Engine', value: `${vehicleData.displacement}cc` },
                     { label: 'Color', value: vehicleData.color },
@@ -683,13 +683,15 @@ export default function VehiclePageShadcn() {
                 {/* Condition Scores */}
                 <div className="mt-6 pt-6 border-t">
                   <h3 className="text-lg font-semibold mb-4">Condition Scores</h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="text-center">
-                      <div className="w-20 h-20 mx-auto rounded-full bg-green-100 flex items-center justify-center">
-                        <span className="text-2xl font-bold text-green-600">{vehicleData.scores.interior}</span>
+                  <div className={`grid ${vehicleData.scores.interior !== undefined && vehicleData.scores.interior !== null ? 'grid-cols-3' : 'grid-cols-2'} gap-4`}>
+                    {vehicleData.scores.interior !== undefined && vehicleData.scores.interior !== null && (
+                      <div className="text-center">
+                        <div className="w-20 h-20 mx-auto rounded-full bg-green-100 flex items-center justify-center">
+                          <span className="text-2xl font-bold text-green-600">{vehicleData.scores.interior}</span>
+                        </div>
+                        <p className="mt-2 text-sm text-muted-foreground">Interior</p>
                       </div>
-                      <p className="mt-2 text-sm text-muted-foreground">Interior</p>
-                    </div>
+                    )}
                     <div className="text-center">
                       <div className="w-20 h-20 mx-auto rounded-full bg-blue-100 flex items-center justify-center">
                         <span className="text-2xl font-bold text-blue-600">{vehicleData.scores.exterior}</span>
@@ -760,11 +762,11 @@ export default function VehiclePageShadcn() {
                     { label: 'Appraisal Point', value: vehicleData.additionalData.appraisalPoint },
                     { label: 'Year', value: vehicleData.additionalData.yearH },
                     { label: 'Shift', value: vehicleData.additionalData.shift },
-                    { label: 'Mileage', value: `${(vehicleData.mileage / 1000).toFixed(0)} thousand km` },
+                    { label: 'Mileage', value: (vehicleData.mileage / 1000).toFixed(0) },
                     { label: 'Result', value: vehicleData.auction.result },
                     { label: 'Color', value: vehicleData.color },
                     { label: 'Color Substitution', value: vehicleData.additionalData.colorSubstitution },
-                    { label: 'Start', value: `${(vehicleData.pricing.startPrice / 10000).toFixed(1)} ten thousand jpy` },
+                    { label: 'Start', value: (vehicleData.pricing.startPrice / 10000).toFixed(1) },
                     { label: 'Grade', value: vehicleData.additionalData.grade },
                     { label: 'Holding Hall', value: vehicleData.additionalData.holdingHall },
                     { label: 'Opening Day', value: vehicleData.additionalData.openingDay },
@@ -824,7 +826,7 @@ export default function VehiclePageShadcn() {
                 <div className="space-y-4 mb-6">
                   <div>
                     <p className="text-sm text-muted-foreground">Start Price</p>
-                    <p className="text-2xl font-bold">{formatJPY(vehicleData.pricing.startPrice)}</p>
+                    <p className="text-2xl font-bold">{vehicleData.pricing.startPrice.toLocaleString()}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Current Bid</p>
@@ -1144,31 +1146,6 @@ export default function VehiclePageShadcn() {
                       </DialogContent>
                     </Dialog>
                   )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Bid History */}
-            <Card className="bg-white border border-gray-200">
-              <CardHeader>
-                <CardTitle>Recent Bids</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {bidHistory.slice().reverse().map((bid, index) => (
-                    <div key={index} className="flex items-start justify-between py-3 border-b last:border-0">
-                      <div>
-                        <p className="font-semibold">{formatJPY(bid.amount)}</p>
-                        <p className="text-sm text-muted-foreground">{bid.userName}</p>
-                        {bid.message && (
-                          <p className="text-sm text-muted-foreground mt-1">&ldquo;{bid.message}&rdquo;</p>
-                        )}
-                      </div>
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(bid.timestamp).toLocaleTimeString()}
-                      </span>
-                    </div>
-                  ))}
                 </div>
               </CardContent>
             </Card>

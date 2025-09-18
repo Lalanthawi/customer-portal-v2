@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { manufacturerLogos } from './ManufacturerLogos'
 import AdvancedSearchStatic from '../components/search/AdvancedSearchStatic'
 import { TermsOfServiceModal, useTOSAcceptance } from '../components/TermsOfService'
-// Removed unused import: vehicleIcons
 
 interface Manufacturer {
   id: string
@@ -107,7 +106,7 @@ const manufacturers: Manufacturer[] = [
   { id: 'saab', name: 'Saab', vehicleCount: 22 },
   { id: 'polestar', name: 'Polestar', vehicleCount: 14 },
   { id: 'koenigsegg', name: 'Koenigsegg', vehicleCount: 2 },
-  
+
   // Chinese
   { id: 'byd', name: 'BYD', vehicleCount: 34 },
   { id: 'geely', name: 'Geely', vehicleCount: 28 },
@@ -115,9 +114,6 @@ const manufacturers: Manufacturer[] = [
   { id: 'xpeng', name: 'Xpeng', vehicleCount: 15 },
   { id: 'li-auto', name: 'Li Auto', vehicleCount: 12 },
 ]
-
-// Removed unused bodyTypes array
-// Removed unused fuelTypes array
 
 // Country-specific trending searches based on import regulations
 const trendingSearchesByCountry: { [key: string]: string[] } = {
@@ -310,11 +306,6 @@ export default function AuctionsPage() {
     }))
   }
 
-  // Removed unused toggleBodyType function
-  // Removed unused toggleFuelType function
-  // Removed unused toggleTransmission function
-  // Removed unused clearAllFilters function
-
   const activeFiltersCount = 
     filters.manufacturers.length + 
     filters.bodyTypes.length + 
@@ -479,12 +470,10 @@ export default function AuctionsPage() {
 
             {/* Recent Searches - Modern Pills */}
             <div className="mt-6 sm:mt-8">
-              <div className="text-center mb-3">
+              <div className="flex flex-wrap items-center justify-center gap-2">
                 <span className="text-white/60 text-xs sm:text-sm font-medium">
                   Trending {userCountry !== 'default' && `in ${userCountry}`}:
                 </span>
-              </div>
-              <div className="flex flex-wrap gap-2 justify-center">
                 {trendingSearches.slice(0, 4).map((search, index) => (
                   <button
                     key={index}
@@ -633,12 +622,37 @@ export default function AuctionsPage() {
         </div>
       </div>
 
+      {/* Auction Calendar Banner */}
+      <div className="mb-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-100">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">Weekly Auction Schedule</h3>
+            <p className="text-sm text-gray-600">Check auction times and locations across Japan</p>
+          </div>
+          <button
+            onClick={() => router.push('/dashboard/auction-calendar')}
+            className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#e86f1e] transition-colors text-sm font-medium flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            View Calendar
+          </button>
+        </div>
+      </div>
+
       {/* Manufacturers Grid */}
       <div className="mb-12">
         <div className="flex items-center justify-between mb-6 px-4 sm:px-0">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Browse by Manufacturer</h2>
-          <button className="text-[#FA7921] hover:text-[#e86f1e] font-medium text-xs sm:text-sm">
-            View All →
+          <button
+            onClick={() => document.getElementById('all-manufacturers')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className="px-4 py-2 bg-[#FA7921] text-white rounded-lg hover:bg-[#e86f1e] transition-all text-sm font-medium flex items-center gap-2 shadow-md hover:shadow-lg"
+          >
+            <span>View All</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
           </button>
         </div>
         
@@ -683,31 +697,63 @@ export default function AuctionsPage() {
       </div>
 
       {/* All Manufacturers Expandable Section */}
-      <details className="mb-12 group">
+      <details id="all-manufacturers" className="mb-12 group bg-white rounded-xl border border-gray-200 shadow-sm">
         <summary className="cursor-pointer list-none">
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-            <h3 className="font-medium text-gray-700">All Manufacturers</h3>
-            <svg className="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
+          <div className="flex items-center justify-between p-5 hover:bg-gray-50 transition-colors rounded-t-xl">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">All Manufacturers</h3>
+              <p className="text-sm text-gray-500 mt-0.5">Browse our complete catalog of {manufacturers.length} manufacturers</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="px-3 py-1 bg-[#FA7921]/10 text-[#FA7921] text-sm font-medium rounded-full">
+                {manufacturers.length} brands
+              </span>
+              <div className="p-2 bg-gray-100 rounded-lg group-open:bg-[#FA7921] group-open:text-white transition-all">
+                <svg className="w-5 h-5 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
         </summary>
-        
-        <div className="mt-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 p-4">
-          {manufacturers.map((manufacturer) => (
-            <button
-              key={manufacturer.id}
-              onClick={() => toggleManufacturer(manufacturer.id)}
-              className={`px-3 py-2 rounded-lg text-sm transition-all ${
-                filters.manufacturers.includes(manufacturer.id)
-                  ? 'bg-[#FA7921] text-white'
-                  : 'bg-white border border-gray-200 text-gray-700 hover:border-[#FA7921]'
-              }`}
-            >
-              <span className="font-medium">{manufacturer.name}</span>
-              <span className="block text-xs opacity-80">({manufacturer.vehicleCount})</span>
-            </button>
-          ))}
+
+        <div className="border-t border-gray-200">
+          <div className="p-6">
+            {/* Category Tabs */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              <button className="px-3 py-1.5 bg-[#FA7921] text-white rounded-lg text-sm font-medium">All</button>
+              <button className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">Japanese</button>
+              <button className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">German</button>
+              <button className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">American</button>
+              <button className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">Korean</button>
+              <button className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">European</button>
+            </div>
+
+            {/* Manufacturers Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+              {manufacturers.map((manufacturer) => (
+                <button
+                  key={manufacturer.id}
+                  onClick={() => toggleManufacturer(manufacturer.id)}
+                  className={`group relative px-3 py-2.5 rounded-lg text-sm transition-all ${
+                    filters.manufacturers.includes(manufacturer.id)
+                      ? 'bg-[#FA7921] text-white shadow-md'
+                      : 'bg-white border border-gray-200 text-gray-700 hover:border-[#FA7921] hover:shadow-md'
+                  }`}
+                >
+                  {filters.manufacturers.includes(manufacturer.id) && (
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                      <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  )}
+                  <span className="font-medium block">{manufacturer.name}</span>
+                  <span className="text-xs opacity-80 mt-0.5 block">({manufacturer.vehicleCount})</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </details>
 

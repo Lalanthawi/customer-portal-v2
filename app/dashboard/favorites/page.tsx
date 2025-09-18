@@ -233,25 +233,24 @@ export default function FavoritesPage() {
     <div className="w-full max-w-[1400px] mx-auto space-y-6">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Favorites</h1>
-          <p className="text-gray-600 mt-1">Manage your favorite vehicles across different lists</p>
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#FA7921] to-[#FF9A56] rounded-xl flex items-center justify-center shadow-lg">
+            <Heart className="w-6 h-6 text-white" fill="currentColor" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Favorites</h1>
+            <p className="text-sm text-gray-500 mt-1">Manage your favorite vehicles across different lists</p>
+          </div>
         </div>
-        <div className="flex gap-3">
-          <div className="px-4 py-2 bg-white rounded-lg border border-gray-200">
-            <div className="flex items-center gap-2">
-              <Heart className="w-4 h-4 text-[#FA7921]" />
-              <span className="text-sm font-medium text-gray-700">Total</span>
-              <span className="text-lg font-bold text-gray-900">{totalFavorites}</span>
-            </div>
+        <div className="flex items-center gap-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
+            <p className="text-xs text-blue-600">Total Favorites</p>
+            <p className="text-lg font-bold text-blue-900">{totalFavorites}</p>
           </div>
           {endingSoon > 0 && (
-            <div className="px-4 py-2 bg-amber-50 rounded-lg border border-amber-200">
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-amber-600" />
-                <span className="text-sm font-medium text-amber-700">Ending Soon</span>
-                <span className="text-lg font-bold text-amber-900">{endingSoon}</span>
-              </div>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">
+              <p className="text-xs text-amber-600">Ending Soon</p>
+              <p className="text-lg font-bold text-amber-900">{endingSoon}</p>
             </div>
           )}
         </div>

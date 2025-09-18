@@ -183,11 +183,18 @@ export default function TranslationsPage() {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Auction Sheet Translations</h1>
-              <p className="text-sm text-gray-500 mt-1">
-                Free translation service for all auction sheets
-              </p>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-[#FA7921] to-[#FF9A56] rounded-xl flex items-center justify-center shadow-lg">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Auction Sheet Translations</h1>
+                <p className="text-sm text-gray-500 mt-1">
+                  Free translation service for all auction sheets
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-4">
               <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">

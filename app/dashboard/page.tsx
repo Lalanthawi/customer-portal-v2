@@ -6,9 +6,10 @@ import type { AuctionItem, ActivityItem } from './types'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ClaimRequiredModal, useClaimStatus } from './components/ClaimRequired'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
-import { StatCard } from '@/components/ui/stat-card-glassmorphism'
-import { Shield, AlertCircle, Wallet } from 'lucide-react'
+import { AppleStatCard } from '@/components/ui/stat-card-apple'
+import { CheckCircle, Award } from 'lucide-react'
 import { VehicleCard } from '@/components/ui/vehicle-card-new'
+import { VerificationBadge } from '@/components/ui/verification-badge'
 
 // Skeleton component for loading states
 function Skeleton({ className }: { className?: string }) {
@@ -186,6 +187,7 @@ function ActivityItem({ activity }: { activity: ActivityItem }) {
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const username = "Avishka"
+  const accountLevel = "verified" as 'basic' | 'verified' | 'premium' // Can be: 'basic', 'verified', 'premium'
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1500)
@@ -338,128 +340,108 @@ export default function DashboardPage() {
       <div className="mb-8">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-[32px] font-semibold text-gray-900 tracking-[-0.02em] mb-2">
-            Welcome back, {username}
-          </h1>
+          <div className="flex items-center gap-3 mb-2">
+            <h1 className="text-[32px] font-semibold text-gray-900 tracking-[-0.02em]">
+              Welcome back, {username}
+            </h1>
+            <Link
+              href="/dashboard/profile"
+              className="group relative"
+              title={`Account Status: ${(() => {
+                switch(accountLevel) {
+                  case 'premium': return 'Premium';
+                  case 'verified': return 'Verified';
+                  default: return 'Basic';
+                }
+              })()}`}
+            >
+              {accountLevel === 'premium' ? (
+                <div className="p-1.5 rounded-full bg-gradient-to-br from-purple-100 to-purple-50 border border-purple-200 hover:from-purple-200 hover:to-purple-100 transition-all">
+                  <Award className="w-5 h-5 text-purple-600" />
+                </div>
+              ) : accountLevel === 'verified' ? (
+                <VerificationBadge size="md" />
+              ) : (
+                <div className="p-1.5 rounded-full bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200 hover:from-gray-200 hover:to-gray-100 transition-all">
+                  <CheckCircle className="w-5 h-5 text-gray-600" />
+                </div>
+              )}
+              <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                View Account Status
+              </span>
+            </Link>
+          </div>
           <p className="text-[16px] text-gray-600">
             Here's what's happening with your auctions today
           </p>
         </div>
 
-        {/* Stats Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard
+        {/* Apple-Inspired Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <AppleStatCard
             title="Active Bids"
             value="12"
             subtitle="From yesterday"
-            trend={{ value: "+3", isPositive: true }}
-            icon={
-              <svg className="w-4 h-4 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            }
-            href="/dashboard/bids"
-            iconBgColor="from-gray-800/20 to-gray-900/10"
-            glowColor="black"
-          >
-            <div className="space-y-1 mt-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-600">Winning</span>
-                <span className="font-semibold text-green-600">7</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-600">Outbid</span>
-                <span className="font-semibold text-orange-600">3</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-600">Watching</span>
-                <span className="font-semibold text-gray-700">2</span>
-              </div>
-            </div>
-          </StatCard>
+            trend={{ value: 8.3 }}
+            sparkline={[8, 10, 9, 12, 11, 10, 12]}
+            accentColor="#007AFF"
+            delay={0}
+            details={[
+              { label: "Winning", value: "7", color: "text-green-600" },
+              { label: "Outbid", value: "3", color: "text-orange-600" },
+              { label: "Watching", value: "2", color: "text-blue-600" }
+            ]}
+          />
 
-          <StatCard
+          <AppleStatCard
             title="Account Status"
-            value="Verified"
-            subtitle="Account verification"
-            status={{
-              label: "Active",
-              type: "success"
-            }}
-            icon={
-              <Shield className="w-4 h-4 text-green-600" />
+            value={
+              <div className="flex items-center gap-2">
+                <span className="font-semibold">Verified</span>
+                <VerificationBadge size="sm" />
+              </div>
             }
-            href="/dashboard/profile"
-            iconBgColor="from-green-500/20 to-emerald-500/10"
-            glowColor="green"
-          >
-            <div className="mt-3 p-2 bg-green-50 rounded-lg border border-green-200">
-              <p className="text-xs text-green-700 font-medium">Full access granted</p>
-            </div>
-          </StatCard>
+            subtitle="Full access granted"
+            trend={{ value: 98, label: "Trust Score" }}
+            accentColor="#5856D6"
+            delay={0.1}
+            details={[
+              { label: "Member Since", value: "Jan 2024" },
+              { label: "Account Tier", value: "Premium", color: "text-purple-600" },
+              { label: "Documents", value: "All verified", color: "text-green-600" }
+            ]}
+          />
 
-          <StatCard
+          <AppleStatCard
             title="Pending Actions"
             value="5"
             subtitle="Requires attention"
-            trend={{ value: "-2", isPositive: true }}
-            icon={
-              <AlertCircle className="w-4 h-4 text-gray-800" />
-            }
-            href="/dashboard/tasks"
-            iconBgColor="from-gray-800/20 to-gray-900/10"
-            glowColor="black"
-          >
-            <div className="space-y-1 mt-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-600">Payments Due</span>
-                <span className="font-semibold text-orange-600">2</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-600">Documents</span>
-                <span className="font-semibold text-blue-600">3</span>
-              </div>
-            </div>
-          </StatCard>
+            trend={{ value: -2 }}
+            sparkline={[7, 6, 8, 5, 6, 5, 5]}
+            accentColor="#FF3B30"
+            delay={0.2}
+            details={[
+              { label: "Payments Due", value: "2", color: "text-red-600" },
+              { label: "Documents", value: "1", color: "text-orange-600" },
+              { label: "Inspections", value: "1", color: "text-blue-600" }
+            ]}
+          />
 
-          <StatCard
+          <AppleStatCard
             title="Available Balance"
-            value="¥485,000"
+            value="485"
+            unit="K¥"
             subtitle="Ready to use"
-            icon={
-              <Wallet className="w-4 h-4 text-green-600" />
-            }
-            href="/dashboard/wallet"
-            iconBgColor="from-green-500/20 to-emerald-500/10"
-            glowColor="green"
-            customFooter={
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.location.href = '/dashboard/wallet?action=deposit';
-                }}
-                className="flex items-center gap-1.5 text-xs font-medium text-green-600 hover:text-green-700 transition-colors group"
-              >
-                <span className="w-2 h-2 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 animate-pulse shadow-lg shadow-green-500/50"></span>
-                <span>Add Funds</span>
-                <svg className="w-3 h-3 text-green-600/60 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-                </svg>
-              </button>
-            }
-          >
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-600">Deposit</span>
-                <span className="font-semibold text-gray-700">¥500,000</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-600">Used</span>
-                <span className="font-semibold text-orange-600">¥15,000</span>
-              </div>
-            </div>
-          </StatCard>
+            trend={{ value: 3.2 }}
+            sparkline={[450, 460, 455, 470, 480, 475, 485]}
+            accentColor="#34C759"
+            delay={0.3}
+            details={[
+              { label: "Total Deposit", value: "¥500,000" },
+              { label: "Escrow", value: "¥12,000", color: "text-blue-600" },
+              { label: "Processing", value: "¥6,500", color: "text-orange-600" }
+            ]}
+          />
         </div>
       </div>
 
