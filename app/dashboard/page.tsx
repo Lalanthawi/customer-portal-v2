@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import type { AuctionItem, ActivityItem } from './types'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ClaimRequiredModal, useClaimStatus } from './components/ClaimRequired'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { ClaimRequiredModal, useClaimStatus } from '@/src/components/dashboard/ClaimRequired'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
-import { AppleStatCard } from '@/components/ui/stat-card-apple'
+import { AppleStatCard } from '@/src/components/ui/stat-card-apple'
 import { CheckCircle, Award } from 'lucide-react'
-import { VehicleCard } from '@/components/ui/vehicle-card-new'
-import { VerificationBadge } from '@/components/ui/verification-badge'
+import { VehicleCard } from '@/src/components/ui/vehicle-card-new'
+import { VerificationBadge } from '@/src/components/ui/verification-badge'
 
 // Skeleton component for loading states
 function Skeleton({ className }: { className?: string }) {

@@ -50,52 +50,77 @@ This file provides comprehensive guidance to Claude Code (claude.ai/code) when w
 
 ```
 customer-portal-v2/
-├── app/                      # Next.js App Router
+├── app/                      # Next.js App Router (stays at root per Next.js convention)
 │   ├── layout.tsx           # Root layout with providers
 │   ├── page.tsx             # Landing page
 │   ├── globals.css          # Global styles & Tailwind
-│   ├── dashboard/           # Main application area
+│   ├── dashboard/           # Dashboard pages only (no components)
 │   │   ├── layout.tsx       # Dashboard layout with sidebar
 │   │   ├── page.tsx         # Dashboard home
-│   │   ├── vehicles/        # Vehicle listing & details
-│   │   ├── bids/           # Bidding management
-│   │   ├── inspections/    # Inspection reports
-│   │   ├── translations/   # Translation services
-│   │   ├── shipment/       # Shipment tracking
-│   │   ├── auctions/       # Auction views
-│   │   ├── group-bidding/  # Group bid management
-│   │   ├── search/         # Advanced search
-│   │   ├── profile/        # User profile
-│   │   ├── settings/       # App settings
-│   │   └── components/     # Dashboard-specific components
+│   │   ├── vehicles/        # Vehicle listing & details pages
+│   │   ├── bids/           # Bidding management pages
+│   │   ├── inspections/    # Inspection reports pages
+│   │   ├── translations/   # Translation services pages
+│   │   ├── shipment/       # Shipment tracking pages
+│   │   ├── auction-calendar/# Auction calendar page
+│   │   ├── auctions/       # Auction views pages
+│   │   ├── group-bidding/  # Group bid management pages
+│   │   ├── search/         # Advanced search pages
+│   │   ├── profile/        # User profile page
+│   │   └── settings/       # App settings page
 │   └── api/                # API routes (minimal, mostly mock)
 │
-├── components/              # Shared components
-│   ├── ui/                 # Base UI components
-│   └── providers/          # Context providers
+├── src/                     # All application source code
+│   ├── components/          # All React components
+│   │   ├── ui/             # Base UI components (Button, Card, etc.)
+│   │   ├── dashboard/      # Dashboard-specific components
+│   │   ├── providers/      # Context providers & wrappers
+│   │   └── layouts/        # Layout components
+│   │
+│   ├── lib/                # Utility libraries & helpers
+│   │   ├── api-client.ts   # Centralized API client
+│   │   ├── utils.ts        # Helper functions
+│   │   ├── websocket.ts    # WebSocket manager
+│   │   ├── constants/      # Application constants
+│   │   ├── mappers/        # Data transformation utilities
+│   │   └── validations/    # Zod schemas
+│   │
+│   ├── stores/             # Zustand state management
+│   │   ├── useAuthStore.ts # Authentication state
+│   │   └── useVehicleStore.ts # Vehicle management state
+│   │
+│   ├── hooks/              # Custom React hooks
+│   │   ├── api/           # API-related hooks
+│   │   ├── use-auth.ts    # Authentication hook
+│   │   └── use-vehicles.ts # Vehicle data hooks
+│   │
+│   ├── services/           # API service layers
+│   │   └── api/           # API endpoints & mock data
+│   │       └── mock-data.ts # Centralized mock data
+│   │
+│   ├── types/              # TypeScript type definitions
+│   │   ├── api.types.ts   # API response types
+│   │   └── index.ts       # Exported types
+│   │
+│   ├── data/               # Static data & constants
+│   │   ├── auctionHouses.ts # Auction house data
+│   │   └── auctionCalendar.ts # Auction calendar data
+│   │
+│   └── config/             # Configuration files
+│       └── api.config.ts   # API configuration
 │
-├── lib/                    # Utility libraries
-│   ├── api-client.ts      # Centralized API client
-│   ├── utils.ts           # Helper functions
-│   ├── websocket.ts       # WebSocket manager
-│   └── validations/       # Zod schemas
+├── public/                 # Static assets
+│   └── images/            # Image assets
+│       ├── singlecar/     # Vehicle images
+│       ├── logos/         # Brand logos
+│       └── popular/       # Popular vehicle images
 │
-├── stores/                 # Zustand stores
-│   ├── useAuthStore.ts    # Authentication state
-│   └── useVehicleStore.ts # Vehicle management state
-│
-├── hooks/                  # Custom React hooks
-│   ├── use-auth.ts        # Authentication hook
-│   └── use-vehicles.ts    # Vehicle data hooks
-│
-├── services/              # API service layers
-│   └── api/              # API endpoints & mocks
-│
-├── types/                 # TypeScript definitions
-│   └── api.types.ts      # API response types
-│
-└── config/               # Configuration files
-    └── api.config.ts     # API configuration
+└── (config files)          # Root configuration
+    ├── package.json        # Dependencies
+    ├── tsconfig.json       # TypeScript config
+    ├── next.config.mjs     # Next.js config
+    ├── tailwind.config.ts  # Tailwind CSS config
+    └── CLAUDE.md          # This file
 ```
 
 ## 🔑 Key Features & Implementation
@@ -178,6 +203,16 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 ```
 
+### Folder Organization Best Practices
+
+1. **All application code goes in `src/`** - Keeps root directory clean
+2. **Pages stay in `app/`** - Next.js App Router convention
+3. **No components in `app/dashboard/`** - All components in `src/components/`
+4. **Group related files** - Keep related components, hooks, and utilities together
+5. **Centralize shared code** - Common utilities, types, and constants in their respective directories
+6. **Use barrel exports** - Create index.ts files for cleaner imports
+7. **Mock data centralized** - All mock data in `src/services/api/mock-data.ts`
+
 ## ⚠️ Important Notes
 
 ### Current Limitations
@@ -199,13 +234,30 @@ type FormData = z.infer<typeof schema>
 
 ## 🔄 Recent Updates
 
-### Latest Changes
+### Latest Changes (January 2025)
+- **Reorganized folder structure**: All application code now lives in `src/` directory
+- **Consolidated duplicates**: Merged duplicate folders (components, lib, types)
+- **Centralized mock data**: All mock data in `src/services/api/mock-data.ts`
+- **Auction calendar data**: Moved to `src/data/auctionCalendar.ts`
+- **Dashboard components**: Moved from `app/dashboard/components` to `src/components/dashboard`
+- **Updated import paths**: All imports now use `@/src/` prefix for consistency
 - Removed authentication requirement
 - Added 3-month data notices for inspections/translations
 - Implemented Zustand state management
 - Prepared WebSocket infrastructure
 - Added comprehensive error boundaries
 - Set up React Query for data fetching
+
+### Import Path Convention
+All imports should use the `@/src/` prefix:
+- `@/src/components/` - React components
+- `@/src/lib/` - Utilities and helpers
+- `@/src/hooks/` - Custom React hooks
+- `@/src/stores/` - Zustand stores
+- `@/src/services/` - API services
+- `@/src/types/` - TypeScript types
+- `@/src/data/` - Static data and constants
+- `@/src/config/` - Configuration files
 
 ### Pending Improvements
 - Sentry monitoring integration

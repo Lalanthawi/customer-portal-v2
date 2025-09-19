@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { CleanStatCard } from '@/components/ui/stat-card-clean'
-import { mockMyVehicles, type MyVehicle, type VehicleSource, type VehicleStatus } from '@/services/api/mock-data'
+import { CleanStatCard } from '@/src/components/ui/stat-card-clean'
+import { mockMyVehicles, type MyVehicle, type VehicleSource, type VehicleStatus } from '@/src/mocks'
 
 export default function MyVehiclesPage() {
   const [filterStatus, setFilterStatus] = useState<'all' | VehicleStatus>('all')

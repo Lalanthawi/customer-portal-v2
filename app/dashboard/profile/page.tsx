@@ -3,10 +3,11 @@
 import { useState, useRef, ChangeEvent, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import type { ProfileTab, UserProfileData, PasswordData, Device, NotificationSettings, PaymentMethod } from './types'
-import TwoFactorAuth from '../components/TwoFactorAuth'
-import AddAddressModal from '../components/AddAddressModal'
+import { Button } from '@/src/components/ui/button'
+import type { ProfileTab, UserProfileData, PasswordData, NotificationSettings } from './types'
+import TwoFactorAuth from '@/src/components/dashboard/TwoFactorAuth'
+import AddAddressModal from '@/src/components/dashboard/AddAddressModal'
+import { mockCountries, mockLanguages, mockDevices, mockPaymentMethods } from '@/src/mocks'
 
 // Tab definitions
 const tabs: ProfileTab[] = [
@@ -18,80 +19,9 @@ const tabs: ProfileTab[] = [
   { id: 'billing', label: 'Billing & Payment' },
 ]
 
-// Countries list
-const countries = [
-  'United States', 'United Kingdom', 'Canada', 'Australia', 'Japan', 
-  'Germany', 'France', 'Spain', 'Italy', 'Netherlands', 'Sweden', 
-  'Norway', 'Denmark', 'Finland', 'Switzerland', 'Austria'
-]
 
-// Languages list
-const languages = [
-  'English', 'Spanish', 'French', 'German', 'Italian', 
-  'Portuguese', 'Dutch', 'Swedish', 'Norwegian', 'Danish', 
-  'Finnish', 'Japanese', 'Korean', 'Chinese (Simplified)', 'Chinese (Traditional)'
-]
 
-// Device data
-const devices: Device[] = [
-  {
-    id: '1',
-    browser: 'Chrome on macOS',
-    browserIcon: '🌐',
-    device: 'MacBook Pro',
-    location: 'Tokyo, Japan',
-    lastActivity: '2 minutes ago',
-    isCurrentDevice: true,
-  },
-  {
-    id: '2',
-    browser: 'Safari on iPhone',
-    browserIcon: '📱',
-    device: 'iPhone 14 Pro',
-    location: 'Tokyo, Japan',
-    lastActivity: '1 hour ago',
-  },
-  {
-    id: '3',
-    browser: 'Chrome on Windows',
-    browserIcon: '💻',
-    device: 'Windows PC',
-    location: 'Osaka, Japan',
-    lastActivity: '3 days ago',
-  },
-  {
-    id: '4',
-    browser: 'Firefox on Android',
-    browserIcon: '📱',
-    device: 'Samsung Galaxy S23',
-    location: 'Kyoto, Japan',
-    lastActivity: '1 week ago',
-  },
-]
 
-// Payment methods data
-const paymentMethods: PaymentMethod[] = [
-  {
-    id: '1',
-    type: 'stripe',
-    last4: '4242',
-    brand: 'Stripe',
-    isDefault: true,
-    expiryDate: '12/25',
-  },
-  {
-    id: '2',
-    type: 'paypal',
-    email: 'john.doe@example.com',
-    isDefault: false,
-  },
-  {
-    id: '3',
-    type: 'wise',
-    email: 'john.doe@example.com',
-    isDefault: false,
-  },
-]
 
 function ProfileSettingsContent() {
   const searchParams = useSearchParams()
@@ -385,7 +315,7 @@ function ProfileSettingsContent() {
                       onChange={(e) => setProfileData({ ...profileData, country: e.target.value })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent focus:bg-white transition-all appearance-none"
                     >
-                      {countries.map((country) => (
+                      {mockCountries.map((country) => (
                         <option key={country} value={country}>{country}</option>
                       ))}
                     </select>
@@ -400,7 +330,7 @@ function ProfileSettingsContent() {
                       onChange={(e) => setProfileData({ ...profileData, language: e.target.value })}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent focus:bg-white transition-all appearance-none"
                     >
-                      {languages.map((language) => (
+                      {mockLanguages.map((language) => (
                         <option key={language} value={language}>{language}</option>
                       ))}
                     </select>
@@ -1017,7 +947,7 @@ function ProfileSettingsContent() {
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#FA7921] focus:border-transparent"
                         required
                       >
-                        {countries.map((country) => (
+                        {mockCountries.map((country) => (
                           <option key={country} value={country}>{country}</option>
                         ))}
                       </select>
@@ -1380,7 +1310,7 @@ function ProfileSettingsContent() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    {devices.map((device) => (
+                    {mockDevices.map((device) => (
                       <tr key={device.id} className="hover:bg-gray-50">
                         <td className="py-3">
                           <div className="flex items-center gap-2">
@@ -1557,7 +1487,7 @@ function ProfileSettingsContent() {
                 </Button>
               </div>
               <div className="space-y-3">
-                {paymentMethods.map((method) => (
+                {mockPaymentMethods.map((method) => (
                   <div key={method.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">

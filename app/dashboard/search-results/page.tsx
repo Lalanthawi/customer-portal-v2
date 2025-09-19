@@ -4,8 +4,8 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import SidebarFilters from '../components/search/SidebarFilters'
-import { SearchFilters } from '../components/search/types'
+import SidebarFilters from '@/src/components/dashboard/search/SidebarFilters'
+import { SearchFilters } from '@/src/components/dashboard/search/types'
 
 interface Vehicle {
   id: string

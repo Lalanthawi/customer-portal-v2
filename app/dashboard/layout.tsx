@@ -5,9 +5,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import type { NavigationItem, UserProfile } from './types'
-import JapanTime from './components/JapanTime'
-import { BackgroundAnimation } from '@/components/ui/background-animation'
-import { ToastProvider } from '@/components/providers/toast-provider'
+import JapanTime from '@/src/components/dashboard/JapanTime'
+import { BackgroundAnimation } from '@/src/components/ui/background-animation'
+import { ToastProvider } from '@/src/components/providers/toast-provider'
 
 const navigation: NavigationItem[] = [
   {

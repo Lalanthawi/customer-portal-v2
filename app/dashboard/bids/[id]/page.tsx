@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import ShipmentTimeline from '../../components/ShipmentTimeline'
-import { TimelineStage } from '../../components/types'
+import ShipmentTimeline from '@/src/components/dashboard/ShipmentTimeline'
+import { TimelineStage } from '@/src/components/dashboard/types'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
 
 interface BidDetail {

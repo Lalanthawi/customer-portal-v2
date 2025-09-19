@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { CleanStatCard } from '@/components/ui/stat-card-clean'
-import { BidCard } from '@/components/ui/bid-card'
-import { PremiumTabs } from '@/components/ui/premium-tabs'
-import { mockAuctionBids, type AuctionBid } from '@/services/api/mock-data'
+import { CleanStatCard } from '@/src/components/ui/stat-card-clean'
+import { BidCard } from '@/src/components/ui/bid-card'
+import { PremiumTabs } from '@/src/components/ui/premium-tabs'
+import { mockAuctionBids, type AuctionBid } from '@/src/mocks'
 import type { BidStatistics } from './types'
 
 // Using centralized mock data

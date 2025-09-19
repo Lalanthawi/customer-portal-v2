@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
-import { CleanStatCard } from '@/components/ui/stat-card-clean'
-import { PremiumTabs } from '@/components/ui/premium-tabs'
+import { CleanStatCard } from '@/src/components/ui/stat-card-clean'
+import { PremiumTabs } from '@/src/components/ui/premium-tabs'
 import { sharedDataStore, InspectionData, InspectionStatus } from '../utils/sharedData'
 
 // Types

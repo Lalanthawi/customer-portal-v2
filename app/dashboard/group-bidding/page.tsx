@@ -1,4 +1,4 @@
-import GroupBiddingPanel from './components/GroupBiddingPanel'
+import GroupBiddingPanel from '@/src/components/dashboard/GroupBiddingPanel'
 
 export default function GroupBiddingPage() {
   return <GroupBiddingPanel />

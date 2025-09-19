@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import ShipmentTimeline from '../../components/ShipmentTimeline'
-import { TimelineStage } from '../../components/types'
+import ShipmentTimeline from '@/src/components/dashboard/ShipmentTimeline'
+import { TimelineStage } from '@/src/components/dashboard/types'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { VehicleDetails, VehicleDocument, generateMockVehicle } from '../types'
-import { ImageGalleryEnhanced } from '@/components/ui/image-gallery-enhanced'
+import { ImageGalleryEnhanced } from '@/src/components/ui/image-gallery-enhanced'
 
 export default function VehicleDetailPage() {
   const params = useParams()

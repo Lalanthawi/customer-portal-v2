@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react'
 import { getRandomAuctionHouse } from '@/src/data/auctionHouses'
 import { sharedDataStore, TranslationData, TranslationStatus } from '../utils/sharedData'
 import Link from 'next/link'
-import { EmptyState } from '@/components/ui/empty-state'
-import { cn } from '@/lib/utils'
-import { CleanStatCard } from '@/components/ui/stat-card-clean'
+import { EmptyState } from '@/src/components/ui/empty-state'
+import { cn } from '@/src/lib/utils'
+import { CleanStatCard } from '@/src/components/ui/stat-card-clean'
 
 // Types
 interface AuctionSheetTranslation {

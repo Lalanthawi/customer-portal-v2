@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Sora, Noto_Sans, DM_Mono, Manrope } from "next/font/google";
 import "./globals.css";
-import { QueryProvider } from "@/components/providers/query-provider";
-import { ErrorBoundary } from "@/components/providers/error-boundary";
-import { WebSocketProvider } from "@/components/providers/websocket-provider";
+import { QueryProvider } from "@/src/components/providers/query-provider";
+import { ErrorBoundary } from "@/src/components/providers/error-boundary";
+import { WebSocketProvider } from "@/src/components/providers/websocket-provider";
 
 // Headers - Geometric and clean
 const sora = Sora({

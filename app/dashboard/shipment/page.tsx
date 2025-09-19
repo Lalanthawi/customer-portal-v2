@@ -2,12 +2,12 @@
 
 import { Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { useShipmentTimeline } from '@/hooks/useShipmentTimeline'
-import ShipmentTimeline from '../components/ShipmentTimeline'
-import { TimelineStage as LocalTimelineStage } from '../components/types'
-import { TimelineStage } from '@/types/api.types'
+import { useShipmentTimeline } from '@/src/hooks/useShipmentTimeline'
+import ShipmentTimeline from '@/src/components/dashboard/ShipmentTimeline'
+import { TimelineStage as LocalTimelineStage } from '@/src/components/dashboard/types'
+import { TimelineStage } from '@/src/types/api.types'
 import { ArrowLeft, AlertCircle, RefreshCw } from 'lucide-react'
-import { PageHeader } from '@/components/ui/page-header'
+import { PageHeader } from '@/src/components/ui/page-header'
 
 // Convert API timeline stage to local component format
 function convertToLocalStage(stage: TimelineStage): LocalTimelineStage {

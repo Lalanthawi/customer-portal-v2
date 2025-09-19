@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { manufacturerLogos } from './ManufacturerLogos'
-import AdvancedSearchStatic from '../components/search/AdvancedSearchStatic'
-import { TermsOfServiceModal, useTOSAcceptance } from '../components/TermsOfService'
-import { mockManufacturers } from '@/services/api/mock-data'
+import AdvancedSearchStatic from '@/src/components/dashboard/search/AdvancedSearchStatic'
+import { TermsOfServiceModal, useTOSAcceptance } from '@/src/components/dashboard/TermsOfService'
+import { mockManufacturers } from '@/src/mocks'
 
 interface FilterState {
   manufacturers: string[]
